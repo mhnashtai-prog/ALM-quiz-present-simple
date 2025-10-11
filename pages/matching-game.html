@@ -1,1 +1,817 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>INTUITY - Matching Game</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #000000;
+      font-family: 'Inter', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      overflow: hidden;
+      position: relative;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' /%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .game-container {
+      background: #1a1a1a;
+      width: 95%;
+      max-width: 900px;
+      min-height: 85vh;
+      border-radius: 24px;
+      padding: 2rem;
+      box-shadow: 
+        12px 12px 24px #000000,
+        -12px -12px 24px #2a2a2a;
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .back-btn {
+      position: absolute;
+      top: 1.5rem;
+      left: 1.5rem;
+      background: #1a1a1a;
+      border: none;
+      border-radius: 12px;
+      padding: 0.75rem 1.25rem;
+      color: #C9A961;
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 
+        6px 6px 12px #000000,
+        -6px -6px 12px #2a2a2a;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .back-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 
+        8px 8px 16px #000000,
+        -8px -8px 16px #2a2a2a;
+    }
+
+    .header h1 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 2rem;
+      color: #C9A961;
+      margin-bottom: 0.5rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .subtitle {
+      font-size: 0.875rem;
+      color: rgba(232, 232, 232, 0.7);
+      margin-bottom: 0.25rem;
+    }
+
+    .character-name {
+      font-size: 1rem;
+      color: #C9A961;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 8px;
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 10px;
+      margin: 1.5rem 0;
+      overflow: hidden;
+      box-shadow: inset 2px 2px 4px rgba(0, 0, 0, 0.5);
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #C9A961, #e8d9a8);
+      border-radius: 10px;
+      transition: width 0.5s ease;
+      box-shadow: 0 0 10px rgba(201, 169, 97, 0.5);
+    }
+
+    .score-display {
+      text-align: center;
+      margin-bottom: 1rem;
+      font-size: 1.25rem;
+      color: #e8e8e8;
+      font-weight: 600;
+    }
+
+    .score-number {
+      color: #C9A961;
+      font-size: 1.5rem;
+      font-family: 'Space Grotesk', sans-serif;
+    }
+
+    .matching-area {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      flex: 1;
+      margin-bottom: 1.5rem;
+    }
+
+    .column {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+    
+    .column > *:not(:last-child) {
+      margin-bottom: 0.75rem;
+    }
+
+    .column-title {
+      text-align: center;
+      font-size: 0.875rem;
+      color: rgba(201, 169, 97, 0.8);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 0.5rem;
+    }
+
+    .match-item {
+      background: #1a1a1a;
+      border-radius: 12px;
+      padding: 1rem 1.25rem;
+      box-shadow: 
+        6px 6px 12px #000000,
+        -6px -6px 12px #2a2a2a;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 60px;
+      position: relative;
+      margin-bottom: 0.75rem;
+    }
+
+    .match-item.fixed {
+      color: #C9A961;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: default;
+    }
+
+    .match-item.draggable {
+      color: rgba(200, 200, 200, 0.9);
+      font-weight: 500;
+      font-size: 0.95rem;
+      cursor: grab;
+      user-select: none;
+    }
+
+    .match-item.draggable:active {
+      cursor: grabbing;
+    }
+
+    .match-item.draggable:hover {
+      transform: translateY(-2px);
+      box-shadow: 
+        8px 8px 16px #000000,
+        -8px -8px 16px #2a2a2a;
+    }
+
+    .match-item.dragging {
+      opacity: 0.5;
+      transform: rotate(5deg);
+    }
+
+    .match-item.matched {
+      background: rgba(201, 169, 97, 0.2);
+      border: 2px solid #C9A961;
+      box-shadow: 
+        0 0 20px rgba(201, 169, 97, 0.3),
+        6px 6px 12px #000000,
+        -6px -6px 12px #2a2a2a;
+      animation: matchPulse 0.5s ease;
+    }
+
+    @keyframes matchPulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    .match-item.wrong {
+      animation: shake 0.5s ease;
+      border: 2px solid #ef4444;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-10px); }
+      75% { transform: translateX(10px); }
+    }
+
+    .drop-zone {
+      min-height: 60px;
+      border: 2px dashed rgba(201, 169, 97, 0.3);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s;
+      background: rgba(0, 0, 0, 0.2);
+      margin-bottom: 0;
+    }
+
+    .drop-zone.drag-over {
+      border-color: #C9A961;
+      background: rgba(201, 169, 97, 0.1);
+      box-shadow: 
+        inset 0 0 20px rgba(201, 169, 97, 0.2);
+    }
+
+    .drop-zone.filled {
+      border: none;
+      background: transparent;
+    }
+
+    .emoji-icon {
+      font-size: 1.5rem;
+      margin-left: 0.5rem;
+    }
+
+    .controls {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      background: #1a1a1a;
+      border: none;
+      border-radius: 12px;
+      padding: 0.875rem 1.5rem;
+      color: #e8e8e8;
+      font-size: 0.875rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 
+        6px 6px 12px #000000,
+        -6px -6px 12px #2a2a2a;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 
+        8px 8px 16px #000000,
+        -8px -8px 16px #2a2a2a;
+    }
+
+    .btn.primary {
+      background: rgba(201, 169, 97, 0.2);
+      color: #C9A961;
+      border: 2px solid #C9A961;
+    }
+
+    .btn.primary:hover {
+      background: rgba(201, 169, 97, 0.3);
+      box-shadow: 
+        0 0 20px rgba(201, 169, 97, 0.4),
+        8px 8px 16px #000000,
+        -8px -8px 16px #2a2a2a;
+    }
+
+    .btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      transform: none !important;
+    }
+
+    .card-navigation {
+      display: flex;
+      justify-content: center;
+      gap: 0.75rem;
+      margin-top: 1.5rem;
+    }
+
+    .nav-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: rgba(201, 169, 97, 0.3);
+      cursor: pointer;
+      transition: all 0.3s;
+      box-shadow: 
+        2px 2px 4px #000000,
+        -2px -2px 4px #2a2a2a;
+    }
+
+    .nav-dot:hover {
+      background: rgba(201, 169, 97, 0.6);
+      transform: scale(1.2);
+    }
+
+    .nav-dot.active {
+      background: #C9A961;
+      width: 32px;
+      border-radius: 6px;
+      box-shadow: 
+        0 0 10px rgba(201, 169, 97, 0.5),
+        2px 2px 4px #000000,
+        -2px -2px 4px #2a2a2a;
+    }
+
+    .nav-dot.completed {
+      background: #4ade80;
+      position: relative;
+    }
+
+    .nav-dot.completed::after {
+      content: '✓';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: #000;
+      font-size: 0.6rem;
+      font-weight: bold;
+    }
+
+    .celebration {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 5rem;
+      opacity: 0;
+      pointer-events: none;
+      z-index: 1000;
+      animation: celebrate 1s ease;
+    }
+
+    @keyframes celebrate {
+      0% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
+      50% { opacity: 1; transform: translate(-50%, -50%) scale(1.2); }
+      100% { opacity: 0; transform: translate(-50%, -50%) scale(1); }
+    }
+
+    @media (max-width: 768px) {
+      .matching-area {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+      }
+
+      .game-container {
+        padding: 1.5rem;
+      }
+
+      .header h1 {
+        font-size: 1.5rem;
+      }
+
+      .back-btn {
+        padding: 0.5rem 1rem;
+        font-size: 0.75rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="game-container">
+    <button class="back-btn" onclick="goBack()">← Back</button>
+    
+    <div class="header">
+      <h1>INTUITY</h1>
+      <p class="subtitle">Match the verbs with their objects</p>
+      <p class="character-name"><span id="characterEmoji">👧</span> <span id="characterName">SARAH</span> - <span id="categoryTitle">Habitual Actions</span></p>
+    </div>
+
+    <div class="progress-bar">
+      <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+    </div>
+
+    <div class="score-display">
+      Card <span id="cardNumber">1</span>/4 • Score: <span class="score-number" id="scoreDisplay">0/5</span>
+    </div>
+
+    <div class="matching-area">
+      <div class="column">
+        <div class="column-title">Verbs</div>
+        <div id="verbColumn"></div>
+      </div>
+
+      <div class="column">
+        <div class="column-title">Objects</div>
+        <div id="objectColumn"></div>
+      </div>
+    </div>
+
+    <div class="controls">
+      <button class="btn" onclick="resetCard()">🔄 Reset</button>
+      <button class="btn" onclick="checkAnswers()">✓ Check Answers</button>
+      <button class="btn primary" id="nextCardBtn" onclick="nextCard()" disabled>Next Card →</button>
+    </div>
+
+    <div class="card-navigation" id="cardNavigation"></div>
+  </div>
+
+  <script>
+    // Read URL parameters
+    const urlParams = new URLSearchParams(window.location.search);
+    const characterParam = urlParams.get('character') || 'sarah';
+    const categoryParam = urlParams.get('category') || 'habitual';
+
+    // Load data from sessionStorage
+    let quizData = null;
+    let cardsData = [];
+    
+    try {
+      const storedData = sessionStorage.getItem('quizData');
+      if (storedData) {
+        quizData = JSON.parse(storedData);
+        
+        // Update header with character info
+        document.getElementById('characterEmoji').textContent = quizData.characterEmoji;
+        document.getElementById('characterName').textContent = quizData.character;
+        document.getElementById('categoryTitle').textContent = quizData.cartTitle;
+        
+        // Split verbs into 4 cards (5 verbs each)
+        const allVerbs = quizData.verbs;
+        cardsData = [
+          { card: 1, pairs: allVerbs.slice(0, 5) },
+          { card: 2, pairs: allVerbs.slice(5, 10) },
+          { card: 3, pairs: allVerbs.slice(10, 15) },
+          { card: 4, pairs: allVerbs.slice(15, 20) }
+        ];
+      }
+    } catch (error) {
+      console.error('Error loading data:', error);
+      // Fallback to default data if sessionStorage fails
+      cardsData = [
+        { card: 1, pairs: [
+          { verb: 'drinks', object: 'coffee/tea', emoji: '🥤' },
+          { verb: 'eats', object: 'breakfast', emoji: '🍳' },
+          { verb: 'takes', object: 'the bus', emoji: '🚌' },
+          { verb: 'checks', object: 'phone', emoji: '📱' },
+          { verb: 'does', object: 'homework', emoji: '📚' }
+        ]},
+        { card: 2, pairs: [
+          { verb: 'watches', object: 'videos', emoji: '📺' },
+          { verb: 'listens', object: 'to music', emoji: '🎵' },
+          { verb: 'reads', object: 'books', emoji: '📖' },
+          { verb: 'writes', object: 'essays', emoji: '✍️' },
+          { verb: 'studies', object: 'grammar', emoji: '🎓' }
+        ]},
+        { card: 3, pairs: [
+          { verb: 'attends', object: 'classes', emoji: '🏫' },
+          { verb: 'uses', object: 'apps', emoji: '📲' },
+          { verb: 'wears', object: 'glasses', emoji: '👓' },
+          { verb: 'carries', object: 'backpack', emoji: '🎒' },
+          { verb: 'asks', object: 'questions', emoji: '❓' }
+        ]},
+        { card: 4, pairs: [
+          { verb: 'answers', object: 'correctly', emoji: '✅' },
+          { verb: 'makes', object: 'friends', emoji: '👥' },
+          { verb: 'keeps', object: 'diary', emoji: '📔' },
+          { verb: 'follows', object: 'rules', emoji: '📋' },
+          { verb: 'joins', object: 'clubs', emoji: '🎯' }
+        ]}
+      ];
+    }
+
+    let currentCardIndex = 0;
+    let currentMatches = {};
+    let cardScores = [null, null, null, null];
+    let draggedElement = null;
+
+    function loadCard() {
+      const cardData = cardsData[currentCardIndex];
+      const pairs = cardData.pairs;
+      
+      currentMatches = {};
+      
+      document.getElementById('cardNumber').textContent = currentCardIndex + 1;
+      document.getElementById('scoreDisplay').textContent = '0/5';
+      document.getElementById('nextCardBtn').disabled = true;
+      
+      const verbColumn = document.getElementById('verbColumn');
+      const objectColumn = document.getElementById('objectColumn');
+      
+      verbColumn.innerHTML = '';
+      objectColumn.innerHTML = '';
+      
+      pairs.forEach((pair, index) => {
+        const verbItem = document.createElement('div');
+        verbItem.className = 'match-item fixed';
+        verbItem.textContent = pair.verb;
+        verbItem.dataset.index = index;
+        verbColumn.appendChild(verbItem);
+        
+        const dropZone = document.createElement('div');
+        dropZone.className = 'drop-zone';
+        dropZone.dataset.verbIndex = index;
+        dropZone.addEventListener('dragover', handleDragOver);
+        dropZone.addEventListener('drop', handleDrop);
+        dropZone.addEventListener('dragleave', handleDragLeave);
+        verbColumn.appendChild(dropZone);
+      });
+      
+      const shuffledPairs = [...pairs].sort(() => Math.random() - 0.5);
+      
+      shuffledPairs.forEach((pair, index) => {
+        const objectItem = document.createElement('div');
+        objectItem.className = 'match-item draggable';
+        objectItem.draggable = true;
+        objectItem.dataset.correctIndex = pairs.findIndex(p => p.object === pair.object);
+        objectItem.innerHTML = `${pair.object} <span class="emoji-icon">${pair.emoji}</span>`;
+        
+        objectItem.addEventListener('dragstart', handleDragStart);
+        objectItem.addEventListener('dragend', handleDragEnd);
+        
+        objectItem.addEventListener('touchstart', handleTouchStart, { passive: false });
+        objectItem.addEventListener('touchmove', handleTouchMove, { passive: false });
+        objectItem.addEventListener('touchend', handleTouchEnd);
+        
+        objectColumn.appendChild(objectItem);
+      });
+      
+      updateProgress();
+      renderNavigation();
+    }
+
+    function handleDragStart(e) {
+      draggedElement = e.target;
+      e.target.classList.add('dragging');
+      e.dataTransfer.effectAllowed = 'move';
+    }
+
+    function handleDragEnd(e) {
+      e.target.classList.remove('dragging');
+    }
+
+    function handleDragOver(e) {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+      e.currentTarget.classList.add('drag-over');
+    }
+
+    function handleDragLeave(e) {
+      e.currentTarget.classList.remove('drag-over');
+    }
+
+    function handleDrop(e) {
+      e.preventDefault();
+      e.currentTarget.classList.remove('drag-over');
+      
+      const dropZone = e.currentTarget;
+      const verbIndex = dropZone.dataset.verbIndex;
+      
+      if (dropZone.classList.contains('filled')) {
+        const existingItem = dropZone.querySelector('.match-item');
+        document.getElementById('objectColumn').appendChild(existingItem);
+        existingItem.classList.remove('matched', 'wrong');
+      }
+      
+      dropZone.appendChild(draggedElement);
+      dropZone.classList.add('filled');
+      
+      currentMatches[verbIndex] = draggedElement.dataset.correctIndex;
+      
+      draggedElement.classList.remove('matched', 'wrong');
+    }
+
+    let touchStartY = 0;
+    let touchElement = null;
+    let clone = null;
+
+    function handleTouchStart(e) {
+      touchElement = e.target;
+      touchStartY = e.touches[0].clientY;
+      
+      clone = touchElement.cloneNode(true);
+      clone.style.position = 'fixed';
+      clone.style.zIndex = '1000';
+      clone.style.opacity = '0.8';
+      clone.style.pointerEvents = 'none';
+      clone.style.width = touchElement.offsetWidth + 'px';
+      document.body.appendChild(clone);
+      
+      touchElement.style.opacity = '0.3';
+    }
+
+    function handleTouchMove(e) {
+      e.preventDefault();
+      if (!clone) return;
+      
+      const touch = e.touches[0];
+      clone.style.left = (touch.clientX - clone.offsetWidth / 2) + 'px';
+      clone.style.top = (touch.clientY - clone.offsetHeight / 2) + 'px';
+    }
+
+    function handleTouchEnd(e) {
+      if (!clone || !touchElement) return;
+      
+      const touch = e.changedTouches[0];
+      const dropZone = document.elementFromPoint(touch.clientX, touch.clientY);
+      
+      if (dropZone && dropZone.classList.contains('drop-zone')) {
+        const verbIndex = dropZone.dataset.verbIndex;
+        
+        if (dropZone.classList.contains('filled')) {
+          const existingItem = dropZone.querySelector('.match-item');
+          document.getElementById('objectColumn').appendChild(existingItem);
+          existingItem.classList.remove('matched', 'wrong');
+        }
+        
+        dropZone.appendChild(touchElement);
+        dropZone.classList.add('filled');
+        currentMatches[verbIndex] = touchElement.dataset.correctIndex;
+      } else {
+        document.getElementById('objectColumn').appendChild(touchElement);
+      }
+      
+      touchElement.style.opacity = '1';
+      touchElement.classList.remove('matched', 'wrong');
+      
+      document.body.removeChild(clone);
+      clone = null;
+      touchElement = null;
+    }
+
+    function checkAnswers() {
+      let correct = 0;
+      const totalPairs = cardsData[currentCardIndex].pairs.length;
+      
+      document.querySelectorAll('.drop-zone').forEach(zone => {
+        const verbIndex = zone.dataset.verbIndex;
+        const item = zone.querySelector('.match-item.draggable');
+        
+        if (item) {
+          const correctIndex = item.dataset.correctIndex;
+          
+          if (verbIndex === correctIndex) {
+            item.classList.add('matched');
+            item.classList.remove('wrong');
+            correct++;
+          } else {
+            item.classList.add('wrong');
+            item.classList.remove('matched');
+          }
+        }
+      });
+      
+      document.getElementById('scoreDisplay').textContent = `${correct}/${totalPairs}`;
+      
+      if (correct === totalPairs) {
+        cardScores[currentCardIndex] = 100;
+        document.getElementById('nextCardBtn').disabled = false;
+        showCelebration('🎉');
+        updateProgress();
+        renderNavigation();
+        checkAllCardsComplete();
+      } else {
+        cardScores[currentCardIndex] = Math.round((correct / totalPairs) * 100);
+        updateProgress();
+      }
+    }
+
+    function resetCard() {
+      const objectColumn = document.getElementById('objectColumn');
+      
+      document.querySelectorAll('.drop-zone .match-item.draggable').forEach(item => {
+        item.classList.remove('matched', 'wrong');
+        objectColumn.appendChild(item);
+      });
+      
+      document.querySelectorAll('.drop-zone').forEach(zone => {
+        zone.classList.remove('filled');
+      });
+      
+      currentMatches = {};
+      document.getElementById('scoreDisplay').textContent = '0/5';
+      document.getElementById('nextCardBtn').disabled = true;
+    }
+
+    function nextCard() {
+      if (currentCardIndex < 3) {
+        currentCardIndex++;
+        loadCard();
+      }
+    }
+
+    function goToCard(index) {
+      currentCardIndex = index;
+      loadCard();
+    }
+
+    function updateProgress() {
+      const completedCards = cardScores.filter(score => score === 100).length;
+      const progress = (completedCards / 4) * 100;
+      document.getElementById('progressFill').style.width = progress + '%';
+    }
+
+    function renderNavigation() {
+      const nav = document.getElementById('cardNavigation');
+      nav.innerHTML = '';
+      
+      for (let i = 0; i < 4; i++) {
+        const dot = document.createElement('div');
+        dot.className = 'nav-dot';
+        
+        if (i === currentCardIndex) {
+          dot.classList.add('active');
+        }
+        
+        if (cardScores[i] === 100) {
+          dot.classList.add('completed');
+        }
+        
+        dot.addEventListener('click', () => goToCard(i));
+        nav.appendChild(dot);
+      }
+    }
+
+    function showCelebration(emoji) {
+      const celebration = document.createElement('div');
+      celebration.className = 'celebration';
+      celebration.textContent = emoji;
+      document.body.appendChild(celebration);
+      
+      setTimeout(() => {
+        document.body.removeChild(celebration);
+      }, 1000);
+    }
+
+    function checkAllCardsComplete() {
+      const allComplete = cardScores.every(score => score === 100);
+      
+      if (allComplete && !document.getElementById('quizBtn')) {
+        // Add "Continue to Quiz" button
+        const controlsDiv = document.querySelector('.controls');
+        const quizBtn = document.createElement('button');
+        quizBtn.id = 'quizBtn';
+        quizBtn.className = 'btn primary';
+        quizBtn.style.animation = 'matchPulse 1s ease infinite';
+        quizBtn.innerHTML = '🎓 Continue to Quiz →';
+        quizBtn.onclick = proceedToQuiz;
+        controlsDiv.appendChild(quizBtn);
+        
+        showCelebration('🏆');
+      }
+    }
+
+    function proceedToQuiz() {
+      // Mark matching game as complete
+      sessionStorage.setItem('matchingComplete', 'true');
+      
+      // Redirect to quiz interface with same parameters
+      window.location.href = `quiz-interface-mode2.html?character=${characterParam}&category=${categoryParam}`;
+    }
+
+    function goBack() {
+      // Return to landing page
+      window.location.href = 'landing-page-interface-4-boxes.html';
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' && !document.getElementById('nextCardBtn').disabled) {
+        nextCard();
+      }
+    });
+
+    loadCard();
+  </script>
+</body>
+</html>
