@@ -1,0 +1,1143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>INTUITY - Train Carousel</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #000000;
+      font-family: 'Inter', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' /%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .container {
+      background: #1a1a1a;
+      width: 95%;
+      max-width: 420px;
+      min-height: 90vh;
+      border-radius: 24px;
+      padding: 2rem 1.25rem;
+      box-shadow: 
+        12px 12px 24px #000000,
+        -12px -12px 24px #2a2a2a;
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 1.5rem;
+      position: relative;
+    }
+
+    .header h1 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 2.5rem;
+      color: #C9A961;
+      margin: 0 0 0.5rem 0;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    }
+
+    .subtitle {
+      font-size: 0.875rem;
+      color: rgba(232, 232, 232, 0.9);
+      margin-bottom: 0.25rem;
+      font-weight: 500;
+      letter-spacing: 0.03em;
+    }
+
+    .author {
+      font-size: 0.75rem;
+      color: rgba(201, 169, 97, 0.7);
+      font-weight: 400;
+      letter-spacing: 0.02em;
+    }
+
+    .qr-btn {
+      position: absolute;
+      top: 0;
+      right: 0;
+      background: #1a1a1a;
+      border: none;
+      border-radius: 50%;
+      width: 2.5rem;
+      height: 2.5rem;
+      color: #C9A961;
+      font-size: 1.25rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 
+        6px 6px 12px #000000,
+        -6px -6px 12px #2a2a2a;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .qr-btn:hover {
+      transform: scale(1.1) rotate(5deg);
+      box-shadow: 
+        8px 8px 16px #000000,
+        -8px -8px 16px #2a2a2a;
+    }
+
+    .qr-btn:active {
+      transform: scale(0.95);
+    }
+
+    .character-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .nav-arrow {
+      background: #1a1a1a;
+      border: none;
+      border-radius: 50%;
+      width: 3rem;
+      height: 3rem;
+      color: #C9A961;
+      font-size: 1.5rem;
+      cursor: pointer;
+      box-shadow: 
+        6px 6px 12px #000000,
+        -6px -6px 12px #2a2a2a;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .nav-arrow:hover:not(:disabled) {
+      transform: scale(1.1);
+      box-shadow: 
+        8px 8px 16px #000000,
+        -8px -8px 16px #2a2a2a;
+    }
+
+    .nav-arrow:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+
+    .character-bubble {
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      background: #1a1a1a;
+      box-shadow: 
+        12px 12px 24px #000000,
+        -12px -12px 24px #2a2a2a;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      animation: float 4s ease-in-out infinite;
+      transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+
+    .character-emoji {
+      font-size: 3.5rem;
+      filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.5));
+    }
+
+    .character-name {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1rem;
+      font-weight: 600;
+      color: #C9A961;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .train-carts {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+      margin-top: 1.5rem;
+      flex: 1;
+    }
+
+    .cart {
+      aspect-ratio: 1.1;
+      background: #1a1a1a;
+      border-radius: 20px;
+      padding: 1rem;
+      cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 
+        8px 8px 16px #000000,
+        -8px -8px 16px #2a2a2a;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cart::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(201, 169, 97, 0.15), transparent);
+      transition: left 0.5s;
+    }
+
+    .cart:hover::before {
+      left: 100%;
+    }
+
+    .cart:hover {
+      transform: translateY(-4px) scale(1.02);
+      box-shadow: 
+        12px 12px 24px #000000,
+        -12px -12px 24px #2a2a2a;
+    }
+
+    .cart-icon {
+      font-size: 2.5rem;
+      filter: drop-shadow(1px 1px 2px rgba(0, 0, 0, 0.5));
+    }
+
+    .cart-title {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #e8e8e8;
+      text-align: center;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      line-height: 1.3;
+    }
+
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(8px);
+      z-index: 998;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .modal-overlay.show {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .cart-modal {
+      position: fixed;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%) scale(0.9);
+      background: #1a1a1a;
+      border-radius: 24px;
+      padding: 2rem 1.5rem;
+      max-width: 420px;
+      width: 92%;
+      max-height: 80vh;
+      z-index: 999;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      box-shadow: 
+        16px 16px 32px #000000,
+        -16px -16px 32px #2a2a2a;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .cart-modal.show {
+      opacity: 1;
+      visibility: visible;
+      transform: translate(-50%, -50%) scale(1);
+    }
+
+    .modal-header {
+      text-align: center;
+      margin-bottom: 1rem;
+      padding-bottom: 1rem;
+      border-bottom: 2px solid rgba(201, 169, 97, 0.3);
+    }
+
+    .modal-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: #C9A961;
+      letter-spacing: 0.01em;
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 1rem; right: 1rem;
+      border: none;
+      background: #1a1a1a;
+      border-radius: 50%;
+      width: 2.5rem; height: 2.5rem;
+      color: #C9A961;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 
+        6px 6px 12px #000000,
+        -6px -6px 12px #2a2a2a;
+      font-size: 1.5rem;
+      line-height: 1;
+      font-weight: 300;
+      z-index: 10;
+    }
+
+    .close-btn:hover {
+      transform: scale(1.1) rotate(90deg);
+      box-shadow: 
+        8px 8px 16px #000000,
+        -8px -8px 16px #2a2a2a;
+    }
+
+    .scroll-hint {
+      text-align: center;
+      color: rgba(201, 169, 97, 0.4);
+      font-size: 0.7rem;
+      margin-bottom: 0.75rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+    }
+
+    .verb-list {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding-right: 0.5rem;
+      -webkit-overflow-scrolling: touch;
+      scroll-behavior: smooth;
+    }
+
+    .verb-list::-webkit-scrollbar { width: 6px; }
+    .verb-list::-webkit-scrollbar-track { 
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 10px;
+    }
+    .verb-list::-webkit-scrollbar-thumb {
+      background: rgba(201, 169, 97, 0.4);
+      border-radius: 10px;
+    }
+
+    .verb-box {
+      background: #1a1a1a;
+      border-radius: 12px;
+      padding: 0.875rem 1rem;
+      margin-bottom: 0.5rem;
+      box-shadow: 
+        4px 4px 8px #000000,
+        -4px -4px 8px #2a2a2a;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      min-height: 48px;
+      transition: all 0.3s;
+    }
+
+    .verb-box:hover {
+      transform: translateX(4px);
+    }
+
+    .verb {
+      color: #C9A961;
+      font-weight: 700;
+      font-size: 0.95rem;
+      letter-spacing: 0.02em;
+    }
+
+    .object {
+      color: rgba(200, 200, 200, 0.8);
+      font-weight: 500;
+      font-size: 0.875rem;
+      text-align: right;
+    }
+
+    .emoji-icon {
+      font-size: 1.25rem;
+      margin-left: 0.5rem;
+    }
+
+    .modal-actions {
+      margin-top: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .action-btn {
+      background: #1a1a1a;
+      border: none;
+      border-radius: 12px;
+      padding: 0.875rem 1.5rem;
+      color: #e8e8e8;
+      font-size: 0.875rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 
+        6px 6px 12px #000000,
+        -6px -6px 12px #2a2a2a;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .action-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 
+        8px 8px 16px #000000,
+        -8px -8px 16px #2a2a2a;
+    }
+
+    .action-btn.primary {
+      background: rgba(201, 169, 97, 0.2);
+      color: #C9A961;
+    }
+
+    .qr-modal {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.9);
+      backdrop-filter: blur(10px);
+      z-index: 1001;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .qr-modal.show {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .qr-content {
+      background: #1a1a1a;
+      border-radius: 24px;
+      padding: 2rem 1.5rem;
+      max-width: 380px;
+      width: 90%;
+      box-shadow: 
+        16px 16px 32px #000000,
+        -16px -16px 32px #2a2a2a;
+      position: relative;
+      text-align: center;
+    }
+
+    .qr-close {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: #1a1a1a;
+      border: none;
+      border-radius: 50%;
+      width: 2.5rem;
+      height: 2.5rem;
+      color: #C9A961;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 
+        6px 6px 12px #000000,
+        -6px -6px 12px #2a2a2a;
+      font-size: 1.5rem;
+      line-height: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+    }
+
+    .qr-close:hover {
+      transform: scale(1.1) rotate(90deg);
+      box-shadow: 
+        8px 8px 16px #000000,
+        -8px -8px 16px #2a2a2a;
+    }
+
+    .qr-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #C9A961;
+      margin-bottom: 0.5rem;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+    }
+
+    .qr-subtitle {
+      font-size: 0.8125rem;
+      color: rgba(200, 200, 200, 0.7);
+      margin-bottom: 1.5rem;
+      font-weight: 500;
+    }
+
+    .qr-code-box {
+      background: #ffffff;
+      padding: 1.5rem;
+      border-radius: 16px;
+      margin: 0 auto 1.5rem;
+      box-shadow: 
+        inset 4px 4px 8px rgba(0, 0, 0, 0.3);
+      display: inline-block;
+      min-height: 280px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .qr-code-box img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .qr-url {
+      font-size: 0.7rem;
+      color: rgba(201, 169, 97, 0.7);
+      font-family: 'Courier New', monospace;
+      background: rgba(201, 169, 97, 0.1);
+      padding: 0.75rem 1rem;
+      border-radius: 12px;
+      margin-bottom: 1rem;
+      word-break: break-all;
+      box-shadow: 
+        inset 2px 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    .download-qr-btn {
+      background: #1a1a1a;
+      border: none;
+      border-radius: 12px;
+      padding: 0.875rem 1.5rem;
+      color: #C9A961;
+      font-size: 0.875rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 
+        6px 6px 12px #000000,
+        -6px -6px 12px #2a2a2a;
+      font-family: 'Inter', sans-serif;
+      width: 100%;
+    }
+
+    .download-qr-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 
+        8px 8px 16px #000000,
+        -8px -8px 16px #2a2a2a;
+    }
+
+    @media (max-width: 480px) {
+      .container {
+        width: 98%;
+        padding: 1.5rem 1rem;
+      }
+
+      .header h1 {
+        font-size: 2rem;
+      }
+
+      .character-bubble {
+        width: 120px;
+        height: 120px;
+      }
+
+      .character-emoji {
+        font-size: 3rem;
+      }
+
+      .train-carts {
+        gap: 0.875rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="modal-overlay" id="modalOverlay"></div>
+
+  <div class="container">
+    <div class="header">
+      <button class="qr-btn" onclick="openQRModal()" title="Share with Students">📱</button>
+      <h1>INTUITY</h1>
+      <p class="subtitle">Train Carousel Grammar</p>
+      <p class="author">by Majid Nashtai</p>
+    </div>
+
+    <div class="character-nav">
+      <button class="nav-arrow" id="prevChar" onclick="changeCharacter(-1)">←</button>
+      <div class="character-bubble" id="characterBubble">
+        <div class="character-emoji" id="characterEmoji">👧</div>
+        <div class="character-name" id="characterName">SARAH</div>
+      </div>
+      <button class="nav-arrow" id="nextChar" onclick="changeCharacter(1)">→</button>
+    </div>
+
+    <div class="train-carts" id="trainCarts">
+      <div class="cart" onclick="openCart('habitual')">
+        <div class="cart-icon">☕</div>
+        <div class="cart-title">Habitual<br>Actions</div>
+      </div>
+      <div class="cart" onclick="openCart('routine')">
+        <div class="cart-icon">🌅</div>
+        <div class="cart-title">Daily<br>Routine</div>
+      </div>
+      <div class="cart" onclick="openCart('frequency')">
+        <div class="cart-icon">⚡</div>
+        <div class="cart-title">Frequency<br>+ Manner</div>
+      </div>
+      <div class="cart" onclick="openCart('conjunctions')">
+        <div class="cart-icon">⏰</div>
+        <div class="cart-title">Time<br>Conjunctions</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cart-modal" id="cartModal">
+    <button class="close-btn" onclick="closeModal()">×</button>
+    <div class="modal-header">
+      <div class="modal-title" id="modalTitle">
+        <span id="modalIcon">☕</span>
+        <span id="modalText">Habitual Actions</span>
+      </div>
+    </div>
+    <div class="scroll-hint">⋮ Swipe to explore ⋮</div>
+    <div class="verb-list" id="verbList"></div>
+    <div class="modal-actions">
+      <button class="action-btn primary" onclick="startPractice()">Start Practice Quiz →</button>
+      <button class="action-btn" onclick="closeModal()">Close & Return</button>
+    </div>
+  </div>
+
+  <div class="qr-modal" id="qrModal">
+    <div class="qr-content">
+      <button class="qr-close" onclick="closeQRModal()">×</button>
+      <div class="qr-title">📱 Share with Students</div>
+      <div class="qr-subtitle">Scan this QR code to access on mobile</div>
+      <div class="qr-code-box" id="qrCodeBox">
+        <div style="color: #666; font-size: 0.875rem;">Generating QR Code...</div>
+      </div>
+      <div class="qr-url" id="qrUrl"></div>
+      <button class="download-qr-btn" onclick="downloadQRCode()">📥 Download QR Code</button>
+    </div>
+  </div>
+
+  <script>
+    const characters = [
+      {
+        name: 'SARAH',
+        emoji: '👧',
+        subtitle: 'The Organized Student',
+        habitual: [
+          { verb: 'drinks', object: 'coffee/tea/water', emoji: '🥤' },
+          { verb: 'eats', object: 'breakfast', emoji: '🍳' },
+          { verb: 'takes', object: 'the bus', emoji: '🚌' },
+          { verb: 'checks', object: 'her phone', emoji: '📱' },
+          { verb: 'does', object: 'homework', emoji: '📚' },
+          { verb: 'watches', object: 'videos', emoji: '📺' },
+          { verb: 'listens', object: 'to music', emoji: '🎵' },
+          { verb: 'reads', object: 'books', emoji: '📖' },
+          { verb: 'writes', object: 'essays', emoji: '✍️' },
+          { verb: 'studies', object: 'grammar', emoji: '🎓' },
+          { verb: 'attends', object: 'classes', emoji: '🏫' },
+          { verb: 'uses', object: 'apps', emoji: '📲' },
+          { verb: 'wears', object: 'glasses', emoji: '👓' },
+          { verb: 'carries', object: 'a backpack', emoji: '🎒' },
+          { verb: 'asks', object: 'questions', emoji: '❓' },
+          { verb: 'answers', object: 'correctly', emoji: '✅' },
+          { verb: 'makes', object: 'friends', emoji: '👥' },
+          { verb: 'keeps', object: 'a diary', emoji: '📔' },
+          { verb: 'follows', object: 'rules', emoji: '📋' },
+          { verb: 'joins', object: 'clubs', emoji: '🎯' }
+        ],
+        routine: [
+          { verb: 'wakes up', object: '6:30am', emoji: '⏰' },
+          { verb: 'stretches', object: 'her body', emoji: '🤸' },
+          { verb: 'brushes', object: 'her teeth', emoji: '🪥' },
+          { verb: 'washes', object: 'her face', emoji: '💧' },
+          { verb: 'combs', object: 'her hair', emoji: '💇' },
+          { verb: 'gets dressed', object: 'quickly', emoji: '👗' },
+          { verb: 'makes', object: 'her bed', emoji: '🛏️' },
+          { verb: 'has', object: 'breakfast', emoji: '🍳' },
+          { verb: 'packs', object: 'her bag', emoji: '🎒' },
+          { verb: 'puts on', object: 'shoes', emoji: '👟' },
+          { verb: 'says goodbye', object: 'to family', emoji: '👋' },
+          { verb: 'leaves', object: 'home', emoji: '🏠' },
+          { verb: 'catches', object: 'the bus', emoji: '🚌' },
+          { verb: 'arrives', object: 'at school', emoji: '🏫' },
+          { verb: 'enters', object: 'classroom', emoji: '🚪' },
+          { verb: 'has', object: 'lunch', emoji: '🍱' },
+          { verb: 'comes', object: 'home', emoji: '🏡' },
+          { verb: 'has', object: 'a snack', emoji: '🍪' },
+          { verb: 'relaxes', object: 'for a bit', emoji: '😌' },
+          { verb: 'goes to bed', object: '10:30pm', emoji: '😴' }
+        ],
+        frequency: [
+          { verb: 'always', object: 'arrives early', emoji: '⏰' },
+          { verb: 'usually', object: 'finishes quickly', emoji: '✅' },
+          { verb: 'often', object: 'helps others', emoji: '🤝' },
+          { verb: 'sometimes', object: 'forgets things', emoji: '🤔' },
+          { verb: 'rarely', object: 'complains', emoji: '😊' },
+          { verb: 'never', object: 'gives up', emoji: '💪' },
+          { verb: 'writes', object: 'neatly', emoji: '✍️' },
+          { verb: 'speaks', object: 'clearly', emoji: '🗣️' },
+          { verb: 'thinks', object: 'logically', emoji: '🧠' },
+          { verb: 'works', object: 'diligently', emoji: '📚' },
+          { verb: 'listens', object: 'attentively', emoji: '👂' },
+          { verb: 'reads', object: 'quickly', emoji: '📖' },
+          { verb: 'types', object: 'fast', emoji: '⌨️' },
+          { verb: 'explains', object: 'well', emoji: '💬' },
+          { verb: 'organizes', object: 'efficiently', emoji: '📋' }
+        ],
+        conjunctions: [
+          { verb: 'When she wakes up', object: 'she stretches', emoji: '🌅' },
+          { verb: 'After she eats', object: 'she brushes', emoji: '🍴' },
+          { verb: 'Before she leaves', object: 'she checks', emoji: '🚪' },
+          { verb: 'While she waits', object: 'she reads', emoji: '📖' },
+          { verb: 'As soon as she arrives', object: 'she sits', emoji: '💺' },
+          { verb: 'Until she understands', object: 'she studies', emoji: '📚' },
+          { verb: 'When she finishes', object: 'she relaxes', emoji: '😌' },
+          { verb: 'After school ends', object: 'she goes home', emoji: '🏠' },
+          { verb: 'Before class starts', object: 'she reviews', emoji: '📝' },
+          { verb: 'While studying', object: 'she takes notes', emoji: '✍️' }
+        ]
+      },
+      {
+        name: 'TOM',
+        emoji: '🧑',
+        subtitle: 'The Creative Gamer',
+        habitual: [
+          { verb: 'plays', object: 'video games', emoji: '🎮' },
+          { verb: 'streams', object: 'on Twitch', emoji: '📹' },
+          { verb: 'creates', object: 'content', emoji: '🎨' },
+          { verb: 'designs', object: 'characters', emoji: '👾' },
+          { verb: 'builds', object: 'worlds', emoji: '🌍' },
+          { verb: 'edits', object: 'videos', emoji: '✂️' },
+          { verb: 'uploads', object: 'content', emoji: '⬆️' },
+          { verb: 'chats', object: 'with friends', emoji: '💬' },
+          { verb: 'joins', object: 'tournaments', emoji: '🏆' },
+          { verb: 'practices', object: 'combos', emoji: '🎯' },
+          { verb: 'unlocks', object: 'achievements', emoji: '🔓' },
+          { verb: 'downloads', object: 'games', emoji: '⬇️' },
+          { verb: 'installs', object: 'mods', emoji: '🔧' },
+          { verb: 'tests', object: 'new games', emoji: '🧪' },
+          { verb: 'reviews', object: 'games', emoji: '⭐' },
+          { verb: 'shares', object: 'tips', emoji: '💡' },
+          { verb: 'records', object: 'gameplay', emoji: '🎥' },
+          { verb: 'customizes', object: 'settings', emoji: '⚙️' },
+          { verb: 'collects', object: 'items', emoji: '💎' },
+          { verb: 'drinks', object: 'energy drinks', emoji: '🥤' }
+        ],
+        routine: [
+          { verb: 'wakes up', object: '10:00am', emoji: '😴' },
+          { verb: 'checks', object: 'notifications', emoji: '📱' },
+          { verb: 'scrolls', object: 'social media', emoji: '📲' },
+          { verb: 'grabs', object: 'a snack', emoji: '🍪' },
+          { verb: 'turns on', object: 'computer', emoji: '💻' },
+          { verb: 'logs into', object: 'games', emoji: '🎮' },
+          { verb: 'joins', object: 'voice chat', emoji: '🎧' },
+          { verb: 'starts', object: 'streaming', emoji: '📹' },
+          { verb: 'takes', object: 'a break', emoji: '⏸️' },
+          { verb: 'orders', object: 'food delivery', emoji: '🍕' },
+          { verb: 'continues', object: 'playing', emoji: '▶️' },
+          { verb: 'uploads', object: 'a video', emoji: '⬆️' },
+          { verb: 'responds', object: 'to comments', emoji: '💬' },
+          { verb: 'eats', object: 'dinner', emoji: '🍱' },
+          { verb: 'practices', object: 'techniques', emoji: '🎯' },
+          { verb: 'streams', object: 'evening session', emoji: '🌙' },
+          { verb: 'ends', object: 'stream', emoji: '🔴' },
+          { verb: 'watches', object: 'streamers', emoji: '📺' },
+          { verb: 'edits', object: 'content', emoji: '✂️' },
+          { verb: 'goes to sleep', object: '4:00am', emoji: '😴' }
+        ],
+        frequency: [
+          { verb: 'always', object: 'wins matches', emoji: '🏆' },
+          { verb: 'usually', object: 'plays at night', emoji: '🌙' },
+          { verb: 'often', object: 'forgets to eat', emoji: '😅' },
+          { verb: 'sometimes', object: 'sleeps late', emoji: '😴' },
+          { verb: 'rarely', object: 'goes outside', emoji: '🏠' },
+          { verb: 'never', object: 'misses updates', emoji: '✅' },
+          { verb: 'plays', object: 'skillfully', emoji: '🎮' },
+          { verb: 'types', object: 'quickly', emoji: '⌨️' },
+          { verb: 'thinks', object: 'strategically', emoji: '🧠' },
+          { verb: 'reacts', object: 'instantly', emoji: '⚡' },
+          { verb: 'communicates', object: 'clearly', emoji: '🗣️' },
+          { verb: 'edits', object: 'professionally', emoji: '✂️' },
+          { verb: 'designs', object: 'creatively', emoji: '🎨' },
+          { verb: 'explains', object: 'simply', emoji: '💬' },
+          { verb: 'performs', object: 'impressively', emoji: '🌟' }
+        ],
+        conjunctions: [
+          { verb: 'When he loses', object: 'he tries again', emoji: '🔄' },
+          { verb: 'After he wins', object: 'he celebrates', emoji: '🎉' },
+          { verb: 'Before he streams', object: 'he prepares', emoji: '🎬' },
+          { verb: 'While he plays', object: 'he talks', emoji: '💬' },
+          { verb: 'As soon as he wakes', object: 'he checks', emoji: '📱' },
+          { verb: 'Until he wins', object: 'he keeps trying', emoji: '💪' },
+          { verb: 'When enemies appear', object: 'he attacks', emoji: '⚔️' },
+          { verb: 'After the match ends', object: 'he reviews', emoji: '📊' },
+          { verb: 'Before going live', object: 'he tests', emoji: '🧪' },
+          { verb: 'While streaming', object: 'he entertains', emoji: '🎭' }
+        ]
+      },
+      {
+        name: 'EMMA',
+        emoji: '👩',
+        subtitle: 'The Passionate Chef',
+        habitual: [
+          { verb: 'cooks', object: 'meals', emoji: '🍳' },
+          { verb: 'bakes', object: 'bread', emoji: '🍞' },
+          { verb: 'prepares', object: 'ingredients', emoji: '🥕' },
+          { verb: 'chops', object: 'vegetables', emoji: '🔪' },
+          { verb: 'slices', object: 'meat', emoji: '🥩' },
+          { verb: 'dices', object: 'potatoes', emoji: '🥔' },
+          { verb: 'peels', object: 'apples', emoji: '🍎' },
+          { verb: 'grates', object: 'cheese', emoji: '🧀' },
+          { verb: 'mixes', object: 'ingredients', emoji: '🥄' },
+          { verb: 'stirs', object: 'soup', emoji: '🍲' },
+          { verb: 'whisks', object: 'eggs', emoji: '🥚' },
+          { verb: 'kneads', object: 'dough', emoji: '🍞' },
+          { verb: 'fries', object: 'chicken', emoji: '🍗' },
+          { verb: 'boils', object: 'pasta', emoji: '🍝' },
+          { verb: 'roasts', object: 'vegetables', emoji: '🥦' },
+          { verb: 'grills', object: 'fish', emoji: '🐟' },
+          { verb: 'seasons', object: 'food', emoji: '🧂' },
+          { verb: 'tastes', object: 'sauce', emoji: '👅' },
+          { verb: 'serves', object: 'meals', emoji: '🍽️' },
+          { verb: 'decorates', object: 'cakes', emoji: '🎂' }
+        ],
+        routine: [
+          { verb: 'wakes up', object: '6:00am', emoji: '⏰' },
+          { verb: 'drinks', object: 'coffee', emoji: '☕' },
+          { verb: 'checks', object: 'recipes', emoji: '📖' },
+          { verb: 'goes', object: 'to market', emoji: '🛒' },
+          { verb: 'selects', object: 'fresh produce', emoji: '🥬' },
+          { verb: 'buys', object: 'ingredients', emoji: '💰' },
+          { verb: 'returns', object: 'home', emoji: '🏠' },
+          { verb: 'unloads', object: 'groceries', emoji: '🛍️' },
+          { verb: 'organizes', object: 'ingredients', emoji: '📦' },
+          { verb: 'starts', object: 'prep work', emoji: '🔪' },
+          { verb: 'chops', object: 'vegetables', emoji: '🥕' },
+          { verb: 'marinates', object: 'meat', emoji: '🥩' },
+          { verb: 'prepares', object: 'sauces', emoji: '🥫' },
+          { verb: 'begins', object: 'cooking lunch', emoji: '🍳' },
+          { verb: 'tastes', object: 'and adjusts', emoji: '👅' },
+          { verb: 'serves', object: 'lunch', emoji: '🍽️' },
+          { verb: 'clears', object: 'the table', emoji: '🧽' },
+          { verb: 'washes', object: 'dishes', emoji: '🫧' },
+          { verb: 'plans', object: 'dinner menu', emoji: '📋' },
+          { verb: 'bakes', object: 'dessert', emoji: '🍰' }
+        ],
+        frequency: [
+          { verb: 'always', object: 'tastes while cooking', emoji: '👅' },
+          { verb: 'usually', object: 'cooks from scratch', emoji: '🍳' },
+          { verb: 'often', object: 'experiments', emoji: '🧪' },
+          { verb: 'sometimes', object: 'burns toast', emoji: '🔥' },
+          { verb: 'rarely', object: 'uses processed food', emoji: '🚫' },
+          { verb: 'never', object: 'wastes ingredients', emoji: '♻️' },
+          { verb: 'chops', object: 'precisely', emoji: '🔪' },
+          { verb: 'cooks', object: 'expertly', emoji: '👩‍🍳' },
+          { verb: 'seasons', object: 'perfectly', emoji: '🧂' },
+          { verb: 'plates', object: 'beautifully', emoji: '🎨' },
+          { verb: 'tastes', object: 'critically', emoji: '🤔' },
+          { verb: 'kneads', object: 'gently', emoji: '🙌' },
+          { verb: 'stirs', object: 'constantly', emoji: '🔄' },
+          { verb: 'measures', object: 'accurately', emoji: '📏' },
+          { verb: 'works', object: 'efficiently', emoji: '⚡' }
+        ],
+        conjunctions: [
+          { verb: 'When water boils', object: 'she adds pasta', emoji: '💧' },
+          { verb: 'After she chops', object: 'she starts frying', emoji: '🔪' },
+          { verb: 'Before serving', object: 'she tastes', emoji: '👅' },
+          { verb: 'While cooking', object: 'she cleans up', emoji: '🧹' },
+          { verb: 'As soon as it\'s ready', object: 'she plates', emoji: '🍽️' },
+          { verb: 'Until it\'s golden', object: 'she waits', emoji: '⏰' },
+          { verb: 'When timer rings', object: 'she checks', emoji: '⏲️' },
+          { verb: 'After marinating', object: 'she grills', emoji: '🔥' },
+          { verb: 'Before opening', object: 'she preheats oven', emoji: '🌡️' },
+          { verb: 'While sauce simmers', object: 'she preps', emoji: '🍲' }
+        ]
+      },
+      {
+        name: 'ALEX',
+        emoji: '🧒',
+        subtitle: 'The Dedicated Athlete',
+        habitual: [
+          { verb: 'trains', object: 'daily', emoji: '💪' },
+          { verb: 'practices', object: 'soccer', emoji: '⚽' },
+          { verb: 'runs', object: 'laps', emoji: '🏃' },
+          { verb: 'jogs', object: 'in the park', emoji: '🌳' },
+          { verb: 'swims', object: 'in the pool', emoji: '🏊' },
+          { verb: 'lifts', object: 'weights', emoji: '🏋️' },
+          { verb: 'does', object: 'push-ups', emoji: '💪' },
+          { verb: 'stretches', object: 'muscles', emoji: '🤸' },
+          { verb: 'warms up', object: 'properly', emoji: '🔥' },
+          { verb: 'cools down', object: 'gradually', emoji: '❄️' },
+          { verb: 'jumps', object: 'rope', emoji: '🪢' },
+          { verb: 'kicks', object: 'the ball', emoji: '⚽' },
+          { verb: 'throws', object: 'accurately', emoji: '🎯' },
+          { verb: 'catches', object: 'passes', emoji: '🤾' },
+          { verb: 'dribbles', object: 'skillfully', emoji: '🏀' },
+          { verb: 'shoots', object: 'baskets', emoji: '🏀' },
+          { verb: 'defends', object: 'the goal', emoji: '🥅' },
+          { verb: 'competes', object: 'in matches', emoji: '🏆' },
+          { verb: 'wins', object: 'medals', emoji: '🥇' },
+          { verb: 'drinks', object: 'water', emoji: '💧' }
+        ],
+        routine: [
+          { verb: 'wakes up', object: '5:30am', emoji: '⏰' },
+          { verb: 'gets out', object: 'of bed', emoji: '🛏️' },
+          { verb: 'drinks', object: 'water', emoji: '💧' },
+          { verb: 'puts on', object: 'workout clothes', emoji: '👕' },
+          { verb: 'goes', object: 'for morning run', emoji: '🏃' },
+          { verb: 'finishes', object: '5km run', emoji: '🏁' },
+          { verb: 'stretches', object: 'thoroughly', emoji: '🤸' },
+          { verb: 'returns', object: 'home', emoji: '🏠' },
+          { verb: 'takes', object: 'cold shower', emoji: '🚿' },
+          { verb: 'prepares', object: 'breakfast', emoji: '🍳' },
+          { verb: 'eats', object: 'oatmeal', emoji: '🥣' },
+          { verb: 'packs', object: 'gym bag', emoji: '🎒' },
+          { verb: 'arrives', object: 'at facility', emoji: '🏟️' },
+          { verb: 'starts', object: 'practice', emoji: '▶️' },
+          { verb: 'takes', object: 'break', emoji: '⏸️' },
+          { verb: 'continues', object: 'drills', emoji: '🎯' },
+          { verb: 'does', object: 'strength training', emoji: '💪' },
+          { verb: 'cools down', object: 'stretches', emoji: '🧘' },
+          { verb: 'has', object: 'dinner', emoji: '🍽️' },
+          { verb: 'goes to bed', object: '10:30pm', emoji: '😴' }
+        ],
+        frequency: [
+          { verb: 'always', object: 'arrives early', emoji: '⏰' },
+          { verb: 'usually', object: 'trains twice daily', emoji: '💪' },
+          { verb: 'often', object: 'breaks records', emoji: '🏆' },
+          { verb: 'sometimes', object: 'feels exhausted', emoji: '😓' },
+          { verb: 'rarely', object: 'skips practice', emoji: '✅' },
+          { verb: 'never', object: 'gives up', emoji: '💪' },
+          { verb: 'runs', object: 'fast', emoji: '⚡' },
+          { verb: 'jumps', object: 'high', emoji: '⬆️' },
+          { verb: 'swims', object: 'strongly', emoji: '🏊' },
+          { verb: 'throws', object: 'powerfully', emoji: '💥' },
+          { verb: 'kicks', object: 'precisely', emoji: '🎯' },
+          { verb: 'moves', object: 'quickly', emoji: '⚡' },
+          { verb: 'reacts', object: 'instantly', emoji: '⚡' },
+          { verb: 'plays', object: 'aggressively', emoji: '🔥' },
+          { verb: 'trains', object: 'intensely', emoji: '💪' }
+        ],
+        conjunctions: [
+          { verb: 'When training starts', object: 'he focuses', emoji: '🎯' },
+          { verb: 'After warming up', object: 'he runs', emoji: '🏃' },
+          { verb: 'Before competing', object: 'he visualizes', emoji: '🧠' },
+          { verb: 'While running', object: 'he breathes deeply', emoji: '💨' },
+          { verb: 'As soon as he finishes', object: 'he cools down', emoji: '❄️' },
+          { verb: 'Until he\'s exhausted', object: 'he pushes', emoji: '💪' },
+          { verb: 'When whistle blows', object: 'he starts', emoji: '🎵' },
+          { verb: 'After the game ends', object: 'he reviews', emoji: '📊' },
+          { verb: 'Before sleeping', object: 'he stretches', emoji: '🤸' },
+          { verb: 'While resting', object: 'he recovers', emoji: '😌' }
+        ]
+      }
+    ];
+
+    let currentCharacterIndex = 0;
+    let currentCartType = '';
+
+    function updateCharacter() {
+      const char = characters[currentCharacterIndex];
+      document.getElementById('characterEmoji').textContent = char.emoji;
+      document.getElementById('characterName').textContent = char.name;
+      
+      document.getElementById('prevChar').disabled = currentCharacterIndex === 0;
+      document.getElementById('nextChar').disabled = currentCharacterIndex === characters.length - 1;
+      
+      const bubble = document.getElementById('characterBubble');
+      bubble.style.animation = 'none';
+      setTimeout(() => {
+        bubble.style.animation = 'float 4s ease-in-out infinite';
+      }, 10);
+    }
+
+    function changeCharacter(direction) {
+      const newIndex = currentCharacterIndex + direction;
+      if (newIndex >= 0 && newIndex < characters.length) {
+        currentCharacterIndex = newIndex;
+        updateCharacter();
+      }
+    }
+
+    function openCart(cartType) {
+      currentCartType = cartType;
+      const char = characters[currentCharacterIndex];
+      const cartData = {
+        habitual: { icon: '☕', title: 'Habitual Actions', data: char.habitual },
+        routine: { icon: '🌅', title: 'Daily Routine', data: char.routine },
+        frequency: { icon: '⚡', title: 'Frequency + Manner', data: char.frequency },
+        conjunctions: { icon: '⏰', title: 'Time Conjunctions', data: char.conjunctions }
+      };
+
+      const cart = cartData[cartType];
+      document.getElementById('modalIcon').textContent = cart.icon;
+      document.getElementById('modalText').textContent = cart.title;
+
+      const verbList = document.getElementById('verbList');
+      verbList.innerHTML = cart.data.map(item => `
+        <div class="verb-box">
+          <span class="verb">${item.verb}</span>
+          <span class="object">${item.object} <span class="emoji-icon">${item.emoji}</span></span>
+        </div>
+      `).join('');
+
+      document.getElementById('modalOverlay').classList.add('show');
+      document.getElementById('cartModal').classList.add('show');
+    }
+
+    function closeModal() {
+      document.getElementById('modalOverlay').classList.remove('show');
+      document.getElementById('cartModal').classList.remove('show');
+    }
+
+    function startPractice() {
+      const char = characters[currentCharacterIndex];
+      
+      // Get cart data
+      const modalTitle = document.getElementById('modalText').textContent;
+      const cartTypeMap = {
+        'Habitual Actions': 'habitual',
+        'Daily Routine': 'routine',
+        'Frequency + Manner': 'frequency',
+        'Time Conjunctions': 'conjunctions'
+      };
+      const cartType = cartTypeMap[modalTitle];
+      
+      // Save data to sessionStorage in the EXACT format quiz expects
+      sessionStorage.setItem('quizData', JSON.stringify({
+        character: char.name,
+        characterEmoji: char.emoji,
+        cartType: cartType,
+        cartIcon: document.getElementById('modalIcon').textContent,
+        cartTitle: modalTitle,
+        verbs: char[cartType]
+      }));
+      
+      // Redirect to matching game with URL parameters
+      window.location.href = `interface-matching-verbs.html?character=${char.name.toLowerCase()}&category=${cartType}`;
+    }
+
+    function openQRModal() {
+      const currentUrl = window.location.href;
+      document.getElementById('qrUrl').textContent = currentUrl;
+      generateQRCode(currentUrl);
+      document.getElementById('qrModal').classList.add('show');
+    }
+
+    function closeQRModal() {
+      document.getElementById('qrModal').classList.remove('show');
+    }
+
+    function generateQRCode(url) {
+      const qrBox = document.getElementById('qrCodeBox');
+      qrBox.innerHTML = '<div style="color: #666; font-size: 0.875rem; padding: 20px;">Generating QR Code...</div>';
+      
+      const qrCodeURL = `https://api.qrserver.com/v1/create-qr-code/?size=256x256&data=${encodeURIComponent(url)}&format=png&bgcolor=FFFFFF&color=000000&margin=10`;
+      
+      const img = new Image();
+      img.onload = () => {
+        qrBox.innerHTML = '';
+        img.style.width = '100%';
+        img.style.height = 'auto';
+        img.style.display = 'block';
+        qrBox.appendChild(img);
+      };
+      
+      img.onerror = () => {
+        qrBox.innerHTML = `
+          <div style="color: #ef4444; padding: 20px; text-align: center;">
+            <div style="font-size: 28px; margin-bottom: 12px;">⚠️</div>
+            <div style="font-size: 14px;"><strong>Failed to generate QR code</strong></div>
+            <div style="font-size: 12px; margin-top: 8px;">Check your internet connection</div>
+          </div>
+        `;
+      };
+      
+      img.src = qrCodeURL;
+    }
+
+    function downloadQRCode() {
+      const img = document.querySelector('#qrCodeBox img');
+      if (img) {
+        const link = document.createElement('a');
+        link.download = 'intuity-train-carousel-qr.png';
+        link.href = img.src;
+        link.click();
+      } else {
+        alert('⚠️ QR code not ready yet. Please wait a moment and try again.');
+      }
+    }
+
+    document.getElementById('modalOverlay').addEventListener('click', closeModal);
+
+    document.getElementById('qrModal').addEventListener('click', (e) => {
+      if (e.target.id === 'qrModal') closeQRModal();
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeModal();
+        closeQRModal();
+      }
+      if (e.key === 'ArrowLeft') changeCharacter(-1);
+      if (e.key === 'ArrowRight') changeCharacter(1);
+    });
+
+    updateCharacter();
+  </script>
+</body>
+</html>
