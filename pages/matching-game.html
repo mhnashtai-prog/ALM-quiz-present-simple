@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>INTUITY - Matching Game</title>
+  <title>INTUITY - 4-Card Carousel Matching</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
   
   <style>
@@ -34,8 +34,8 @@
     .game-container {
       background: #1a1a1a;
       width: 95%;
-      max-width: 900px;
-      min-height: 85vh;
+      max-width: 1000px;
+      min-height: 80vh;
       border-radius: 24px;
       padding: 2rem;
       box-shadow: 
@@ -49,7 +49,7 @@
 
     .header {
       text-align: center;
-      margin-bottom: 1.5rem;
+      margin-bottom: 1rem;
     }
 
     .back-btn {
@@ -84,25 +84,78 @@
       font-family: 'Space Grotesk', sans-serif;
       font-size: 2rem;
       color: #C9A961;
-      margin-bottom: 0.5rem;
+      margin-bottom: 0.25rem;
       font-weight: 700;
       letter-spacing: -0.02em;
     }
 
-    .subtitle {
-      font-size: 0.875rem;
-      color: rgba(232, 232, 232, 0.7);
-      margin-bottom: 0.25rem;
+    .tagline {
+      font-size: 0.8rem;
+      color: rgba(232, 232, 232, 0.6);
+      margin-bottom: 1rem;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+      font-style: italic;
     }
 
-    .character-name {
-      font-size: 1rem;
-      color: #C9A961;
-      font-weight: 600;
+    .character-selector {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 2rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .character-option {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      cursor: pointer;
+      transition: all 0.3s;
+      padding: 0.5rem;
+      border-radius: 12px;
+    }
+
+    .character-option:hover {
+      transform: translateY(-2px);
+    }
+
+    .character-option.active {
+      background: rgba(201, 169, 97, 0.1);
+    }
+
+    .character-label {
       display: flex;
       align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
+      gap: 0.3rem;
+      font-size: 0.85rem;
+      color: rgba(232, 232, 232, 0.7);
+      font-weight: 500;
+    }
+
+    .character-label.active {
+      color: #C9A961;
+      font-weight: 600;
+    }
+
+    .character-emoji {
+      font-size: 1.2rem;
+    }
+
+    .character-status {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: rgba(201, 169, 97, 0.2);
+      border: 2px solid rgba(201, 169, 97, 0.4);
+      transition: all 0.3s;
+    }
+
+    .character-status.completed {
+      background: #4ade80;
+      border-color: #4ade80;
+      box-shadow: 0 0 10px rgba(74, 222, 128, 0.5);
     }
 
     .progress-bar {
@@ -126,33 +179,98 @@
     .score-display {
       text-align: center;
       margin-bottom: 1rem;
-      font-size: 1.25rem;
+      font-size: 1.1rem;
       color: #e8e8e8;
       font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+      padding: 0 2rem;
     }
 
     .score-number {
       color: #C9A961;
-      font-size: 1.5rem;
+      font-size: 1.3rem;
       font-family: 'Space Grotesk', sans-serif;
     }
 
-    .matching-area {
+    .score-dots {
+      display: flex;
+      gap: 0.5rem;
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .score-left {
+      flex: 1;
+      text-align: left;
+    }
+
+    .score-right {
+      flex: 1;
+      text-align: right;
+    }
+
+    .carousel-wrapper {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: visible;
+      margin: 0 -2rem;
+      padding: 0 2rem;
+      touch-action: pan-y;
+    }
+
+    .carousel-track {
+      display: flex;
+      gap: 2rem;
+      transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+      will-change: transform;
+    }
+
+    .carousel-track.dragging {
+      transition: none;
+    }
+
+    .carousel-track.no-transition {
+      transition: none;
+    }
+
+    .card-wrapper {
+      min-width: 100%;
+      display: flex;
+      justify-content: center;
+      padding: 1rem;
+      opacity: 0.4;
+      transform: scale(0.95);
+      transition: all 0.5s ease;
+      pointer-events: none;
+    }
+
+    .card-wrapper.active {
+      opacity: 1;
+      transform: scale(1);
+      pointer-events: all;
+    }
+
+    .matching-card {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 2rem;
-      flex: 1;
-      margin-bottom: 1.5rem;
+      width: 100%;
+      max-width: 800px;
+      max-height: 450px;
     }
 
     .column {
       display: flex;
       flex-direction: column;
       gap: 0;
-    }
-    
-    .column > *:not(:last-child) {
-      margin-bottom: 0.75rem;
     }
 
     .column-title {
@@ -162,23 +280,25 @@
       font-weight: 600;
       text-transform: uppercase;
       letter-spacing: 0.1em;
-      margin-bottom: 0.5rem;
+      margin-bottom: 0.75rem;
     }
 
     .match-item {
       background: #1a1a1a;
       border-radius: 12px;
-      padding: 1rem 1.25rem;
+      padding: 0.75rem 1rem;
       box-shadow: 
         6px 6px 12px #000000,
         -6px -6px 12px #2a2a2a;
       transition: all 0.3s;
       display: flex;
       align-items: center;
-      justify-content: center;
-      min-height: 60px;
+      justify-content: space-between;
+      min-height: 52px;
       position: relative;
-      margin-bottom: 0.75rem;
+      text-align: center;
+      margin-bottom: 0.5rem;
+      gap: 1rem;
     }
 
     .match-item.fixed {
@@ -186,6 +306,7 @@
       font-weight: 700;
       font-size: 1rem;
       cursor: default;
+      justify-content: flex-start;
     }
 
     .match-item.draggable {
@@ -239,7 +360,8 @@
     }
 
     .drop-zone {
-      min-height: 60px;
+      min-height: 52px;
+      flex: 1;
       border: 2px dashed rgba(201, 169, 97, 0.3);
       border-radius: 12px;
       display: flex;
@@ -247,19 +369,25 @@
       justify-content: center;
       transition: all 0.3s;
       background: rgba(0, 0, 0, 0.2);
-      margin-bottom: 0;
+      margin: 0;
+      padding: 0.5rem;
     }
 
     .drop-zone.drag-over {
       border-color: #C9A961;
       background: rgba(201, 169, 97, 0.1);
-      box-shadow: 
-        inset 0 0 20px rgba(201, 169, 97, 0.2);
+      box-shadow: inset 0 0 20px rgba(201, 169, 97, 0.2);
     }
 
     .drop-zone.filled {
       border: none;
       background: transparent;
+      padding: 0;
+    }
+
+    .drop-zone .match-item {
+      margin: 0;
+      width: 100%;
     }
 
     .emoji-icon {
@@ -272,6 +400,7 @@
       gap: 1rem;
       justify-content: center;
       flex-wrap: wrap;
+      margin-top: 2rem;
     }
 
     .btn {
@@ -302,15 +431,6 @@
     .btn.primary {
       background: rgba(201, 169, 97, 0.2);
       color: #C9A961;
-      border: 2px solid #C9A961;
-    }
-
-    .btn.primary:hover {
-      background: rgba(201, 169, 97, 0.3);
-      box-shadow: 
-        0 0 20px rgba(201, 169, 97, 0.4),
-        8px 8px 16px #000000,
-        -8px -8px 16px #2a2a2a;
     }
 
     .btn:disabled {
@@ -320,15 +440,12 @@
     }
 
     .card-navigation {
-      display: flex;
-      justify-content: center;
-      gap: 0.75rem;
-      margin-top: 1.5rem;
+      display: none;
     }
 
     .nav-dot {
-      width: 12px;
-      height: 12px;
+      width: 10px;
+      height: 10px;
       border-radius: 50%;
       background: rgba(201, 169, 97, 0.3);
       cursor: pointer;
@@ -345,8 +462,7 @@
 
     .nav-dot.active {
       background: #C9A961;
-      width: 32px;
-      border-radius: 6px;
+      transform: scale(1.3);
       box-shadow: 
         0 0 10px rgba(201, 169, 97, 0.5),
         2px 2px 4px #000000,
@@ -365,7 +481,7 @@
       left: 50%;
       transform: translate(-50%, -50%);
       color: #000;
-      font-size: 0.6rem;
+      font-size: 0.5rem;
       font-weight: bold;
     }
 
@@ -387,8 +503,101 @@
       100% { opacity: 0; transform: translate(-50%, -50%) scale(1); }
     }
 
+    .nav-arrows {
+      position: absolute;
+      top: 50%;
+      left: 0;
+      right: 0;
+      transform: translateY(-50%);
+      display: flex;
+      justify-content: space-between;
+      pointer-events: none;
+      padding: 0 1rem;
+      z-index: 10;
+    }
+
+    .arrow {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: #1a1a1a;
+      border: none;
+      box-shadow: 
+        5px 5px 10px #000000,
+        -5px -5px 10px #2a2a2a;
+      color: #C9A961;
+      font-size: 1.5rem;
+      cursor: pointer;
+      pointer-events: all;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 300;
+    }
+
+    .arrow:hover:not(:disabled) {
+      box-shadow: 
+        7px 7px 14px #000000,
+        -7px -7px 14px #2a2a2a;
+      transform: scale(1.05);
+    }
+
+    .arrow:active {
+      box-shadow: 
+        inset 3px 3px 6px #000000,
+        inset -3px -3px 6px #2a2a2a;
+    }
+
+    .arrow:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+
+    .swipe-hint {
+      position: absolute;
+      bottom: -50px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: rgba(201, 169, 97, 0.6);
+      font-size: 0.85rem;
+      font-weight: 500;
+      animation: swipeHintFade 3s ease-in-out;
+      pointer-events: none;
+      white-space: nowrap;
+    }
+
+    @keyframes swipeHintFade {
+      0%, 70% { opacity: 1; }
+      100% { opacity: 0; }
+    }
+
+    .swipe-hint::before {
+      content: '←';
+      margin-right: 0.5rem;
+      animation: swipeLeft 1.5s ease-in-out infinite;
+      display: inline-block;
+    }
+
+    .swipe-hint::after {
+      content: '→';
+      margin-left: 0.5rem;
+      animation: swipeRight 1.5s ease-in-out infinite;
+      display: inline-block;
+    }
+
+    @keyframes swipeLeft {
+      0%, 100% { transform: translateX(0); }
+      50% { transform: translateX(-5px); }
+    }
+
+    @keyframes swipeRight {
+      0%, 100% { transform: translateX(0); }
+      50% { transform: translateX(5px); }
+    }
+
     @media (max-width: 768px) {
-      .matching-area {
+      .matching-card {
         grid-template-columns: 1fr;
         gap: 1.5rem;
       }
@@ -405,6 +614,12 @@
         padding: 0.5rem 1rem;
         font-size: 0.75rem;
       }
+
+      .arrow {
+        width: 40px;
+        height: 40px;
+        font-size: 1.2rem;
+      }
     }
   </style>
 </head>
@@ -414,8 +629,41 @@
     
     <div class="header">
       <h1>INTUITY</h1>
-      <p class="subtitle">Match the verbs with their objects</p>
-      <p class="character-name"><span id="characterEmoji">👧</span> <span id="characterName">SARAH</span> - <span id="categoryTitle">Habitual Actions</span></p>
+      <p class="tagline">Intuitive & Immersive</p>
+      
+      <div class="character-selector">
+        <div class="character-option active" onclick="selectCharacter(0)">
+          <div class="character-label active">
+            <span class="character-emoji">👧</span>
+            <span>Sarah</span>
+          </div>
+          <div class="character-status completed" id="sarahStatus"></div>
+        </div>
+        
+        <div class="character-option" onclick="selectCharacter(1)">
+          <div class="character-label">
+            <span class="character-emoji">🧑</span>
+            <span>Tom</span>
+          </div>
+          <div class="character-status" id="tomStatus"></div>
+        </div>
+        
+        <div class="character-option" onclick="selectCharacter(2)">
+          <div class="character-label">
+            <span class="character-emoji">👩</span>
+            <span>Emma</span>
+          </div>
+          <div class="character-status" id="emmaStatus"></div>
+        </div>
+        
+        <div class="character-option" onclick="selectCharacter(3)">
+          <div class="character-label">
+            <span class="character-emoji">🧒</span>
+            <span>Alex</span>
+          </div>
+          <div class="character-status" id="alexStatus"></div>
+        </div>
+      </div>
     </div>
 
     <div class="progress-bar">
@@ -423,23 +671,30 @@
     </div>
 
     <div class="score-display">
-      Card <span id="cardNumber">1</span>/4 • Score: <span class="score-number" id="scoreDisplay">0/5</span>
+      <div class="score-left">
+        Card <span id="cardNumber">1</span>/4
+      </div>
+      <div class="score-dots" id="scoreDots"></div>
+      <div class="score-right">
+        Score: <span class="score-number" id="scoreDisplay">0/5</span>
+      </div>
     </div>
 
-    <div class="matching-area">
-      <div class="column">
-        <div class="column-title">Verbs</div>
-        <div id="verbColumn"></div>
+    <div class="carousel-wrapper">
+      <div class="nav-arrows">
+        <button class="arrow" id="prevArrow" onclick="prevCard()">‹</button>
+        <button class="arrow" id="nextArrow" onclick="nextCard()">›</button>
       </div>
-
-      <div class="column">
-        <div class="column-title">Objects</div>
-        <div id="objectColumn"></div>
+      
+      <div class="carousel-track" id="carouselTrack">
+        <!-- Cards will be inserted here by JavaScript -->
       </div>
+      
+      <div class="swipe-hint" id="swipeHint">Swipe cards</div>
     </div>
 
     <div class="controls">
-      <button class="btn" onclick="resetCard()">🔄 Reset</button>
+      <button class="btn" onclick="resetCard()">🔄 Reset Card</button>
       <button class="btn" onclick="checkAnswers()">✓ Check Answers</button>
       <button class="btn primary" id="nextCardBtn" onclick="nextCard()" disabled>Next Card →</button>
     </div>
@@ -448,127 +703,144 @@
   </div>
 
   <script>
-    // Read URL parameters
-    const urlParams = new URLSearchParams(window.location.search);
-    const characterParam = urlParams.get('character') || 'sarah';
-    const categoryParam = urlParams.get('category') || 'habitual';
-
-    // Load data from sessionStorage
-    let quizData = null;
-    let cardsData = [];
-    
-    try {
-      const storedData = sessionStorage.getItem('quizData');
-      if (storedData) {
-        quizData = JSON.parse(storedData);
-        
-        // Update header with character info
-        document.getElementById('characterEmoji').textContent = quizData.characterEmoji;
-        document.getElementById('characterName').textContent = quizData.character;
-        document.getElementById('categoryTitle').textContent = quizData.cartTitle;
-        
-        // Split verbs into 4 cards (5 verbs each)
-        const allVerbs = quizData.verbs;
-        cardsData = [
-          { card: 1, pairs: allVerbs.slice(0, 5) },
-          { card: 2, pairs: allVerbs.slice(5, 10) },
-          { card: 3, pairs: allVerbs.slice(10, 15) },
-          { card: 4, pairs: allVerbs.slice(15, 20) }
-        ];
-      }
-    } catch (error) {
-      console.error('Error loading data:', error);
-      // Fallback to default data if sessionStorage fails
-      cardsData = [
-        { card: 1, pairs: [
+    // HARDCODED DATA - Sarah's Habitual Actions split into 4 cards
+    const cardsData = [
+      { 
+        card: 1, 
+        pairs: [
           { verb: 'drinks', object: 'coffee/tea', emoji: '🥤' },
           { verb: 'eats', object: 'breakfast', emoji: '🍳' },
           { verb: 'takes', object: 'the bus', emoji: '🚌' },
-          { verb: 'checks', object: 'phone', emoji: '📱' },
+          { verb: 'checks', object: 'her phone', emoji: '📱' },
           { verb: 'does', object: 'homework', emoji: '📚' }
-        ]},
-        { card: 2, pairs: [
+        ]
+      },
+      { 
+        card: 2, 
+        pairs: [
           { verb: 'watches', object: 'videos', emoji: '📺' },
           { verb: 'listens', object: 'to music', emoji: '🎵' },
           { verb: 'reads', object: 'books', emoji: '📖' },
           { verb: 'writes', object: 'essays', emoji: '✍️' },
           { verb: 'studies', object: 'grammar', emoji: '🎓' }
-        ]},
-        { card: 3, pairs: [
+        ]
+      },
+      { 
+        card: 3, 
+        pairs: [
           { verb: 'attends', object: 'classes', emoji: '🏫' },
           { verb: 'uses', object: 'apps', emoji: '📲' },
           { verb: 'wears', object: 'glasses', emoji: '👓' },
-          { verb: 'carries', object: 'backpack', emoji: '🎒' },
+          { verb: 'carries', object: 'a backpack', emoji: '🎒' },
           { verb: 'asks', object: 'questions', emoji: '❓' }
-        ]},
-        { card: 4, pairs: [
+        ]
+      },
+      { 
+        card: 4, 
+        pairs: [
           { verb: 'answers', object: 'correctly', emoji: '✅' },
           { verb: 'makes', object: 'friends', emoji: '👥' },
-          { verb: 'keeps', object: 'diary', emoji: '📔' },
+          { verb: 'keeps', object: 'a diary', emoji: '📔' },
           { verb: 'follows', object: 'rules', emoji: '📋' },
           { verb: 'joins', object: 'clubs', emoji: '🎯' }
-        ]}
-      ];
-    }
+        ]
+      }
+    ];
 
     let currentCardIndex = 0;
     let currentMatches = {};
     let cardScores = [null, null, null, null];
     let draggedElement = null;
+    
+    // Swipe gesture variables
+    let startX = 0;
+    let currentX = 0;
+    let isDragging = false;
+    let startTime = 0;
 
-    function loadCard() {
-      const cardData = cardsData[currentCardIndex];
-      const pairs = cardData.pairs;
+    function renderAllCards() {
+      const track = document.getElementById('carouselTrack');
+      track.innerHTML = '';
       
-      currentMatches = {};
+      cardsData.forEach((cardData, cardIndex) => {
+        const cardWrapper = document.createElement('div');
+        cardWrapper.className = 'card-wrapper';
+        cardWrapper.dataset.cardIndex = cardIndex;
+        
+        const matchingCard = document.createElement('div');
+        matchingCard.className = 'matching-card';
+        
+        // Verb column
+        const verbColumn = document.createElement('div');
+        verbColumn.className = 'column';
+        verbColumn.innerHTML = '<div class="column-title">Verbs</div>';
+        
+        cardData.pairs.forEach((pair, index) => {
+          const verbItem = document.createElement('div');
+          verbItem.className = 'match-item fixed';
+          verbItem.textContent = pair.verb;
+          verbItem.dataset.index = index;
+          verbColumn.appendChild(verbItem);
+          
+          const dropZone = document.createElement('div');
+          dropZone.className = 'drop-zone';
+          dropZone.dataset.verbIndex = index;
+          dropZone.dataset.cardIndex = cardIndex;
+          dropZone.addEventListener('dragover', handleDragOver);
+          dropZone.addEventListener('drop', handleDrop);
+          dropZone.addEventListener('dragleave', handleDragLeave);
+          verbItem.appendChild(dropZone);
+        });
+        
+        // Object column
+        const objectColumn = document.createElement('div');
+        objectColumn.className = 'column';
+        objectColumn.innerHTML = '<div class="column-title">Objects</div>';
+        objectColumn.dataset.cardIndex = cardIndex;
+        
+        const shuffledPairs = [...cardData.pairs].sort(() => Math.random() - 0.5);
+        
+        shuffledPairs.forEach(pair => {
+          const objectItem = document.createElement('div');
+          objectItem.className = 'match-item draggable';
+          objectItem.draggable = true;
+          objectItem.dataset.correctIndex = cardData.pairs.findIndex(p => p.object === pair.object);
+          objectItem.dataset.cardIndex = cardIndex;
+          objectItem.innerHTML = `${pair.object} <span class="emoji-icon">${pair.emoji}</span>`;
+          
+          objectItem.addEventListener('dragstart', handleDragStart);
+          objectItem.addEventListener('dragend', handleDragEnd);
+          
+          objectColumn.appendChild(objectItem);
+        });
+        
+        matchingCard.appendChild(verbColumn);
+        matchingCard.appendChild(objectColumn);
+        cardWrapper.appendChild(matchingCard);
+        track.appendChild(cardWrapper);
+      });
+      
+      updateCarouselPosition();
+      renderNavigation();
+    }
+
+    function updateCarouselPosition() {
+      const track = document.getElementById('carouselTrack');
+      const offset = -currentCardIndex * 100;
+      track.style.transform = `translateX(${offset}%)`;
+      
+      // Update active card styling
+      document.querySelectorAll('.card-wrapper').forEach((card, index) => {
+        card.classList.toggle('active', index === currentCardIndex);
+      });
       
       document.getElementById('cardNumber').textContent = currentCardIndex + 1;
-      document.getElementById('scoreDisplay').textContent = '0/5';
-      document.getElementById('nextCardBtn').disabled = true;
-      
-      const verbColumn = document.getElementById('verbColumn');
-      const objectColumn = document.getElementById('objectColumn');
-      
-      verbColumn.innerHTML = '';
-      objectColumn.innerHTML = '';
-      
-      pairs.forEach((pair, index) => {
-        const verbItem = document.createElement('div');
-        verbItem.className = 'match-item fixed';
-        verbItem.textContent = pair.verb;
-        verbItem.dataset.index = index;
-        verbColumn.appendChild(verbItem);
-        
-        const dropZone = document.createElement('div');
-        dropZone.className = 'drop-zone';
-        dropZone.dataset.verbIndex = index;
-        dropZone.addEventListener('dragover', handleDragOver);
-        dropZone.addEventListener('drop', handleDrop);
-        dropZone.addEventListener('dragleave', handleDragLeave);
-        verbColumn.appendChild(dropZone);
-      });
-      
-      const shuffledPairs = [...pairs].sort(() => Math.random() - 0.5);
-      
-      shuffledPairs.forEach((pair, index) => {
-        const objectItem = document.createElement('div');
-        objectItem.className = 'match-item draggable';
-        objectItem.draggable = true;
-        objectItem.dataset.correctIndex = pairs.findIndex(p => p.object === pair.object);
-        objectItem.innerHTML = `${pair.object} <span class="emoji-icon">${pair.emoji}</span>`;
-        
-        objectItem.addEventListener('dragstart', handleDragStart);
-        objectItem.addEventListener('dragend', handleDragEnd);
-        
-        objectItem.addEventListener('touchstart', handleTouchStart, { passive: false });
-        objectItem.addEventListener('touchmove', handleTouchMove, { passive: false });
-        objectItem.addEventListener('touchend', handleTouchEnd);
-        
-        objectColumn.appendChild(objectItem);
-      });
-      
-      updateProgress();
-      renderNavigation();
+      updateNavigationButtons();
+    }
+
+    function updateNavigationButtons() {
+      document.getElementById('prevArrow').disabled = currentCardIndex === 0;
+      document.getElementById('nextArrow').disabled = currentCardIndex === 3;
     }
 
     function handleDragStart(e) {
@@ -596,85 +868,34 @@
       e.currentTarget.classList.remove('drag-over');
       
       const dropZone = e.currentTarget;
+      const cardIndex = parseInt(dropZone.dataset.cardIndex);
+      
+      if (cardIndex !== currentCardIndex) return;
+      
       const verbIndex = dropZone.dataset.verbIndex;
       
       if (dropZone.classList.contains('filled')) {
         const existingItem = dropZone.querySelector('.match-item');
-        document.getElementById('objectColumn').appendChild(existingItem);
+        const objectColumn = document.querySelector(`.column[data-card-index="${currentCardIndex}"]:last-child`);
+        objectColumn.appendChild(existingItem);
         existingItem.classList.remove('matched', 'wrong');
       }
       
       dropZone.appendChild(draggedElement);
       dropZone.classList.add('filled');
       
-      currentMatches[verbIndex] = draggedElement.dataset.correctIndex;
+      if (!currentMatches[currentCardIndex]) currentMatches[currentCardIndex] = {};
+      currentMatches[currentCardIndex][verbIndex] = draggedElement.dataset.correctIndex;
       
       draggedElement.classList.remove('matched', 'wrong');
     }
 
-    let touchStartY = 0;
-    let touchElement = null;
-    let clone = null;
-
-    function handleTouchStart(e) {
-      touchElement = e.target;
-      touchStartY = e.touches[0].clientY;
-      
-      clone = touchElement.cloneNode(true);
-      clone.style.position = 'fixed';
-      clone.style.zIndex = '1000';
-      clone.style.opacity = '0.8';
-      clone.style.pointerEvents = 'none';
-      clone.style.width = touchElement.offsetWidth + 'px';
-      document.body.appendChild(clone);
-      
-      touchElement.style.opacity = '0.3';
-    }
-
-    function handleTouchMove(e) {
-      e.preventDefault();
-      if (!clone) return;
-      
-      const touch = e.touches[0];
-      clone.style.left = (touch.clientX - clone.offsetWidth / 2) + 'px';
-      clone.style.top = (touch.clientY - clone.offsetHeight / 2) + 'px';
-    }
-
-    function handleTouchEnd(e) {
-      if (!clone || !touchElement) return;
-      
-      const touch = e.changedTouches[0];
-      const dropZone = document.elementFromPoint(touch.clientX, touch.clientY);
-      
-      if (dropZone && dropZone.classList.contains('drop-zone')) {
-        const verbIndex = dropZone.dataset.verbIndex;
-        
-        if (dropZone.classList.contains('filled')) {
-          const existingItem = dropZone.querySelector('.match-item');
-          document.getElementById('objectColumn').appendChild(existingItem);
-          existingItem.classList.remove('matched', 'wrong');
-        }
-        
-        dropZone.appendChild(touchElement);
-        dropZone.classList.add('filled');
-        currentMatches[verbIndex] = touchElement.dataset.correctIndex;
-      } else {
-        document.getElementById('objectColumn').appendChild(touchElement);
-      }
-      
-      touchElement.style.opacity = '1';
-      touchElement.classList.remove('matched', 'wrong');
-      
-      document.body.removeChild(clone);
-      clone = null;
-      touchElement = null;
-    }
-
     function checkAnswers() {
       let correct = 0;
-      const totalPairs = cardsData[currentCardIndex].pairs.length;
+      const totalPairs = 5;
       
-      document.querySelectorAll('.drop-zone').forEach(zone => {
+      const currentCard = document.querySelector(`.card-wrapper[data-card-index="${currentCardIndex}"]`);
+      currentCard.querySelectorAll('.drop-zone').forEach(zone => {
         const verbIndex = zone.dataset.verbIndex;
         const item = zone.querySelector('.match-item.draggable');
         
@@ -708,18 +929,19 @@
     }
 
     function resetCard() {
-      const objectColumn = document.getElementById('objectColumn');
+      const objectColumn = document.querySelector(`.column[data-card-index="${currentCardIndex}"]:last-child`);
+      const currentCard = document.querySelector(`.card-wrapper[data-card-index="${currentCardIndex}"]`);
       
-      document.querySelectorAll('.drop-zone .match-item.draggable').forEach(item => {
+      currentCard.querySelectorAll('.drop-zone .match-item.draggable').forEach(item => {
         item.classList.remove('matched', 'wrong');
         objectColumn.appendChild(item);
       });
       
-      document.querySelectorAll('.drop-zone').forEach(zone => {
+      currentCard.querySelectorAll('.drop-zone').forEach(zone => {
         zone.classList.remove('filled');
       });
       
-      currentMatches = {};
+      if (currentMatches[currentCardIndex]) currentMatches[currentCardIndex] = {};
       document.getElementById('scoreDisplay').textContent = '0/5';
       document.getElementById('nextCardBtn').disabled = true;
     }
@@ -727,13 +949,26 @@
     function nextCard() {
       if (currentCardIndex < 3) {
         currentCardIndex++;
-        loadCard();
+        updateCarouselPosition();
+        document.getElementById('scoreDisplay').textContent = '0/5';
+        document.getElementById('nextCardBtn').disabled = true;
+      }
+    }
+
+    function prevCard() {
+      if (currentCardIndex > 0) {
+        currentCardIndex--;
+        updateCarouselPosition();
+        document.getElementById('scoreDisplay').textContent = '0/5';
+        document.getElementById('nextCardBtn').disabled = true;
       }
     }
 
     function goToCard(index) {
       currentCardIndex = index;
-      loadCard();
+      updateCarouselPosition();
+      document.getElementById('scoreDisplay').textContent = '0/5';
+      document.getElementById('nextCardBtn').disabled = true;
     }
 
     function updateProgress() {
@@ -743,7 +978,7 @@
     }
 
     function renderNavigation() {
-      const nav = document.getElementById('cardNavigation');
+      const nav = document.getElementById('scoreDots');
       nav.innerHTML = '';
       
       for (let i = 0; i < 4; i++) {
@@ -777,41 +1012,114 @@
     function checkAllCardsComplete() {
       const allComplete = cardScores.every(score => score === 100);
       
-      if (allComplete && !document.getElementById('quizBtn')) {
-        // Add "Continue to Quiz" button
+      if (allComplete && !document.getElementById('finalBtn')) {
         const controlsDiv = document.querySelector('.controls');
-        const quizBtn = document.createElement('button');
-        quizBtn.id = 'quizBtn';
-        quizBtn.className = 'btn primary';
-        quizBtn.style.animation = 'matchPulse 1s ease infinite';
-        quizBtn.innerHTML = '🎓 Continue to Quiz →';
-        quizBtn.onclick = proceedToQuiz;
-        controlsDiv.appendChild(quizBtn);
+        const finalBtn = document.createElement('button');
+        finalBtn.id = 'finalBtn';
+        finalBtn.className = 'btn primary';
+        finalBtn.style.animation = 'matchPulse 1s ease infinite';
+        finalBtn.innerHTML = '🎓 All Complete! Continue →';
+        finalBtn.onclick = () => alert('🎉 All 4 cards complete! Ready for next challenge!');
+        controlsDiv.appendChild(finalBtn);
         
         showCelebration('🏆');
       }
     }
 
-    function proceedToQuiz() {
-      // Mark matching game as complete
-      sessionStorage.setItem('matchingComplete', 'true');
-      
-      // Redirect to quiz interface with same parameters
-      window.location.href = `quiz-interface-mode2.html?character=${characterParam}&category=${categoryParam}`;
+    function goBack() {
+      alert('← Returning to main menu');
     }
 
-    function goBack() {
-      // Return to landing page
-      window.location.href = 'landing-page-interface-4-boxes.html';
+    function selectCharacter(index) {
+      // For now, only Sarah is available
+      if (index !== 0) {
+        alert(`${['Tom', 'Emma', 'Alex'][index - 1]} coming soon! Complete Sarah first! 🎯`);
+        return;
+      }
+      
+      // Update active state
+      document.querySelectorAll('.character-option').forEach((opt, i) => {
+        opt.classList.toggle('active', i === index);
+        opt.querySelector('.character-label').classList.toggle('active', i === index);
+      });
     }
 
     document.addEventListener('keydown', (e) => {
-      if (e.key === 'ArrowRight' && !document.getElementById('nextCardBtn').disabled) {
-        nextCard();
-      }
+      if (e.key === 'ArrowRight') nextCard();
+      else if (e.key === 'ArrowLeft') prevCard();
     });
 
-    loadCard();
+    // Swipe gesture handlers for carousel navigation (TOUCH ONLY - not mouse)
+    const track = document.getElementById('carouselTrack');
+    
+    function handleCarouselTouchStart(e) {
+      // ONLY handle touch events, not mouse
+      if (!e.touches) return;
+      if (e.target.classList.contains('draggable')) return;
+      
+      startX = e.touches[0].clientX;
+      currentX = startX;
+      startTime = Date.now();
+      isDragging = false;
+    }
+    
+    function handleCarouselTouchMove(e) {
+      if (!e.touches) return;
+      if (e.target.classList.contains('draggable')) return;
+      
+      currentX = e.touches[0].clientX;
+      const diff = currentX - startX;
+      
+      if (Math.abs(diff) > 10) {
+        isDragging = true;
+        track.classList.add('no-transition');
+        
+        let resistance = 1;
+        if ((currentCardIndex === 0 && diff > 0) || (currentCardIndex === 3 && diff < 0)) {
+          resistance = 0.3;
+        }
+        
+        const baseOffset = -currentCardIndex * 100;
+        const dragOffset = (diff / window.innerWidth) * 100 * resistance;
+        track.style.transform = `translateX(${baseOffset + dragOffset}%)`;
+      }
+    }
+    
+    function handleCarouselTouchEnd(e) {
+      if (!isDragging) return;
+      
+      track.classList.remove('no-transition');
+      
+      const diff = currentX - startX;
+      const elapsed = Date.now() - startTime;
+      const velocity = Math.abs(diff) / elapsed;
+      
+      const threshold = velocity > 0.5 ? 30 : 80;
+      
+      if (diff > threshold && currentCardIndex > 0) {
+        prevCard();
+      } else if (diff < -threshold && currentCardIndex < 3) {
+        nextCard();
+      } else {
+        updateCarouselPosition();
+      }
+      
+      isDragging = false;
+    }
+    
+    // ONLY touch events (mobile swipe)
+    track.addEventListener('touchstart', handleCarouselTouchStart, { passive: true });
+    track.addEventListener('touchmove', handleCarouselTouchMove, { passive: true });
+    track.addEventListener('touchend', handleCarouselTouchEnd);
+    
+    // Hide swipe hint after 3 seconds
+    setTimeout(() => {
+      const hint = document.getElementById('swipeHint');
+      if (hint) hint.style.display = 'none';
+    }, 3000);
+
+    // Initialize
+    renderAllCards();
   </script>
 </body>
 </html>
