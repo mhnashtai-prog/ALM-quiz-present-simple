@@ -988,7 +988,6 @@
     ];
 
     let currentCharacterIndex = 0;
-    let currentCartType = '';
 
     function updateCharacter() {
       const char = characters[currentCharacterIndex];
@@ -1014,7 +1013,6 @@
     }
 
     function openCart(cartType) {
-      currentCartType = cartType;
       const char = characters[currentCharacterIndex];
       const cartData = {
         habitual: { icon: '☕', title: 'Habitual Actions', data: char.habitual },
@@ -1045,30 +1043,7 @@
     }
 
     function startPractice() {
-      const char = characters[currentCharacterIndex];
-      
-      // Get cart data
-      const modalTitle = document.getElementById('modalText').textContent;
-      const cartTypeMap = {
-        'Habitual Actions': 'habitual',
-        'Daily Routine': 'routine',
-        'Frequency + Manner': 'frequency',
-        'Time Conjunctions': 'conjunctions'
-      };
-      const cartType = cartTypeMap[modalTitle];
-      
-      // Save data to sessionStorage in the EXACT format quiz expects
-      sessionStorage.setItem('quizData', JSON.stringify({
-        character: char.name,
-        characterEmoji: char.emoji,
-        cartType: cartType,
-        cartIcon: document.getElementById('modalIcon').textContent,
-        cartTitle: modalTitle,
-        verbs: char[cartType]
-      }));
-      
-      // Redirect to matching game with URL parameters
-      window.location.href = `interface-matching-verbs.html?character=${char.name.toLowerCase()}&category=${cartType}`;
+      alert('🎯 Practice quiz coming soon! This would launch interactive exercises with the verbs you just reviewed.');
     }
 
     function openQRModal() {
