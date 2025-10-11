@@ -703,49 +703,87 @@
   </div>
 
   <script>
-    // HARDCODED DATA - Sarah's Habitual Actions split into 4 cards
-    const cardsData = [
-      { 
-        card: 1, 
-        pairs: [
-          { verb: 'drinks', object: 'coffee/tea', emoji: '🥤' },
-          { verb: 'eats', object: 'breakfast', emoji: '🍳' },
-          { verb: 'takes', object: 'the bus', emoji: '🚌' },
-          { verb: 'checks', object: 'her phone', emoji: '📱' },
-          { verb: 'does', object: 'homework', emoji: '📚' }
-        ]
-      },
-      { 
-        card: 2, 
-        pairs: [
-          { verb: 'watches', object: 'videos', emoji: '📺' },
-          { verb: 'listens', object: 'to music', emoji: '🎵' },
-          { verb: 'reads', object: 'books', emoji: '📖' },
-          { verb: 'writes', object: 'essays', emoji: '✍️' },
-          { verb: 'studies', object: 'grammar', emoji: '🎓' }
-        ]
-      },
-      { 
-        card: 3, 
-        pairs: [
-          { verb: 'attends', object: 'classes', emoji: '🏫' },
-          { verb: 'uses', object: 'apps', emoji: '📲' },
-          { verb: 'wears', object: 'glasses', emoji: '👓' },
-          { verb: 'carries', object: 'a backpack', emoji: '🎒' },
-          { verb: 'asks', object: 'questions', emoji: '❓' }
-        ]
-      },
-      { 
-        card: 4, 
-        pairs: [
-          { verb: 'answers', object: 'correctly', emoji: '✅' },
-          { verb: 'makes', object: 'friends', emoji: '👥' },
-          { verb: 'keeps', object: 'a diary', emoji: '📔' },
-          { verb: 'follows', object: 'rules', emoji: '📋' },
-          { verb: 'joins', object: 'clubs', emoji: '🎯' }
-        ]
+    // DYNAMIC DATA LOADING from sessionStorage
+    let characterData = {
+      name: 'SARAH',
+      emoji: '👧',
+      category: 'Habitual Actions'
+    };
+    
+    let cardsData = [];
+    
+    // Try to load from sessionStorage first
+    try {
+      const storedData = sessionStorage.getItem('quizData');
+      if (storedData) {
+        const quizData = JSON.parse(storedData);
+        
+        // Update character info
+        characterData.name = quizData.character;
+        characterData.emoji = quizData.characterEmoji;
+        characterData.category = quizData.cartTitle;
+        
+        // Split verbs into 4 cards (5 verbs each)
+        const allVerbs = quizData.verbs;
+        cardsData = [
+          { card: 1, pairs: allVerbs.slice(0, 5) },
+          { card: 2, pairs: allVerbs.slice(5, 10) },
+          { card: 3, pairs: allVerbs.slice(10, 15) },
+          { card: 4, pairs: allVerbs.slice(15, 20) }
+        ];
+        
+        console.log('✅ Loaded data from sessionStorage:', quizData);
       }
-    ];
+    } catch (error) {
+      console.error('⚠️ Error loading sessionStorage:', error);
+    }
+    
+    // FALLBACK: Hardcoded data if sessionStorage fails
+    if (cardsData.length === 0) {
+      console.log('ℹ️ Using fallback hardcoded data');
+      cardsData = [
+        { 
+          card: 1, 
+          pairs: [
+            { verb: 'drinks', object: 'coffee/tea', emoji: '🥤' },
+            { verb: 'eats', object: 'breakfast', emoji: '🍳' },
+            { verb: 'takes', object: 'the bus', emoji: '🚌' },
+            { verb: 'checks', object: 'her phone', emoji: '📱' },
+            { verb: 'does', object: 'homework', emoji: '📚' }
+          ]
+        },
+        { 
+          card: 2, 
+          pairs: [
+            { verb: 'watches', object: 'videos', emoji: '📺' },
+            { verb: 'listens', object: 'to music', emoji: '🎵' },
+            { verb: 'reads', object: 'books', emoji: '📖' },
+            { verb: 'writes', object: 'essays', emoji: '✍️' },
+            { verb: 'studies', object: 'grammar', emoji: '🎓' }
+          ]
+        },
+        { 
+          card: 3, 
+          pairs: [
+            { verb: 'attends', object: 'classes', emoji: '🏫' },
+            { verb: 'uses', object: 'apps', emoji: '📲' },
+            { verb: 'wears', object: 'glasses', emoji: '👓' },
+            { verb: 'carries', object: 'a backpack', emoji: '🎒' },
+            { verb: 'asks', object: 'questions', emoji: '❓' }
+          ]
+        },
+        { 
+          card: 4, 
+          pairs: [
+            { verb: 'answers', object: 'correctly', emoji: '✅' },
+            { verb: 'makes', object: 'friends', emoji: '👥' },
+            { verb: 'keeps', object: 'a diary', emoji: '📔' },
+            { verb: 'follows', object: 'rules', emoji: '📋' },
+            { verb: 'joins', object: 'clubs', emoji: '🎯' }
+          ]
+        }
+      ];
+    }
 
     let currentCardIndex = 0;
     let currentMatches = {};
@@ -1027,7 +1065,9 @@
     }
 
     function goBack() {
-      alert('← Returning to main menu');
+      // Clear sessionStorage and return to main hub
+      sessionStorage.removeItem('quizData');
+      window.location.href = '../index.html';
     }
 
     function selectCharacter(index) {
@@ -1041,6 +1081,19 @@
       document.querySelectorAll('.character-option').forEach((opt, i) => {
         opt.classList.toggle('active', i === index);
         opt.querySelector('.character-label').classList.toggle('active', i === index);
+      });
+    }
+
+    // Update character display from loaded data
+    function updateCharacterDisplay() {
+      // Update character selector to show active character
+      const characterOptions = document.querySelectorAll('.character-option');
+      const characterNames = ['Sarah', 'Tom', 'Emma', 'Alex'];
+      
+      characterOptions.forEach((opt, index) => {
+        const isActive = characterNames[index].toLowerCase() === characterData.name.toLowerCase();
+        opt.classList.toggle('active', isActive);
+        opt.querySelector('.character-label').classList.toggle('active', isActive);
       });
     }
 
@@ -1119,6 +1172,7 @@
     }, 3000);
 
     // Initialize
+    updateCharacterDisplay();
     renderAllCards();
   </script>
 </body>
