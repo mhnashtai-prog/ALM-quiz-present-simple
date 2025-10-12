@@ -35,7 +35,8 @@
       background: #1a1a1a;
       width: 95%;
       max-width: 1000px;
-      height: 88vh;
+      min-height: 88vh;
+      max-height: 95vh;
       border-radius: 24px;
       padding: 1.5rem;
       box-shadow: 
@@ -49,7 +50,8 @@
 
     .header {
       text-align: center;
-      margin-bottom: 1rem;
+      margin-bottom: 0.75rem;
+      flex-shrink: 0;
     }
 
     .back-btn {
@@ -101,6 +103,7 @@
       align-items: center;
       gap: 0.75rem;
       margin-bottom: 0.75rem;
+      flex-wrap: wrap;
     }
 
     .character-display {
@@ -136,6 +139,107 @@
       font-weight: 500;
     }
 
+    /* Category Pills */
+    .category-pills {
+      display: flex;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-bottom: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .category-pill {
+      background: #1a1a1a;
+      border: 2px solid rgba(201, 169, 97, 0.3);
+      border-radius: 12px;
+      padding: 0.5rem 0.75rem;
+      font-size: 0.8rem;
+      color: rgba(232, 232, 232, 0.7);
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      box-shadow: 
+        3px 3px 6px #000000,
+        -3px -3px 6px #2a2a2a;
+    }
+
+    .category-pill:hover {
+      border-color: #C9A961;
+      color: #C9A961;
+      transform: translateY(-2px);
+    }
+
+    .category-pill.active {
+      background: rgba(201, 169, 97, 0.2);
+      border-color: #C9A961;
+      color: #C9A961;
+      font-weight: 600;
+    }
+
+    .category-pill.completed::after {
+      content: '✓';
+      font-size: 0.9rem;
+    }
+
+    /* Prize Warning Banner */
+    .prize-warning {
+      background: rgba(251, 146, 60, 0.15);
+      border: 2px solid #fb923c;
+      border-radius: 12px;
+      padding: 0.75rem 1rem;
+      margin-bottom: 0.75rem;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      flex-shrink: 0;
+    }
+
+    .prize-warning.show {
+      display: flex;
+    }
+
+    .prize-warning-icon {
+      font-size: 1.2rem;
+    }
+
+    .prize-warning-text {
+      font-size: 0.85rem;
+      color: #fb923c;
+      font-weight: 600;
+      text-align: center;
+    }
+
+    .prize-eligible {
+      background: rgba(74, 222, 128, 0.15);
+      border: 2px solid #4ade80;
+      border-radius: 12px;
+      padding: 0.75rem 1rem;
+      margin-bottom: 0.75rem;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      flex-shrink: 0;
+    }
+
+    .prize-eligible.show {
+      display: flex;
+    }
+
+    .prize-eligible-icon {
+      font-size: 1.2rem;
+    }
+
+    .prize-eligible-text {
+      font-size: 0.85rem;
+      color: #4ade80;
+      font-weight: 600;
+      text-align: center;
+    }
+
     .progress-bar {
       width: 100%;
       height: 6px;
@@ -144,6 +248,7 @@
       overflow: hidden;
       box-shadow: inset 2px 2px 4px rgba(0, 0, 0, 0.5);
       margin-bottom: 0.75rem;
+      flex-shrink: 0;
     }
 
     .progress-fill {
@@ -166,6 +271,8 @@
       gap: 1rem;
       flex-wrap: wrap;
       padding: 0 1rem;
+      position: relative;
+      flex-shrink: 0;
     }
 
     .score-number {
@@ -205,6 +312,7 @@
       padding: 0 1.5rem;
       touch-action: pan-y;
       pointer-events: none;
+      min-height: 0;
     }
 
     .carousel-track {
@@ -213,6 +321,8 @@
       transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
       will-change: transform;
       pointer-events: none;
+      width: 100%;
+      height: 100%;
     }
 
     .card-wrapper {
@@ -236,7 +346,6 @@
       width: 100%;
       max-width: 800px;
       height: 100%;
-      max-height: 52vh;
       display: flex;
       flex-direction: column;
       pointer-events: all;
@@ -264,8 +373,7 @@
       box-shadow: inset 2px 2px 6px rgba(0, 0, 0, 0.5);
       -webkit-overflow-scrolling: touch;
       scroll-behavior: smooth;
-      max-height: 46vh;
-      min-height: 300px;
+      min-height: 0;
     }
 
     .exercise-content::-webkit-scrollbar { 
@@ -331,12 +439,6 @@
       border-bottom-color: #fb923c;
       color: #fb923c;
       animation: shake 0.5s;
-    }
-
-    .first-letter {
-      color: #C9A961;
-      font-weight: 600;
-      margin-right: 2px;
     }
 
     /* CARD 2: MULTIPLE CHOICE */
@@ -550,7 +652,8 @@
       gap: 0.75rem;
       justify-content: center;
       flex-wrap: wrap;
-      margin-top: 1rem;
+      margin-top: 0.75rem;
+      flex-shrink: 0;
     }
 
     .btn {
@@ -653,7 +756,6 @@
     .nav-dot.active {
       background: #C9A961;
       transform: scale(1.3);
-      transform-origin: center center;
       box-shadow: 
         0 0 10px rgba(201, 169, 97, 0.5),
         2px 2px 4px #000000,
@@ -686,10 +788,11 @@
       display: flex;
       gap: 0.75rem;
       justify-content: center;
-      margin-top: 1rem;
-      padding-top: 1rem;
+      margin-top: 0.75rem;
+      padding-top: 0.75rem;
       border-top: 2px solid rgba(201, 169, 97, 0.2);
       flex-wrap: wrap;
+      flex-shrink: 0;
     }
 
     .footer-btn {
@@ -720,23 +823,65 @@
       color: #C9A961;
     }
 
+    /* Mobile Optimizations */
     @media (max-width: 768px) {
       .game-container {
-        padding: 1rem;
-        height: 92vh;
+        padding: 1rem 0.75rem;
+        max-height: 100vh;
+        min-height: 100vh;
+        border-radius: 16px;
+      }
+
+      .header {
+        margin-bottom: 0.5rem;
       }
 
       .header h1 {
-        font-size: 1.4rem;
+        font-size: 1.3rem;
+        margin-bottom: 0.15rem;
       }
 
-      .exercise-card {
-        max-height: 55vh;
+      .tagline {
+        display: none;
+      }
+
+      .character-info {
+        gap: 0.5rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .character-display,
+      .category-display {
+        padding: 0.4rem 0.75rem;
+        font-size: 0.8rem;
+      }
+
+      .character-emoji {
+        font-size: 1.2rem;
+      }
+
+      .category-pills {
+        display: none;
+      }
+
+      .progress-bar {
+        height: 4px;
+        margin-bottom: 0.5rem;
+      }
+
+      .score-display {
+        margin-bottom: 0.5rem;
+        font-size: 0.8rem;
+        padding: 0 0.5rem;
+      }
+
+      .score-dots .nav-dot {
+        width: 8px;
+        height: 8px;
       }
 
       .exercise-content {
-        max-height: 48vh;
-        min-height: 250px;
+        padding: 0.75rem;
       }
 
       .cloze-text {
@@ -749,10 +894,37 @@
         font-size: 0.9rem;
       }
 
+      .controls {
+        gap: 0.5rem;
+        margin-top: 0.5rem;
+      }
+
+      .btn {
+        padding: 0.65rem 1rem;
+        font-size: 0.75rem;
+      }
+
       .arrow {
-        width: 35px;
-        height: 35px;
-        font-size: 1.1rem;
+        width: 38px;
+        height: 38px;
+        font-size: 1.2rem;
+      }
+
+      .back-btn {
+        top: 1rem;
+        left: 1rem;
+        padding: 0.5rem 0.8rem;
+        font-size: 0.75rem;
+      }
+
+      .footer {
+        margin-top: 0.5rem;
+        padding-top: 0.5rem;
+      }
+
+      .footer-btn {
+        padding: 0.65rem 1rem;
+        font-size: 0.75rem;
       }
     }
   </style>
@@ -775,6 +947,22 @@
           <span id="categoryName">Habitual Actions</span>
         </div>
       </div>
+
+      <!-- Category Pills (Desktop only) -->
+      <div class="category-pills" id="categoryPills">
+        <!-- Pills inserted by JavaScript -->
+      </div>
+    </div>
+
+    <!-- Prize Eligibility Banners -->
+    <div class="prize-warning" id="prizeWarning">
+      <span class="prize-warning-icon">⚠️</span>
+      <span class="prize-warning-text">Get 20/20 on Matching first to earn the prize!</span>
+    </div>
+
+    <div class="prize-eligible" id="prizeEligible">
+      <span class="prize-eligible-icon">🎁</span>
+      <span class="prize-eligible-text">Prize eligible! Get 20/20 here to earn your trophy! 🏆</span>
     </div>
 
     <div class="progress-bar">
@@ -784,7 +972,7 @@
     <div class="score-display">
       <div class="score-left">Exercise <span id="cardNumber">1</span>/4</div>
       <div class="score-dots" id="scoreDots"></div>
-      <div class="score-right">Score: <span class="score-number" id="scoreDisplay">0/20</span></div>
+      <div class="score-right">Score: <span class="score-number" id="scoreDisplay">0/5</span></div>
     </div>
 
     <div class="carousel-wrapper">
@@ -809,6 +997,9 @@
     </div>
   </div>
 
+  <!-- Load Progress Tracker -->
+  <script src="../js/progress-tracker.js"></script>
+
   <script>
     // ============================================
     // LOAD DATA FROM character-data.json
@@ -818,10 +1009,11 @@
     let quizData = null;
     let currentCardIndex = 0;
     let cardScores = [0, 0, 0, 0];
+    let matchingScore = 0;
+    let isPrizeEligible = false;
 
     async function loadData() {
       try {
-        // Get selection from sessionStorage
         const stored = sessionStorage.getItem('selectionData');
         if (!stored) {
           showError('No selection found. Please start from the home page.');
@@ -831,7 +1023,26 @@
         selectionData = JSON.parse(stored);
         console.log('📥 Selection loaded:', selectionData);
 
-        // Map category names from grammar-modes.json to character-data.json
+        // Check matching prerequisite
+        const progress = ProgressTracker.getCategoryProgress(
+          selectionData.characterKey, 
+          selectionData.category
+        );
+        
+        matchingScore = progress.matching.score;
+        isPrizeEligible = matchingScore === 20;
+
+        console.log(`📊 Matching score: ${matchingScore}/20`);
+        console.log(`🎁 Prize eligible: ${isPrizeEligible}`);
+
+        // Show appropriate banner
+        if (isPrizeEligible) {
+          document.getElementById('prizeEligible').classList.add('show');
+        } else {
+          document.getElementById('prizeWarning').classList.add('show');
+        }
+
+        // Map all categories to Sarah's daily_habits temporarily
         const categoryMapping = {
           'habitual': 'daily_habits',
           'routine': 'daily_habits',
@@ -841,7 +1052,6 @@
 
         const mappedCategory = categoryMapping[selectionData.category] || 'daily_habits';
 
-        // Fetch character-data.json
         console.log('📥 Fetching character-data.json...');
         const response = await fetch('../data/character-data.json');
         
@@ -852,23 +1062,28 @@
         const allData = await response.json();
         console.log('✅ Quiz data loaded');
 
-        const charKey = selectionData.characterKey;
+        // Always use Sarah's data for now (temporary until all quiz content exists)
+        const charKey = 'sarah';
         
         if (!allData[charKey]) {
-          throw new Error(`Character '${charKey}' not found in character-data.json`);
+          throw new Error(`Character 'sarah' not found in character-data.json`);
         }
 
         if (!allData[charKey].categories[mappedCategory]) {
-          throw new Error(`Category '${mappedCategory}' not found for ${charKey}`);
+          throw new Error(`Category '${mappedCategory}' not found for sarah`);
         }
 
         quizData = allData[charKey].categories[mappedCategory];
 
-        // Update header display
+        // Smart pronoun replacement based on character
+        replacePronounsInQuizData();
+
         document.getElementById('displayEmoji').textContent = selectionData.characterEmoji;
         document.getElementById('displayName').textContent = selectionData.characterName;
         document.getElementById('categoryIcon').textContent = selectionData.categoryIcon;
         document.getElementById('categoryName').textContent = selectionData.categoryTitle;
+
+        renderCategoryPills();
 
         console.log('✅ Quiz interface ready!');
         return true;
@@ -878,6 +1093,72 @@
         showError(`Failed to load data: ${error.message}`);
         return false;
       }
+    }
+
+    // ============================================
+    // SMART PRONOUN REPLACEMENT
+    // ============================================
+    
+    function replacePronounsInQuizData() {
+      const charKey = selectionData.characterKey;
+      
+      // Determine pronouns based on character
+      let from = { subject: 'she', object: 'her', possessive: 'her', name: 'Sarah' };
+      let to = { subject: '', object: '', possessive: '', name: selectionData.characterName };
+
+      if (charKey === 'tom' || charKey === 'alex') {
+        to = { subject: 'he', object: 'him', possessive: 'his', name: selectionData.characterName };
+      } else if (charKey === 'emma') {
+        to = { subject: 'she', object: 'her', possessive: 'her', name: selectionData.characterName };
+      } else {
+        to = { subject: 'she', object: 'her', possessive: 'her', name: selectionData.characterName };
+      }
+
+      // Replace in cloze templates
+      quizData.clozeTemplates.forEach(template => {
+        template.text = template.text
+          .replace(/\bSarah\b/g, to.name)
+          .replace(/\bshe\b/g, to.subject)
+          .replace(/\bShe\b/g, to.subject.charAt(0).toUpperCase() + to.subject.slice(1))
+          .replace(/\bher\b/g, to.possessive)
+          .replace(/\bHer\b/g, to.possessive.charAt(0).toUpperCase() + to.possessive.slice(1));
+      });
+
+      // Replace in multiple choice questions
+      quizData.multipleChoiceQuestions.forEach(q => {
+        q.text = q.text
+          .replace(/\bSarah\b/g, to.name)
+          .replace(/\bshe\b/g, to.subject)
+          .replace(/\bShe\b/g, to.subject.charAt(0).toUpperCase() + to.subject.slice(1))
+          .replace(/\bher\b/g, to.possessive)
+          .replace(/\bHer\b/g, to.possessive.charAt(0).toUpperCase() + to.possessive.slice(1));
+      });
+
+      // Replace in mistake sentences
+      quizData.mistakeSentences.forEach(s => {
+        s.sentence = s.sentence.map(word => {
+          if (word === 'Sarah') return to.name;
+          if (word === 'she') return to.subject;
+          if (word === 'She') return to.subject.charAt(0).toUpperCase() + to.subject.slice(1);
+          if (word === 'her') return to.possessive;
+          if (word === 'Her') return to.possessive.charAt(0).toUpperCase() + to.possessive.slice(1);
+          return word;
+        });
+      });
+
+      // Replace in ordering sentences
+      quizData.orderingSentences.forEach(set => {
+        set.forEach(sentence => {
+          sentence.text = sentence.text
+            .replace(/\bSarah\b/g, to.name)
+            .replace(/\bshe\b/g, to.subject)
+            .replace(/\bShe\b/g, to.subject.charAt(0).toUpperCase() + to.subject.slice(1))
+            .replace(/\bher\b/g, to.possessive)
+            .replace(/\bHer\b/g, to.possessive.charAt(0).toUpperCase() + to.possessive.slice(1));
+        });
+      });
+
+      console.log(`✅ Pronouns replaced for ${to.name}`);
     }
 
     function showError(message) {
@@ -913,6 +1194,51 @@
     }
 
     // ============================================
+    // CATEGORY PILLS
+    // ============================================
+
+    function renderCategoryPills() {
+      const pillsContainer = document.getElementById('categoryPills');
+      const categories = ProgressTracker.CATEGORIES;
+      const charKey = selectionData.characterKey;
+      const currentCat = selectionData.category;
+
+      pillsContainer.innerHTML = '';
+
+      Object.keys(categories).forEach(catKey => {
+        const cat = categories[catKey];
+        const progress = ProgressTracker.getCategoryProgress(charKey, catKey);
+
+        const pill = document.createElement('div');
+        pill.className = 'category-pill';
+        if (catKey === currentCat) pill.classList.add('active');
+        if (progress.trophy) pill.classList.add('completed');
+
+        pill.innerHTML = `<span>${cat.icon}</span><span>${cat.name}</span>`;
+        
+        pill.addEventListener('click', () => switchCategory(catKey));
+        pillsContainer.appendChild(pill);
+      });
+    }
+
+    function switchCategory(newCategory) {
+      if (newCategory === selectionData.category) return;
+
+      const categoryInfo = ProgressTracker.CATEGORIES[newCategory];
+      
+      selectionData.category = newCategory;
+      selectionData.categoryTitle = categoryInfo.name;
+      selectionData.categoryIcon = categoryInfo.icon;
+
+      sessionStorage.setItem('selectionData', JSON.stringify(selectionData));
+      
+      showCelebration('🔄');
+      setTimeout(() => {
+        location.reload();
+      }, 500);
+    }
+
+    // ============================================
     // RENDER ALL 4 EXERCISE CARDS
     // ============================================
     
@@ -920,16 +1246,9 @@
       const track = document.getElementById('carouselTrack');
       track.innerHTML = '';
 
-      // Card 1: Cloze Text
       renderClozeCard(track);
-      
-      // Card 2: Multiple Choice
       renderMultipleChoiceCard(track);
-      
-      // Card 3: Spot the Mistake
       renderMistakeCard(track);
-      
-      // Card 4: Sentence Ordering
       renderOrderingCard(track);
 
       renderNavigation();
@@ -955,7 +1274,6 @@
         </div>
       `;
 
-      // Store answers in inputs
       const inputs = cardWrapper.querySelectorAll('.blank-input');
       template.answers.forEach((answer, i) => {
         if (inputs[i]) {
@@ -995,7 +1313,6 @@
         </div>
       `;
 
-      // Add click listeners
       cardWrapper.querySelectorAll('.mc-option').forEach(option => {
         option.addEventListener('click', () => {
           const question = option.closest('.mc-question');
@@ -1036,7 +1353,6 @@
         </div>
       `;
 
-      // Add click listeners
       cardWrapper.querySelectorAll('.mistake-word').forEach(word => {
         word.addEventListener('click', () => {
           const sentence = word.closest('.mistake-sentence');
@@ -1056,8 +1372,6 @@
       cardWrapper.setAttribute('data-card-type', 'ordering');
 
       const sentences = quizData.orderingSentences[0];
-      
-      // Shuffle sentences
       const shuffled = [...sentences].sort(() => Math.random() - 0.5);
 
       const sentencesHTML = shuffled.map((s, index) => `
@@ -1119,7 +1433,6 @@
               score++;
             } else {
               selected.classList.add('wrong');
-              // Show correct answer
               question.querySelectorAll('.mc-option').forEach(opt => {
                 if (opt.getAttribute('data-answer') === correctAnswer) {
                   opt.classList.add('correct');
@@ -1144,7 +1457,6 @@
               score++;
             } else {
               selected.classList.add('wrong');
-              // Show correct answer
               const correctWord = sentence.querySelector(`.mistake-word[data-index="${correctIndex}"]`);
               if (correctWord) {
                 correctWord.classList.add('correct');
@@ -1275,9 +1587,37 @@
       const allChecked = cardScores.every(score => score > 0);
       
       if (allChecked) {
+        const totalScore = cardScores.reduce((a, b) => a + b, 0);
+        
+        // Save quiz score
+        ProgressTracker.saveQuizScore(
+          selectionData.characterKey, 
+          selectionData.category, 
+          totalScore
+        );
+
         document.querySelector('.controls').style.display = 'none';
         document.getElementById('footer').style.display = 'flex';
-        showCelebration('🏆');
+
+        // Check if trophy was earned
+        const earnedTrophy = isPrizeEligible && totalScore === 20;
+        
+        if (earnedTrophy) {
+          showCelebration('🏆');
+          setTimeout(() => {
+            alert('🎉 CONGRATULATIONS! 🏆\n\nYou earned your trophy!\nYou got 20/20 on BOTH Matching and Quiz!\n\n✨ Collect your prize! ✨');
+          }, 1500);
+        } else if (totalScore === 20 && !isPrizeEligible) {
+          showCelebration('😊');
+          setTimeout(() => {
+            alert('Great job on the quiz! 👏\n\nBut remember: To get the prize, you need 20/20 on MATCHING first!\n\nGo back and complete the matching game perfectly! 💪');
+          }, 1500);
+        } else {
+          showCelebration('👍');
+        }
+
+        console.log(`✅ Quiz complete: ${totalScore}/20 saved`);
+        console.log(`🏆 Trophy earned: ${earnedTrophy}`);
       }
     }
 
