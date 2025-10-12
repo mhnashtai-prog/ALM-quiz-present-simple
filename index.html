@@ -730,305 +730,227 @@
   </div>
 
   <script>
-    // ============================================
-    // GLOBAL STATE
-    // ============================================
-    let grammarData = null;
-    let characters = [];
-    let currentCharacterIndex = 0;
-    let currentCategory = null;
+   <script>
+  // ============================================
+  // SIMPLE CHARACTER SELECTION - NO DATA LOADING
+  // ============================================
+  
+  const characters = [
+    { key: 'sarah', name: 'SARAH', emoji: '👧', description: 'Academic and organized student' },
+    { key: 'tom', name: 'TOM', emoji: '🧑', description: 'Sporty and active student' },
+    { key: 'emma', name: 'EMMA', emoji: '👩', description: 'Creative and social student' },
+    { key: 'alex', name: 'ALEX', emoji: '🧒', description: 'Tech-savvy gamer student' }
+  ];
 
-    const CATEGORY_CONFIG = {
-      habitual: { icon: '☕', displayName: 'Habitual Actions' },
-      routine: { icon: '🌅', displayName: 'Daily Routine' },
-      frequency: { icon: '⚡', displayName: 'Frequency + Manner' },
-      conjunctions: { icon: '⏰', displayName: 'Time Conjunctions' }
+  const CATEGORY_CONFIG = {
+    habitual: { icon: '☕', displayName: 'Habitual Actions' },
+    routine: { icon: '🌅', displayName: 'Daily Routine' },
+    frequency: { icon: '⚡', displayName: 'Frequency + Manner' },
+    conjunctions: { icon: '⏰', displayName: 'Time Conjunctions' }
+  };
+
+  let currentCharacterIndex = 0;
+  let currentCategory = null;
+
+  // ============================================
+  // CHARACTER NAVIGATION
+  // ============================================
+  
+  function updateCharacter() {
+    const char = characters[currentCharacterIndex];
+    document.getElementById('characterEmoji').textContent = char.emoji;
+    document.getElementById('characterName').textContent = char.name;
+    
+    document.getElementById('prevChar').disabled = currentCharacterIndex === 0;
+    document.getElementById('nextChar').disabled = currentCharacterIndex === characters.length - 1;
+    
+    const bubble = document.getElementById('characterBubble');
+    bubble.style.animation = 'none';
+    setTimeout(() => {
+      bubble.style.animation = 'float 4s ease-in-out infinite';
+    }, 10);
+
+    renderCarts();
+  }
+
+  function changeCharacter(direction) {
+    const newIndex = currentCharacterIndex + direction;
+    if (newIndex >= 0 && newIndex < characters.length) {
+      currentCharacterIndex = newIndex;
+      updateCharacter();
+    }
+  }
+
+  // ============================================
+  // CART RENDERING
+  // ============================================
+  
+  function renderCarts() {
+    const cartsContainer = document.getElementById('trainCarts');
+    cartsContainer.innerHTML = '';
+
+    Object.keys(CATEGORY_CONFIG).forEach(catKey => {
+      const config = CATEGORY_CONFIG[catKey];
+      
+      const cart = document.createElement('div');
+      cart.className = 'cart';
+      cart.onclick = () => openCart(catKey);
+      
+      cart.innerHTML = `
+        <div class="cart-icon">${config.icon}</div>
+        <div class="cart-title">${config.displayName.replace(' ', '<br>')}</div>
+      `;
+      
+      cartsContainer.appendChild(cart);
+    });
+  }
+
+  // ============================================
+  // MODAL MANAGEMENT
+  // ============================================
+  
+  function openCart(categoryKey) {
+    const config = CATEGORY_CONFIG[categoryKey];
+    currentCategory = categoryKey;
+
+    document.getElementById('modalIcon').textContent = config.icon;
+    document.getElementById('modalText').textContent = config.displayName;
+
+    // Simple preview list (not actual verbs yet)
+    const verbList = document.getElementById('verbList');
+    verbList.innerHTML = `
+      <div style="text-align: center; color: rgba(232, 232, 232, 0.7); padding: 2rem;">
+        <div style="font-size: 3rem; margin-bottom: 1rem;">${config.icon}</div>
+        <p style="font-size: 1rem; margin-bottom: 1rem;">Ready to practice<br><strong>${config.displayName}</strong>?</p>
+        <p style="font-size: 0.85rem; opacity: 0.8;">20 vocabulary items<br>4 matching cards<br>Interactive exercises</p>
+      </div>
+    `;
+
+    document.getElementById('modalOverlay').classList.add('show');
+    document.getElementById('cartModal').classList.add('show');
+  }
+
+  function closeModal() {
+    document.getElementById('modalOverlay').classList.remove('show');
+    document.getElementById('cartModal').classList.remove('show');
+  }
+
+  // ============================================
+  // START PRACTICE - SAVE TO SESSIONSTORAGE
+  // ============================================
+  
+  function startPractice() {
+    const char = characters[currentCharacterIndex];
+    
+    // Package minimal data
+    const selectionData = {
+      characterKey: char.key,
+      characterName: char.name,
+      characterEmoji: char.emoji,
+      category: currentCategory,
+      categoryTitle: CATEGORY_CONFIG[currentCategory].displayName,
+      categoryIcon: CATEGORY_CONFIG[currentCategory].icon
     };
 
-    // ============================================
-    // DATA LOADING
-    // ============================================
-    async function loadData() {
-      try {
-        console.log('📥 Loading grammar-modes.json...');
-        
-        const response = await fetch('data/grammar-modes.json');
-        
-        if (!response.ok) {
-          throw new Error(`Failed to load data: ${response.status}`);
-        }
+    // Save to sessionStorage
+    sessionStorage.setItem('selectionData', JSON.stringify(selectionData));
+    
+    console.log('🚀 Navigating to matching game:', selectionData);
+    
+    // Navigate to matching interface
+    window.location.href = 'bin/matching.html';
+  }
 
-        grammarData = await response.json();
-        console.log('✅ Data loaded successfully');
+  // ============================================
+  // QR CODE MODAL (keep existing code)
+  // ============================================
+  
+  function openQRModal() {
+    const currentUrl = window.location.href;
+    document.getElementById('qrUrl').textContent = currentUrl;
+    generateQRCode(currentUrl);
+    document.getElementById('qrModal').classList.add('show');
+  }
 
-        // Build characters array from JSON
-        const characterKeys = ['sarah', 'tom', 'emma', 'alex'];
-        
-        characters = characterKeys.map(key => {
-          const char = grammarData[key];
-          if (!char) {
-            console.warn(`⚠️ Character '${key}' not found in data`);
-            return null;
-          }
-          
-          return {
-            key: key,
-            name: char.name,
-            emoji: char.emoji,
-            description: char.description,
-            categories: char.categories
-          };
-        }).filter(c => c !== null);
+  function closeQRModal() {
+    document.getElementById('qrModal').classList.remove('show');
+  }
 
-        console.log('✅ Loaded', characters.length, 'characters:', characters.map(c => c.name).join(', '));
-        return true;
-
-      } catch (error) {
-        console.error('❌ Error loading data:', error);
-        showError('Failed to load data from grammar-modes.json. Please ensure the file exists in the data/ folder.');
-        return false;
-      }
-    }
-
-    function showError(message) {
-      const errorHTML = `
-        <div class="error-message">
-          <h2>⚠️ Loading Error</h2>
-          <p>${message}</p>
-          <p style="font-size: 0.85rem; margin-top: 1rem;">Check the browser console for details.</p>
+  function generateQRCode(url) {
+    const qrBox = document.getElementById('qrCodeBox');
+    qrBox.innerHTML = '<div style="color: #666; font-size: 0.875rem; padding: 20px;">Generating QR Code...</div>';
+    
+    const qrCodeURL = `https://api.qrserver.com/v1/create-qr-code/?size=256x256&data=${encodeURIComponent(url)}&format=png&bgcolor=FFFFFF&color=000000&margin=10`;
+    
+    const img = new Image();
+    img.onload = () => {
+      qrBox.innerHTML = '';
+      img.style.width = '100%';
+      img.style.height = 'auto';
+      img.style.display = 'block';
+      qrBox.appendChild(img);
+    };
+    
+    img.onerror = () => {
+      qrBox.innerHTML = `
+        <div style="color: #ef4444; padding: 20px; text-align: center;">
+          <div style="font-size: 28px; margin-bottom: 12px;">⚠️</div>
+          <div style="font-size: 14px;"><strong>Failed to generate QR code</strong></div>
+          <div style="font-size: 12px; margin-top: 8px;">Check your internet connection</div>
         </div>
       `;
-      document.body.innerHTML += errorHTML;
-    }
+    };
+    
+    img.src = qrCodeURL;
+  }
 
-    // ============================================
-    // CHARACTER NAVIGATION
-    // ============================================
-    function updateCharacter() {
-      if (!characters.length) return;
-      
-      const char = characters[currentCharacterIndex];
-      document.getElementById('characterEmoji').textContent = char.emoji;
-      document.getElementById('characterName').textContent = char.name;
-      
-      document.getElementById('prevChar').disabled = currentCharacterIndex === 0;
-      document.getElementById('nextChar').disabled = currentCharacterIndex === characters.length - 1;
-      
-      const bubble = document.getElementById('characterBubble');
-      bubble.style.animation = 'none';
-      setTimeout(() => {
-        bubble.style.animation = 'float 4s ease-in-out infinite';
-      }, 10);
-
-      renderCarts();
-    }
-
-    function changeCharacter(direction) {
-      const newIndex = currentCharacterIndex + direction;
-      if (newIndex >= 0 && newIndex < characters.length) {
-        currentCharacterIndex = newIndex;
-        updateCharacter();
-      }
-    }
-
-    // ============================================
-    // CART RENDERING
-    // ============================================
-    function renderCarts() {
-      const char = characters[currentCharacterIndex];
-      const cartsContainer = document.getElementById('trainCarts');
-      cartsContainer.innerHTML = '';
-
-      Object.keys(CATEGORY_CONFIG).forEach(catKey => {
-        const config = CATEGORY_CONFIG[catKey];
-        const hasCategory = char.categories && char.categories[catKey];
-        
-        const cart = document.createElement('div');
-        cart.className = 'cart' + (hasCategory ? '' : ' disabled');
-        
-        if (hasCategory) {
-          cart.onclick = () => openCart(catKey);
-        } else {
-          cart.onclick = () => alert('This category is not available for ' + char.name + ' yet.');
-        }
-        
-        cart.innerHTML = `
-          <div class="cart-icon">${config.icon}</div>
-          <div class="cart-title">${config.displayName.replace(' ', '<br>')}</div>
-        `;
-        
-        cartsContainer.appendChild(cart);
-      });
-    }
-
-    // ============================================
-    // MODAL MANAGEMENT
-    // ============================================
-    function openCart(categoryKey) {
-      const char = characters[currentCharacterIndex];
-      const category = char.categories[categoryKey];
-      
-      if (!category || !category.sets || !category.sets.length) {
-        alert('No data available for this category.');
-        return;
-      }
-
-      const config = CATEGORY_CONFIG[categoryKey];
-      currentCategory = categoryKey;
-
-      document.getElementById('modalIcon').textContent = config.icon;
-      document.getElementById('modalText').textContent = config.displayName;
-
-      // Get first set's verbs (A1 difficulty)
-      const verbs = category.sets[0].verbs;
-
-      const verbList = document.getElementById('verbList');
-      verbList.innerHTML = verbs.map(item => `
-      <div class="verb-box">
-          <span class="verb">${item.verb}</span>
-          <span class="object">${item.object} <span class="emoji-icon">${item.emoji}</span></span>
-        </div>
-      `).join('');
-
-      document.getElementById('modalOverlay').classList.add('show');
-      document.getElementById('cartModal').classList.add('show');
-    }
-
-    function closeModal() {
-      document.getElementById('modalOverlay').classList.remove('show');
-      document.getElementById('cartModal').classList.remove('show');
-    }
-
-    // ============================================
-    // START PRACTICE
-    // ============================================
-    function startPractice() {
-      const char = characters[currentCharacterIndex];
-      const category = char.categories[currentCategory];
-      
-      if (!category || !category.sets) {
-        alert('No data available for this category.');
-        return;
-      }
-
-      // Prepare data for quiz interface
-      const quizData = {
-        character: char.name,
-        characterKey: char.key,
-        characterEmoji: char.emoji,
-        category: currentCategory,
-        categoryTitle: CATEGORY_CONFIG[currentCategory].displayName,
-        categoryIcon: CATEGORY_CONFIG[currentCategory].icon,
-        sets: category.sets,
-        verbs: category.sets[0].verbs // First set for exercises
-      };
-
-      // Save to sessionStorage
-      sessionStorage.setItem('quizData', JSON.stringify(quizData));
-      
-      console.log('🚀 Launching quiz with data:', quizData);
-      
-      // Navigate to quiz interface
-      window.location.href = 'pages/quiz-interface.html';
-    }
-
-    // ============================================
-    // QR CODE MODAL
-    // ============================================
-    function openQRModal() {
-      const currentUrl = window.location.href;
-      document.getElementById('qrUrl').textContent = currentUrl;
-      generateQRCode(currentUrl);
-      document.getElementById('qrModal').classList.add('show');
-    }
-
-    function closeQRModal() {
-      document.getElementById('qrModal').classList.remove('show');
-    }
-
-    function generateQRCode(url) {
-      const qrBox = document.getElementById('qrCodeBox');
-      qrBox.innerHTML = '<div style="color: #666; font-size: 0.875rem; padding: 20px;">Generating QR Code...</div>';
-      
-      const qrCodeURL = `https://api.qrserver.com/v1/create-qr-code/?size=256x256&data=${encodeURIComponent(url)}&format=png&bgcolor=FFFFFF&color=000000&margin=10`;
-      
-      const img = new Image();
-      img.onload = () => {
-        qrBox.innerHTML = '';
-        img.style.width = '100%';
-        img.style.height = 'auto';
-        img.style.display = 'block';
-        qrBox.appendChild(img);
-      };
-      
-      img.onerror = () => {
-        qrBox.innerHTML = `
-          <div style="color: #ef4444; padding: 20px; text-align: center;">
-            <div style="font-size: 28px; margin-bottom: 12px;">⚠️</div>
-            <div style="font-size: 14px;"><strong>Failed to generate QR code</strong></div>
-            <div style="font-size: 12px; margin-top: 8px;">Check your internet connection</div>
-          </div>
-        `;
-      };
-      
-      img.src = qrCodeURL;
-    }
-
-    function downloadQRCode() {
-      const img = document.querySelector('#qrCodeBox img');
-      if (img) {
-        const link = document.createElement('a');
-        link.download = 'intuity-qr-code.png';
-        link.href = img.src;
-        link.click();
-      } else {
-        alert('⚠️ QR code not ready yet. Please wait a moment and try again.');
-      }
-    }
-
-    // ============================================
-    // EVENT LISTENERS
-    // ============================================
-    document.getElementById('modalOverlay').addEventListener('click', closeModal);
-
-    document.getElementById('qrModal').addEventListener('click', (e) => {
-      if (e.target.id === 'qrModal') closeQRModal();
-    });
-
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') {
-        closeModal();
-        closeQRModal();
-      }
-      if (e.key === 'ArrowLeft') changeCharacter(-1);
-      if (e.key === 'ArrowRight') changeCharacter(1);
-    });
-
-    // ============================================
-    // INITIALIZE
-    // ============================================
-    async function initialize() {
-      console.log('🎮 Initializing INTUITY...');
-      
-      const loaded = await loadData();
-      
-      if (!loaded) {
-        document.getElementById('loadingOverlay').classList.add('hidden');
-        return;
-      }
-
-      document.getElementById('loadingOverlay').classList.add('hidden');
-      
-      updateCharacter();
-      
-      console.log('✅ Application Ready!');
-    }
-
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', initialize);
+  function downloadQRCode() {
+    const img = document.querySelector('#qrCodeBox img');
+    if (img) {
+      const link = document.createElement('a');
+      link.download = 'intuity-qr-code.png';
+      link.href = img.src;
+      link.click();
     } else {
-      initialize();
+      alert('⚠️ QR code not ready yet. Please wait a moment and try again.');
     }
-  </script>
+  }
+
+  // ============================================
+  // EVENT LISTENERS
+  // ============================================
+  
+  document.getElementById('modalOverlay').addEventListener('click', closeModal);
+
+  document.getElementById('qrModal').addEventListener('click', (e) => {
+    if (e.target.id === 'qrModal') closeQRModal();
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      closeModal();
+      closeQRModal();
+    }
+    if (e.key === 'ArrowLeft') changeCharacter(-1);
+    if (e.key === 'ArrowRight') changeCharacter(1);
+  });
+
+  // ============================================
+  // INITIALIZE
+  // ============================================
+  
+  function initialize() {
+    console.log('🎮 Initializing INTUITY Landing Page...');
+    document.getElementById('loadingOverlay').classList.add('hidden');
+    updateCharacter();
+    console.log('✅ Landing Page Ready!');
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initialize);
+  } else {
+    initialize();
+  }
+</script>
 </body>
 </html>
