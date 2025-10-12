@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>INTUITY - Practice Carousel</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #000000;
+      font-family: 'Inter', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      overflow: hidden;
+      position: relative;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' /%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .game-container {
+      background: #1a1a1a;
+      width: 95%;
+      max-width: 1000px;
+      height: 88vh;
+      border-radius: 24px;
+      padding: 1.5rem;
+      box-shadow: 
+        12px 12px 24px #000000,
+        -12px -12px 24px #2a2a2a;
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+
+    .back-btn {
+      position: absolute;
+      top: 1.5rem;
+      left: 1.5rem;
+      background: #1a1a1a;
+      border: none;
+      border-radius: 12px;
+      padding: 0.6rem 1rem;
+      color: #C9A961;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 
+        4px 4px 8px #000000,
+        -4px -4px 8px #2a2a2a;
+      transition: all 0.3s;
+      z-index: 10;
+    }
+
+    .back-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 
+        6px 6px 12px #000000,
+        -6px -6px 12px #2a2a2a;
+    }
+
+    .header h1 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.75rem;
+      color: #C9A961;
+      margin-bottom: 0.25rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .tagline {
+      font-size: 0.8rem;
+      color: rgba(232, 232, 232, 0.6);
+      margin-bottom: 0.75rem;
+      font-weight: 500;
+      font-style: italic;
+    }
+
+    .character-selector {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 1.5rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .character-option {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.35rem;
+      cursor: pointer;
+      transition: all 0.3s;
+      padding: 0.4rem;
+      border-radius: 10px;
+    }
+
+    .character-option:hover {
+      transform: translateY(-2px);
+    }
+
+    .character-option.active {
+      background: rgba(201, 169, 97, 0.1);
+    }
+
+    .character-label {
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+      font-size: 0.75rem;
+      color: rgba(232, 232, 232, 0.7);
+      font-weight: 500;
+    }
+
+    .character-label.active {
+      color: #C9A961;
+      font-weight: 600;
+    }
+
+    .character-emoji {
+      font-size: 1rem;
+    }
+
+    .character-status {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: rgba(201, 169, 97, 0.2);
+      border: 2px solid rgba(201, 169, 97, 0.4);
+      transition: all 0.3s;
+    }
+
+    .character-status.completed {
+      background: #4ade80;
+      border-color: #4ade80;
+      box-shadow: 0 0 8px rgba(74, 222, 128, 0.5);
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 6px;
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: inset 2px 2px 4px rgba(0, 0, 0, 0.5);
+      margin-bottom: 0.75rem;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #C9A961, #e8d9a8);
+      border-radius: 10px;
+      transition: width 0.5s ease;
+      box-shadow: 0 0 10px rgba(201, 169, 97, 0.5);
+    }
+
+    .score-display {
+      text-align: center;
+      margin-bottom: 0.75rem;
+      font-size: 0.95rem;
+      color: #e8e8e8;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+      padding: 0 1rem;
+    }
+
+    .score-number {
+      color: #C9A961;
+      font-size: 1.1rem;
+      font-family: 'Space Grotesk', sans-serif;
+    }
+
+    .score-dots {
+      display: flex;
+      gap: 0.4rem;
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .score-left {
+      flex: 1;
+      text-align: left;
+      font-size: 0.85rem;
+    }
+
+    .score-right {
+      flex: 1;
+      text-align: right;
+      font-size: 0.85rem;
+    }
+
+    .carousel-wrapper {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: visible;
+      margin: 0 -1.5rem;
+      padding: 0 1.5rem;
+      touch-action: pan-y;
+      pointer-events: none;
+    }
+
+    .carousel-track {
+      display: flex;
+      gap: 2rem;
+      transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+      will-change: transform;
+      pointer-events: none;
+    }
+
+    .card-wrapper {
+      min-width: 100%;
+      display: flex;
+      justify-content: center;
+      padding: 0.5rem;
+      opacity: 0.4;
+      transform: scale(0.95);
+      transition: all 0.5s ease;
+      pointer-events: none;
+    }
+
+    .card-wrapper.active {
+      opacity: 1;
+      transform: scale(1);
+      pointer-events: all;
+    }
+
+    .exercise-card {
+      width: 100%;
+      max-width: 800px;
+      height: 100%;
+      max-height: 52vh;
+      display: flex;
+      flex-direction: column;
+      pointer-events: all;
+    }
+
+    .card-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.1rem;
+      color: #C9A961;
+      margin-bottom: 0.5rem;
+      text-align: center;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      flex-shrink: 0;
+    }
+
+    .exercise-content {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding: 1rem;
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 12px;
+      box-shadow: inset 2px 2px 6px rgba(0, 0, 0, 0.5);
+      -webkit-overflow-scrolling: touch;
+      scroll-behavior: smooth;
+      max-height: 46vh;
+      min-height: 300px;
+    }
+
+    .exercise-content::-webkit-scrollbar { 
+      width: 8px; 
+    }
+    .exercise-content::-webkit-scrollbar-track { 
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 10px;
+      margin: 8px 0;
+    }
+    .exercise-content::-webkit-scrollbar-thumb {
+      background: rgba(201, 169, 97, 0.6);
+      border-radius: 10px;
+      transition: all 0.3s;
+    }
+    .exercise-content::-webkit-scrollbar-thumb:hover {
+      background: rgba(201, 169, 97, 0.8);
+    }
+
+    /* CARD 1: CLOZE TEXT */
+    .cloze-text {
+      font-size: 1.05rem;
+      line-height: 2;
+      color: rgba(232, 232, 232, 0.9);
+      text-align: justify;
+      font-weight: 400;
+    }
+
+    .cloze-text p {
+      margin-bottom: 1rem;
+    }
+
+    .blank-input {
+      display: inline-block;
+      min-width: 80px;
+      padding: 0.25rem 0.5rem;
+      background: rgba(201, 169, 97, 0.1);
+      border: none;
+      border-bottom: 2px solid rgba(201, 169, 97, 0.4);
+      color: #C9A961;
+      font-size: 1rem;
+      font-weight: 500;
+      font-family: 'Inter', sans-serif;
+      border-radius: 4px 4px 0 0;
+      transition: all 0.3s;
+      outline: none;
+    }
+
+    .blank-input:focus {
+      background: rgba(201, 169, 97, 0.2);
+      border-bottom-color: #C9A961;
+      box-shadow: 0 2px 8px rgba(201, 169, 97, 0.3);
+    }
+
+    .blank-input.correct {
+      background: rgba(74, 222, 128, 0.2);
+      border-bottom-color: #4ade80;
+      color: #4ade80;
+    }
+
+    .blank-input.wrong {
+      background: rgba(251, 146, 60, 0.2);
+      border-bottom-color: #fb923c;
+      color: #fb923c;
+      animation: shake 0.5s;
+    }
+
+    .first-letter {
+      color: #C9A961;
+      font-weight: 600;
+      margin-right: 2px;
+    }
+
+    /* CARD 2: MULTIPLE CHOICE */
+    .mc-question {
+      background: #1a1a1a;
+      border-radius: 10px;
+      padding: 1rem;
+      margin-bottom: 0.75rem;
+      box-shadow: 
+        4px 4px 8px #000000,
+        -4px -4px 8px #2a2a2a;
+    }
+
+    .mc-question-text {
+      font-size: 0.95rem;
+      color: rgba(232, 232, 232, 0.9);
+      margin-bottom: 0.75rem;
+      font-weight: 400;
+    }
+
+    .mc-options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .mc-option {
+      background: rgba(201, 169, 97, 0.1);
+      border: 2px solid rgba(201, 169, 97, 0.3);
+      border-radius: 8px;
+      padding: 0.5rem 1rem;
+      color: rgba(232, 232, 232, 0.8);
+      font-size: 0.9rem;
+      font-weight: 400;
+      cursor: pointer;
+      transition: all 0.3s;
+      flex: 0 0 auto;
+    }
+
+    .mc-option:hover {
+      border-color: #C9A961;
+      background: rgba(201, 169, 97, 0.15);
+    }
+
+    .mc-option.selected {
+      background: rgba(201, 169, 97, 0.25);
+      border-color: #C9A961;
+      color: #C9A961;
+      font-weight: 600;
+    }
+
+    .mc-option.correct {
+      background: rgba(74, 222, 128, 0.2);
+      border-color: #4ade80;
+      color: #4ade80;
+      animation: correctPulse 0.5s ease;
+    }
+
+    .mc-option.wrong {
+      background: rgba(251, 146, 60, 0.2);
+      border-color: #fb923c;
+      color: #fb923c;
+      animation: shake 0.5s ease;
+    }
+
+    /* CARD 3: SPOT THE MISTAKE */
+    .mistake-sentence {
+      background: #1a1a1a;
+      border-radius: 10px;
+      padding: 1rem;
+      margin-bottom: 0.75rem;
+      box-shadow: 
+        4px 4px 8px #000000,
+        -4px -4px 8px #2a2a2a;
+    }
+
+    .mistake-number {
+      font-size: 0.75rem;
+      color: rgba(201, 169, 97, 0.6);
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+    }
+
+    .mistake-words {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+    }
+
+    .mistake-word {
+      background: rgba(201, 169, 97, 0.1);
+      border: 2px solid rgba(201, 169, 97, 0.3);
+      border-radius: 8px;
+      padding: 0.4rem 0.75rem;
+      color: rgba(232, 232, 232, 0.8);
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .mistake-word:hover {
+      border-color: #C9A961;
+      background: rgba(201, 169, 97, 0.15);
+    }
+
+    .mistake-word.selected {
+      background: rgba(201, 169, 97, 0.25);
+      border-color: #C9A961;
+      color: #C9A961;
+      font-weight: 700;
+    }
+
+    .mistake-word.correct {
+      background: rgba(74, 222, 128, 0.2);
+      border-color: #4ade80;
+      color: #4ade80;
+      animation: correctPulse 0.5s ease;
+    }
+
+    .mistake-word.wrong {
+      background: rgba(251, 146, 60, 0.2);
+      border-color: #fb923c;
+      color: #fb923c;
+      animation: shake 0.5s ease;
+    }
+
+    /* CARD 4: SENTENCE ORDERING */
+    .ordering-instructions {
+      text-align: center;
+      color: rgba(232, 232, 232, 0.7);
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
+      font-style: italic;
+    }
+
+    .ordering-sentence {
+      background: #1a1a1a;
+      border-radius: 10px;
+      padding: 1rem;
+      margin-bottom: 0.75rem;
+      box-shadow: 
+        4px 4px 8px #000000,
+        -4px -4px 8px #2a2a2a;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      cursor: move;
+      transition: all 0.3s;
+    }
+
+    .ordering-sentence:hover {
+      transform: translateX(4px);
+      box-shadow: 
+        6px 6px 12px #000000,
+        -6px -6px 12px #2a2a2a;
+    }
+
+    .ordering-sentence.dragging {
+      opacity: 0.5;
+      transform: rotate(3deg);
+    }
+
+    .ordering-number-input {
+      width: 40px;
+      height: 40px;
+      background: rgba(201, 169, 97, 0.1);
+      border: 2px solid rgba(201, 169, 97, 0.3);
+      border-radius: 8px;
+      color: #C9A961;
+      font-size: 1.1rem;
+      font-weight: 600;
+      text-align: center;
+      font-family: 'Space Grotesk', sans-serif;
+      outline: none;
+      transition: all 0.3s;
+    }
+
+    .ordering-number-input:focus {
+      border-color: #C9A961;
+      background: rgba(201, 169, 97, 0.2);
+      box-shadow: 0 0 10px rgba(201, 169, 97, 0.3);
+    }
+
+    .ordering-number-input.correct {
+      background: rgba(74, 222, 128, 0.2);
+      border-color: #4ade80;
+      color: #4ade80;
+    }
+
+    .ordering-number-input.wrong {
+      background: rgba(251, 146, 60, 0.2);
+      border-color: #fb923c;
+      color: #fb923c;
+      animation: shake 0.5s;
+    }
+
+    .ordering-text {
+      flex: 1;
+      color: rgba(232, 232, 232, 0.9);
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    .drag-handle {
+      color: rgba(201, 169, 97, 0.4);
+      font-size: 1.5rem;
+      cursor: move;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      75% { transform: translateX(5px); }
+    }
+
+    @keyframes correctPulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    .controls {
+      display: flex;
+      gap: 0.75rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 1rem;
+    }
+
+    .btn {
+      background: #1a1a1a;
+      border: none;
+      border-radius: 12px;
+      padding: 0.75rem 1.5rem;
+      color: #e8e8e8;
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 
+        4px 4px 8px #000000,
+        -4px -4px 8px #2a2a2a;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .btn:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 
+        6px 6px 12px #000000,
+        -6px -6px 12px #2a2a2a;
+    }
+
+    .btn.primary {
+      background: rgba(201, 169, 97, 0.2);
+      color: #C9A961;
+    }
+
+    .btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    .nav-arrows {
+      position: absolute;
+      top: 50%;
+      left: 0;
+      right: 0;
+      transform: translateY(-50%);
+      display: flex;
+      justify-content: space-between;
+      pointer-events: none;
+      padding: 0 0.5rem;
+      z-index: 10;
+    }
+
+    .arrow {
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      background: #1a1a1a;
+      border: none;
+      box-shadow: 
+        4px 4px 8px #000000,
+        -4px -4px 8px #2a2a2a;
+      color: #C9A961;
+      font-size: 1.3rem;
+      cursor: pointer;
+      pointer-events: all;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .arrow:hover:not(:disabled) {
+      box-shadow: 
+        6px 6px 12px #000000,
+        -6px -6px 12px #2a2a2a;
+      transform: scale(1.05);
+    }
+
+    .arrow:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+
+    .nav-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: rgba(201, 169, 97, 0.3);
+      cursor: pointer;
+      transition: all 0.3s;
+      box-shadow: 
+        2px 2px 4px #000000,
+        -2px -2px 4px #2a2a2a;
+      position: relative;
+    }
+
+    .nav-dot:hover {
+      background: rgba(201, 169, 97, 0.6);
+      transform: scale(1.2);
+    }
+
+    .nav-dot.active {
+      background: #C9A961;
+      transform: scale(1.3);
+      transform-origin: center center;
+      box-shadow: 
+        0 0 10px rgba(201, 169, 97, 0.5),
+        2px 2px 4px #000000,
+        -2px -2px 4px #2a2a2a;
+    }
+
+    .nav-dot.completed {
+      background: #4ade80;
+    }
+
+    .celebration {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 4rem;
+      opacity: 0;
+      pointer-events: none;
+      z-index: 1000;
+      animation: celebrate 1s ease;
+    }
+
+    @keyframes celebrate {
+      0% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
+      50% { opacity: 1; transform: translate(-50%, -50%) scale(1.2); }
+      100% { opacity: 0; transform: translate(-50%, -50%) scale(1); }
+    }
+
+    .footer {
+      display: flex;
+      gap: 0.75rem;
+      justify-content: center;
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 2px solid rgba(201, 169, 97, 0.2);
+      flex-wrap: wrap;
+    }
+
+    .footer-btn {
+      background: #1a1a1a;
+      border: none;
+      border-radius: 12px;
+      padding: 0.75rem 1.25rem;
+      color: #e8e8e8;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 
+        4px 4px 8px #000000,
+        -4px -4px 8px #2a2a2a;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .footer-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 
+        6px 6px 12px #000000,
+        -6px -6px 12px #2a2a2a;
+    }
+
+    .footer-btn.challenge {
+      background: rgba(201, 169, 97, 0.2);
+      color: #C9A961;
+    }
+
+    @media (max-width: 768px) {
+      .game-container {
+        padding: 1rem;
+        height: 92vh;
+      }
+
+      .header h1 {
+        font-size: 1.4rem;
+      }
+
+      .exercise-card {
+        max-height: 55vh;
+      }
+
+      .exercise-content {
+        max-height: 48vh;
+        min-height: 250px;
+      }
+
+      .cloze-text {
+        font-size: 0.95rem;
+        line-height: 1.9;
+      }
+
+      .blank-input {
+        min-width: 60px;
+        font-size: 0.9rem;
+      }
+
+      .arrow {
+        width: 35px;
+        height: 35px;
+        font-size: 1.1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="game-container">
+    <button class="back-btn" onclick="goBack()">← Back</button>
+    
+    <div class="header">
+      <h1>INTUITY</h1>
+      <p class="tagline">Intuitive & Immersive</p>
+      
+      <div class="character-selector">
+        <div class="character-option active">
+          <div class="character-label active">
+            <span class="character-emoji" id="displayEmoji">👧</span>
+            <span id="displayName">Sarah</span>
+          </div>
+          <div class="character-status completed" id="sarahStatus"></div>
+        </div>
+        
+        <div class="character-option">
+          <div class="character-label">
+            <span class="character-emoji">🧑</span>
+            <span>Tom</span>
+          </div>
+          <div class="character-status" id="tomStatus"></div>
+        </div>
+        
+        <div class="character-option">
+          <div class="character-label">
+            <span class="character-emoji">👩</span>
+            <span>Emma</span>
+          </div>
+          <div class="character-status" id="emmaStatus"></div>
+        </div>
+        
+        <div class="character-option">
+          <div class="character-label">
+            <span class="character-emoji">🧒</span>
+            <span>Alex</span>
+          </div>
+          <div class="character-status" id="alexStatus"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="progress-bar">
+      <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+    </div>
+
+    <div class="score-display">
+      <div class="score-left">Card <span id="cardNumber">1</span>/4</div>
+      <div class="score-dots" id="scoreDots"></div>
+      <div class="score-right">Score: <span class="score-number" id="scoreDisplay">0/20</span></div>
+    </div>
+
+    <div class="carousel-wrapper">
+      <div class="nav-arrows">
+        <button class="arrow" id="prevArrow" onclick="prevCard()">‹</button>
+        <button class="arrow" id="nextArrow" onclick="nextCard()">›</button>
+      </div>
+      
+      <div class="carousel-track" id="carouselTrack">
+        <!-- Cards will be inserted here by JavaScript -->
+      </div>
+    </div>
+
+    <div class="controls">
+      <button class="btn" onclick="checkAnswers()">✓ Check Answers</button>
+      <button class="btn primary" id="nextCardBtn" onclick="nextCard()" disabled>Next Card →</button>
+    </div>
+
+    <div class="footer" id="footer" style="display: none;">
+      <button class="footer-btn" onclick="retryExercises()">🔄 Repeat</button>
+      <button class="footer-btn challenge" onclick="goToChallenge()">🎮 Challenge →</button>
+      <button class="footer-btn" onclick="goHome()">🏠 Home</button>
+    </div>
+  </div>
+
+  <script>
+    // ============================================
+    // NOTE: THIS NEEDS character-data.json FILE
+    // ============================================
+    
+    alert("⚠️ Quiz Interface needs character-data.json file to work!\n\nThis file doesn't exist yet. See README.md for the required structure.\n\nReturning to matching game...");
+    window.history.back();
+  </script>
+</body>
+</html>
