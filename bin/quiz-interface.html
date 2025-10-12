@@ -1,1 +1,1501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>INTUITY - Practice Carousel</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #000000;
+      font-family: 'Inter', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      overflow: hidden;
+      position: relative;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' /%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .game-container {
+      background: #1a1a1a;
+      width: 95%;
+      max-width: 1000px;
+      height: 88vh;
+      border-radius: 24px;
+      padding: 1.5rem;
+      box-shadow: 
+        12px 12px 24px #000000,
+        -12px -12px 24px #2a2a2a;
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+
+    .back-btn {
+      position: absolute;
+      top: 1.5rem;
+      left: 1.5rem;
+      background: #1a1a1a;
+      border: none;
+      border-radius: 12px;
+      padding: 0.6rem 1rem;
+      color: #C9A961;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 
+        4px 4px 8px #000000,
+        -4px -4px 8px #2a2a2a;
+      transition: all 0.3s;
+      z-index: 10;
+    }
+
+    .back-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 
+        6px 6px 12px #000000,
+        -6px -6px 12px #2a2a2a;
+    }
+
+    .header h1 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.75rem;
+      color: #C9A961;
+      margin-bottom: 0.25rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .tagline {
+      font-size: 0.8rem;
+      color: rgba(232, 232, 232, 0.6);
+      margin-bottom: 0.75rem;
+      font-weight: 500;
+      font-style: italic;
+    }
+
+    .character-selector {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 1.5rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .character-option {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.35rem;
+      cursor: pointer;
+      transition: all 0.3s;
+      padding: 0.4rem;
+      border-radius: 10px;
+    }
+
+    .character-option:hover {
+      transform: translateY(-2px);
+    }
+
+    .character-option.active {
+      background: rgba(201, 169, 97, 0.1);
+    }
+
+    .character-label {
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+      font-size: 0.75rem;
+      color: rgba(232, 232, 232, 0.7);
+      font-weight: 500;
+    }
+
+    .character-label.active {
+      color: #C9A961;
+      font-weight: 600;
+    }
+
+    .character-emoji {
+      font-size: 1rem;
+    }
+
+    .character-status {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: rgba(201, 169, 97, 0.2);
+      border: 2px solid rgba(201, 169, 97, 0.4);
+      transition: all 0.3s;
+    }
+
+    .character-status.completed {
+      background: #4ade80;
+      border-color: #4ade80;
+      box-shadow: 0 0 8px rgba(74, 222, 128, 0.5);
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 6px;
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: inset 2px 2px 4px rgba(0, 0, 0, 0.5);
+      margin-bottom: 0.75rem;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #C9A961, #e8d9a8);
+      border-radius: 10px;
+      transition: width 0.5s ease;
+      box-shadow: 0 0 10px rgba(201, 169, 97, 0.5);
+    }
+
+    .score-display {
+      text-align: center;
+      margin-bottom: 0.75rem;
+      font-size: 0.95rem;
+      color: #e8e8e8;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+      padding: 0 1rem;
+    }
+
+    .score-number {
+      color: #C9A961;
+      font-size: 1.1rem;
+      font-family: 'Space Grotesk', sans-serif;
+    }
+
+    .score-dots {
+      display: flex;
+      gap: 0.4rem;
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .score-left {
+      flex: 1;
+      text-align: left;
+      font-size: 0.85rem;
+    }
+
+    .score-right {
+      flex: 1;
+      text-align: right;
+      font-size: 0.85rem;
+    }
+
+    .carousel-wrapper {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: visible;
+      margin: 0 -1.5rem;
+      padding: 0 1.5rem;
+      touch-action: pan-y;
+      pointer-events: none;
+    }
+
+    .carousel-track {
+      display: flex;
+      gap: 2rem;
+      transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+      will-change: transform;
+      pointer-events: none;
+    }
+
+    .card-wrapper {
+      min-width: 100%;
+      display: flex;
+      justify-content: center;
+      padding: 0.5rem;
+      opacity: 0.4;
+      transform: scale(0.95);
+      transition: all 0.5s ease;
+      pointer-events: none;
+    }
+
+    .card-wrapper.active {
+      opacity: 1;
+      transform: scale(1);
+      pointer-events: all;
+    }
+
+    .exercise-card {
+      width: 100%;
+      max-width: 800px;
+      height: 100%;
+      max-height: 52vh;
+      display: flex;
+      flex-direction: column;
+      pointer-events: all;
+    }
+
+    .card-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.1rem;
+      color: #C9A961;
+      margin-bottom: 0.5rem;
+      text-align: center;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      flex-shrink: 0;
+    }
+
+    .exercise-content {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding: 1rem;
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 12px;
+      box-shadow: inset 2px 2px 6px rgba(0, 0, 0, 0.5);
+      -webkit-overflow-scrolling: touch;
+      scroll-behavior: smooth;
+      max-height: 46vh;
+      min-height: 300px;
+    }
+
+    .exercise-content::-webkit-scrollbar { 
+      width: 8px; 
+    }
+    .exercise-content::-webkit-scrollbar-track { 
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 10px;
+      margin: 8px 0;
+    }
+    .exercise-content::-webkit-scrollbar-thumb {
+      background: rgba(201, 169, 97, 0.6);
+      border-radius: 10px;
+      transition: all 0.3s;
+    }
+    .exercise-content::-webkit-scrollbar-thumb:hover {
+      background: rgba(201, 169, 97, 0.8);
+    }
+
+    /* CARD 1: CLOZE TEXT */
+    .cloze-text {
+      font-size: 1.05rem;
+      line-height: 2;
+      color: rgba(232, 232, 232, 0.9);
+      text-align: justify;
+      font-weight: 400;
+    }
+
+    .cloze-text p {
+      margin-bottom: 1rem;
+    }
+
+    .blank-input {
+      display: inline-block;
+      min-width: 80px;
+      padding: 0.25rem 0.5rem;
+      background: rgba(201, 169, 97, 0.1);
+      border: none;
+      border-bottom: 2px solid rgba(201, 169, 97, 0.4);
+      color: #C9A961;
+      font-size: 1rem;
+      font-weight: 500;
+      font-family: 'Inter', sans-serif;
+      border-radius: 4px 4px 0 0;
+      transition: all 0.3s;
+      outline: none;
+    }
+
+    .blank-input:focus {
+      background: rgba(201, 169, 97, 0.2);
+      border-bottom-color: #C9A961;
+      box-shadow: 0 2px 8px rgba(201, 169, 97, 0.3);
+    }
+
+    .blank-input.correct {
+      background: rgba(74, 222, 128, 0.2);
+      border-bottom-color: #4ade80;
+      color: #4ade80;
+    }
+
+    .blank-input.wrong {
+      background: rgba(251, 146, 60, 0.2);
+      border-bottom-color: #fb923c;
+      color: #fb923c;
+      animation: shake 0.5s;
+    }
+
+    .first-letter {
+      color: #C9A961;
+      font-weight: 600;
+      margin-right: 2px;
+    }
+
+    /* CARD 2: MULTIPLE CHOICE */
+    .mc-question {
+      background: #1a1a1a;
+      border-radius: 10px;
+      padding: 1rem;
+      margin-bottom: 0.75rem;
+      box-shadow: 
+        4px 4px 8px #000000,
+        -4px -4px 8px #2a2a2a;
+    }
+
+    .mc-question-text {
+      font-size: 0.95rem;
+      color: rgba(232, 232, 232, 0.9);
+      margin-bottom: 0.75rem;
+      font-weight: 400;
+    }
+
+    .mc-options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .mc-option {
+      background: rgba(201, 169, 97, 0.1);
+      border: 2px solid rgba(201, 169, 97, 0.3);
+      border-radius: 8px;
+      padding: 0.5rem 1rem;
+      color: rgba(232, 232, 232, 0.8);
+      font-size: 0.9rem;
+      font-weight: 400;
+      cursor: pointer;
+      transition: all 0.3s;
+      flex: 0 0 auto;
+    }
+
+    .mc-option:hover {
+      border-color: #C9A961;
+      background: rgba(201, 169, 97, 0.15);
+    }
+
+    .mc-option.selected {
+      background: rgba(201, 169, 97, 0.25);
+      border-color: #C9A961;
+      color: #C9A961;
+      font-weight: 600;
+    }
+
+    .mc-option.correct {
+      background: rgba(74, 222, 128, 0.2);
+      border-color: #4ade80;
+      color: #4ade80;
+      animation: correctPulse 0.5s ease;
+    }
+
+    .mc-option.wrong {
+      background: rgba(251, 146, 60, 0.2);
+      border-color: #fb923c;
+      color: #fb923c;
+      animation: shake 0.5s ease;
+    }
+
+    /* CARD 3: SPOT THE MISTAKE */
+    .mistake-sentence {
+      background: #1a1a1a;
+      border-radius: 10px;
+      padding: 1rem;
+      margin-bottom: 0.75rem;
+      box-shadow: 
+        4px 4px 8px #000000,
+        -4px -4px 8px #2a2a2a;
+    }
+
+    .mistake-number {
+      font-size: 0.75rem;
+      color: rgba(201, 169, 97, 0.6);
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+    }
+
+    .mistake-words {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+    }
+
+    .mistake-word {
+      background: rgba(201, 169, 97, 0.1);
+      border: 2px solid rgba(201, 169, 97, 0.3);
+      border-radius: 8px;
+      padding: 0.4rem 0.75rem;
+      color: rgba(232, 232, 232, 0.8);
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .mistake-word:hover {
+      border-color: #C9A961;
+      background: rgba(201, 169, 97, 0.15);
+    }
+
+    .mistake-word.selected {
+      background: rgba(201, 169, 97, 0.25);
+      border-color: #C9A961;
+      color: #C9A961;
+      font-weight: 700;
+    }
+
+    .mistake-word.correct {
+      background: rgba(74, 222, 128, 0.2);
+      border-color: #4ade80;
+      color: #4ade80;
+      animation: correctPulse 0.5s ease;
+    }
+
+    .mistake-word.wrong {
+      background: rgba(251, 146, 60, 0.2);
+      border-color: #fb923c;
+      color: #fb923c;
+      animation: shake 0.5s ease;
+    }
+
+    /* CARD 4: SENTENCE ORDERING */
+    .ordering-instructions {
+      text-align: center;
+      color: rgba(232, 232, 232, 0.7);
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
+      font-style: italic;
+    }
+
+    .ordering-sentence {
+      background: #1a1a1a;
+      border-radius: 10px;
+      padding: 1rem;
+      margin-bottom: 0.75rem;
+      box-shadow: 
+        4px 4px 8px #000000,
+        -4px -4px 8px #2a2a2a;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      cursor: move;
+      transition: all 0.3s;
+    }
+
+    .ordering-sentence:hover {
+      transform: translateX(4px);
+      box-shadow: 
+        6px 6px 12px #000000,
+        -6px -6px 12px #2a2a2a;
+    }
+
+    .ordering-sentence.dragging {
+      opacity: 0.5;
+      transform: rotate(3deg);
+    }
+
+    .ordering-number-input {
+      width: 40px;
+      height: 40px;
+      background: rgba(201, 169, 97, 0.1);
+      border: 2px solid rgba(201, 169, 97, 0.3);
+      border-radius: 8px;
+      color: #C9A961;
+      font-size: 1.1rem;
+      font-weight: 600;
+      text-align: center;
+      font-family: 'Space Grotesk', sans-serif;
+      outline: none;
+      transition: all 0.3s;
+    }
+
+    .ordering-number-input:focus {
+      border-color: #C9A961;
+      background: rgba(201, 169, 97, 0.2);
+      box-shadow: 0 0 10px rgba(201, 169, 97, 0.3);
+    }
+
+    .ordering-number-input.correct {
+      background: rgba(74, 222, 128, 0.2);
+      border-color: #4ade80;
+      color: #4ade80;
+    }
+
+    .ordering-number-input.wrong {
+      background: rgba(251, 146, 60, 0.2);
+      border-color: #fb923c;
+      color: #fb923c;
+      animation: shake 0.5s;
+    }
+
+    .ordering-text {
+      flex: 1;
+      color: rgba(232, 232, 232, 0.9);
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    .drag-handle {
+      color: rgba(201, 169, 97, 0.4);
+      font-size: 1.5rem;
+      cursor: move;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      75% { transform: translateX(5px); }
+    }
+
+    @keyframes correctPulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    .controls {
+      display: flex;
+      gap: 0.75rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 1rem;
+    }
+
+    .btn {
+      background: #1a1a1a;
+      border: none;
+      border-radius: 12px;
+      padding: 0.75rem 1.5rem;
+      color: #e8e8e8;
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 
+        4px 4px 8px #000000,
+        -4px -4px 8px #2a2a2a;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .btn:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 
+        6px 6px 12px #000000,
+        -6px -6px 12px #2a2a2a;
+    }
+
+    .btn.primary {
+      background: rgba(201, 169, 97, 0.2);
+      color: #C9A961;
+    }
+
+    .btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    .nav-arrows {
+      position: absolute;
+      top: 50%;
+      left: 0;
+      right: 0;
+      transform: translateY(-50%);
+      display: flex;
+      justify-content: space-between;
+      pointer-events: none;
+      padding: 0 0.5rem;
+      z-index: 10;
+    }
+
+    .arrow {
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      background: #1a1a1a;
+      border: none;
+      box-shadow: 
+        4px 4px 8px #000000,
+        -4px -4px 8px #2a2a2a;
+      color: #C9A961;
+      font-size: 1.3rem;
+      cursor: pointer;
+      pointer-events: all;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .arrow:hover:not(:disabled) {
+      box-shadow: 
+        6px 6px 12px #000000,
+        -6px -6px 12px #2a2a2a;
+      transform: scale(1.05);
+    }
+
+    .arrow:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+
+    .nav-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: rgba(201, 169, 97, 0.3);
+      cursor: pointer;
+      transition: all 0.3s;
+      box-shadow: 
+        2px 2px 4px #000000,
+        -2px -2px 4px #2a2a2a;
+      position: relative;
+    }
+
+    .nav-dot:hover {
+      background: rgba(201, 169, 97, 0.6);
+      transform: scale(1.2);
+    }
+
+    .nav-dot.active {
+      background: #C9A961;
+      transform: scale(1.3);
+      transform-origin: center center;
+      box-shadow: 
+        0 0 10px rgba(201, 169, 97, 0.5),
+        2px 2px 4px #000000,
+        -2px -2px 4px #2a2a2a;
+    }
+
+    .nav-dot.completed {
+      background: #4ade80;
+    }
+
+    .celebration {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 4rem;
+      opacity: 0;
+      pointer-events: none;
+      z-index: 1000;
+      animation: celebrate 1s ease;
+    }
+
+    @keyframes celebrate {
+      0% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
+      50% { opacity: 1; transform: translate(-50%, -50%) scale(1.2); }
+      100% { opacity: 0; transform: translate(-50%, -50%) scale(1); }
+    }
+
+    .footer {
+      display: flex;
+      gap: 0.75rem;
+      justify-content: center;
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 2px solid rgba(201, 169, 97, 0.2);
+      flex-wrap: wrap;
+    }
+
+    .footer-btn {
+      background: #1a1a1a;
+      border: none;
+      border-radius: 12px;
+      padding: 0.75rem 1.25rem;
+      color: #e8e8e8;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 
+        4px 4px 8px #000000,
+        -4px -4px 8px #2a2a2a;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .footer-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 
+        6px 6px 12px #000000,
+        -6px -6px 12px #2a2a2a;
+    }
+
+    .footer-btn.challenge {
+      background: rgba(201, 169, 97, 0.2);
+      color: #C9A961;
+    }
+
+    @media (max-width: 768px) {
+      .game-container {
+        padding: 1rem;
+        height: 92vh;
+      }
+
+      .header h1 {
+        font-size: 1.4rem;
+      }
+
+      .exercise-card {
+        max-height: 55vh;
+      }
+
+      .exercise-content {
+        max-height: 48vh;
+        min-height: 250px;
+      }
+
+      .cloze-text {
+        font-size: 0.95rem;
+        line-height: 1.9;
+      }
+
+      .blank-input {
+        min-width: 60px;
+        font-size: 0.9rem;
+      }
+
+      .arrow {
+        width: 35px;
+        height: 35px;
+        font-size: 1.1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="game-container">
+    <button class="back-btn" onclick="goBack()">← Back</button>
+    
+    <div class="header">
+      <h1>INTUITY</h1>
+      <p class="tagline">Intuitive & Immersive</p>
+      
+      <div class="character-selector">
+        <div class="character-option active">
+          <div class="character-label active">
+            <span class="character-emoji">👧</span>
+            <span>Sarah</span>
+          </div>
+          <div class="character-status completed" id="sarahStatus"></div>
+        </div>
+        
+        <div class="character-option">
+          <div class="character-label">
+            <span class="character-emoji">🧑</span>
+            <span>Tom</span>
+          </div>
+          <div class="character-status" id="tomStatus"></div>
+        </div>
+        
+        <div class="character-option">
+          <div class="character-label">
+            <span class="character-emoji">👩</span>
+            <span>Emma</span>
+          </div>
+          <div class="character-status" id="emmaStatus"></div>
+        </div>
+        
+        <div class="character-option">
+          <div class="character-label">
+            <span class="character-emoji">🧒</span>
+            <span>Alex</span>
+          </div>
+          <div class="character-status" id="alexStatus"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="progress-bar">
+      <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+    </div>
+
+    <div class="score-display">
+      <div class="score-left">Card <span id="cardNumber">1</span>/4</div>
+      <div class="score-dots" id="scoreDots"></div>
+      <div class="score-right">Score: <span class="score-number" id="scoreDisplay">0/20</span></div>
+    </div>
+
+    <div class="carousel-wrapper">
+      <div class="nav-arrows">
+        <button class="arrow" id="prevArrow" onclick="prevCard()">‹</button>
+        <button class="arrow" id="nextArrow" onclick="nextCard()">›</button>
+      </div>
+      
+      <div class="carousel-track" id="carouselTrack">
+        <!-- Cards will be inserted here by JavaScript -->
+      </div>
+    </div>
+
+    <div class="controls">
+      <button class="btn" onclick="checkAnswers()">✓ Check Answers</button>
+      <button class="btn primary" id="nextCardBtn" onclick="nextCard()" disabled>Next Card →</button>
+    </div>
+
+    <div class="footer" id="footer" style="display: none;">
+      <button class="footer-btn" onclick="retryExercises()">🔄 Repeat</button>
+      <button class="footer-btn challenge" onclick="goToChallenge()">🎮 Challenge →</button>
+      <button class="footer-btn" onclick="goHome()">🏠 Home</button>
+    </div>
+  </div>
+
+  <script>
+    // ============================================
+    // DATA LOADING & GENERATION
+    // ============================================
+    
+    let characterData = {
+      name: 'SARAH',
+      emoji: '👧',
+      category: 'Daily Habits',
+      verbs: []
+    };
+
+    // Try loading from sessionStorage
+    try {
+      const storedData = sessionStorage.getItem('quizData');
+      if (storedData) {
+        const quizData = JSON.parse(storedData);
+        characterData.name = quizData.character;
+        characterData.emoji = quizData.characterEmoji;
+        characterData.category = quizData.cartTitle;
+        characterData.verbs = quizData.verbs.slice(0, 20);
+      }
+    } catch (error) {
+      console.error('Error loading data:', error);
+    }
+
+    // FALLBACK: Hardcoded sample data (will be replaced by JSON in production)
+    if (characterData.verbs.length === 0) {
+      // Randomly select one of 3 verb sets for variety
+      const verbSets = [
+        [
+          { verb: 'wakes up', object: 'at 6:30am', emoji: '⏰' },
+          { verb: 'brushes', object: 'her teeth', emoji: '🪥' },
+          { verb: 'combs', object: 'her hair', emoji: '💇' },
+          { verb: 'eats', object: 'breakfast', emoji: '🍳' },
+          { verb: 'drinks', object: 'coffee', emoji: '☕' },
+          { verb: 'packs', object: 'her bag', emoji: '🎒' },
+          { verb: 'takes', object: 'the bus', emoji: '🚌' },
+          { verb: 'arrives', object: 'at school', emoji: '🏫' },
+          { verb: 'listens', object: 'to teacher', emoji: '👂' },
+          { verb: 'asks', object: 'questions', emoji: '❓' },
+          { verb: 'studies', object: 'grammar', emoji: '📚' },
+          { verb: 'writes', object: 'notes', emoji: '✍️' },
+          { verb: 'has', object: 'lunch', emoji: '🍱' },
+          { verb: 'plays', object: 'with friends', emoji: '👥' },
+          { verb: 'does', object: 'homework', emoji: '📝' },
+          { verb: 'reads', object: 'books', emoji: '📖' },
+          { verb: 'watches', object: 'TV', emoji: '📺' },
+          { verb: 'helps', object: 'at home', emoji: '🏠' },
+          { verb: 'talks', object: 'to family', emoji: '💬' },
+          { verb: 'goes to bed', object: 'at 10pm', emoji: '😴' }
+        ],
+        [
+          { verb: 'drinks', object: 'orange juice', emoji: '🍊' },
+          { verb: 'eats', object: 'lunch', emoji: '🥗' },
+          { verb: 'catches', object: 'the train', emoji: '🚊' },
+          { verb: 'uses', object: 'her laptop', emoji: '💻' },
+          { verb: 'finishes', object: 'her work', emoji: '✅' },
+          { verb: 'enjoys', object: 'movies', emoji: '🎬' },
+          { verb: 'plays', object: 'the piano', emoji: '🎹' },
+          { verb: 'draws', object: 'pictures', emoji: '🎨' },
+          { verb: 'visits', object: 'friends', emoji: '👥' },
+          { verb: 'practices', object: 'yoga', emoji: '🧘' },
+          { verb: 'learns', object: 'new things', emoji: '📚' },
+          { verb: 'prepares', object: 'meals', emoji: '🍽️' },
+          { verb: 'organizes', object: 'her desk', emoji: '🗂️' },
+          { verb: 'charges', object: 'her tablet', emoji: '🔌' },
+          { verb: 'wears', object: 'a jacket', emoji: '🧥' },
+          { verb: 'closes', object: 'the door', emoji: '🚪' },
+          { verb: 'opens', object: 'windows', emoji: '🪟' },
+          { verb: 'sends', object: 'messages', emoji: '💬' },
+          { verb: 'saves', object: 'money', emoji: '💰' },
+          { verb: 'chooses', object: 'outfits', emoji: '👗' }
+        ],
+        [
+          { verb: 'drinks', object: 'water', emoji: '💧' },
+          { verb: 'eats', object: 'snacks', emoji: '🍿' },
+          { verb: 'rides', object: 'the subway', emoji: '🚇' },
+          { verb: 'charges', object: 'her phone', emoji: '🔋' },
+          { verb: 'completes', object: 'projects', emoji: '📊' },
+          { verb: 'streams', object: 'shows', emoji: '📺' },
+          { verb: 'sings', object: 'songs', emoji: '🎤' },
+          { verb: 'solves', object: 'puzzles', emoji: '🧩' },
+          { verb: 'writes', object: 'stories', emoji: '📝' },
+          { verb: 'follows', object: 'recipes', emoji: '📖' },
+          { verb: 'attends', object: 'classes', emoji: '🎓' },
+          { verb: 'bakes', object: 'cookies', emoji: '🍪' },
+          { verb: 'tidies', object: 'the kitchen', emoji: '🧽' },
+          { verb: 'combs', object: 'her hair', emoji: '💇' },
+          { verb: 'applies', object: 'lotion', emoji: '🧴' },
+          { verb: 'folds', object: 'laundry', emoji: '👔' },
+          { verb: 'locks', object: 'the house', emoji: '🔐' },
+          { verb: 'turns off', object: 'lights', emoji: '💡' },
+          { verb: 'answers', object: 'calls', emoji: '📞' },
+          { verb: 'plans', object: 'trips', emoji: '✈️' }
+        ]
+      ];
+      
+      // Randomly select one verb set
+      const randomIndex = Math.floor(Math.random() * verbSets.length);
+      characterData.verbs = verbSets[randomIndex];
+      
+      console.log(`Using verb set ${randomIndex + 1} for variety`);
+    }
+
+    let currentCardIndex = 0;
+    let cardScores = [0, 0, 0, 0];
+    let cardMaxScores = [20, 15, 15, 7]; // Adjust based on content
+    let allCardsChecked = [false, false, false, false];
+
+    // ============================================
+    // CARD 1: GENERATE CLOZE TEXT
+    // ============================================
+    
+    function generateClozeText() {
+      const name = characterData.name;
+      const verbs = characterData.verbs;
+      
+      // Build narrative using verbs
+      const story = `
+        <p>${name} is a student. Every morning, she <span class="blank-wrapper"><span class="first-letter">w</span><input type="text" class="blank-input" data-answer="wakes up" maxlength="15" /></span> at 6:30am. She goes to the bathroom and <span class="blank-wrapper"><span class="first-letter">b</span><input type="text" class="blank-input" data-answer="brushes" maxlength="10" /></span> her teeth. Then she <span class="blank-wrapper"><span class="first-letter">c</span><input type="text" class="blank-input" data-answer="combs" maxlength="10" /></span> her hair.</p>
+        
+        <p>After that, she goes to the kitchen. She <span class="blank-wrapper"><span class="first-letter">e</span><input type="text" class="blank-input" data-answer="eats" maxlength="10" /></span> breakfast with her family. She usually <span class="blank-wrapper"><span class="first-letter">d</span><input type="text" class="blank-input" data-answer="drinks" maxlength="10" /></span> orange juice or milk. She loves breakfast time!</p>
+        
+        <p>Before leaving home, she <span class="blank-wrapper"><span class="first-letter">p</span><input type="text" class="blank-input" data-answer="packs" maxlength="10" /></span> her school bag with books and notebooks. She says goodbye to her parents and <span class="blank-wrapper"><span class="first-letter">t</span><input type="text" class="blank-input" data-answer="takes" maxlength="10" /></span> the bus to school. The journey <span class="blank-wrapper"><span class="first-letter">t</span><input type="text" class="blank-input" data-answer="takes" maxlength="10" /></span> twenty minutes.</p>
+        
+        <p>When she <span class="blank-wrapper"><span class="first-letter">a</span><input type="text" class="blank-input" data-answer="arrives" maxlength="10" /></span> at school, she meets her friends. In class, she <span class="blank-wrapper"><span class="first-letter">l</span><input type="text" class="blank-input" data-answer="listens" maxlength="10" /></span> carefully to the teacher. She always <span class="blank-wrapper"><span class="first-letter">a</span><input type="text" class="blank-input" data-answer="asks" maxlength="10" /></span> questions when she doesn't understand something.</p>
+        
+        <p>${name} <span class="blank-wrapper"><span class="first-letter">s</span><input type="text" class="blank-input" data-answer="studies" maxlength="10" /></span> hard every day. She <span class="blank-wrapper"><span class="first-letter">w</span><input type="text" class="blank-input" data-answer="writes" maxlength="10" /></span> notes in her notebook. At lunchtime, she <span class="blank-wrapper"><span class="first-letter">h</span><input type="text" class="blank-input" data-answer="has" maxlength="10" /></span> lunch in the cafeteria. She <span class="blank-wrapper"><span class="first-letter">p</span><input type="text" class="blank-input" data-answer="plays" maxlength="10" /></span> with her friends during break time.</p>
+        
+        <p>After school, she goes home and <span class="blank-wrapper"><span class="first-letter">d</span><input type="text" class="blank-input" data-answer="does" maxlength="10" /></span> her homework. She <span class="blank-wrapper"><span class="first-letter">r</span><input type="text" class="blank-input" data-answer="reads" maxlength="10" /></span> books in her free time. Sometimes she <span class="blank-wrapper"><span class="first-letter">w</span><input type="text" class="blank-input" data-answer="watches" maxlength="10" /></span> TV with her family.</p>
+        
+        <p>In the evening, she <span class="blank-wrapper"><span class="first-letter">h</span><input type="text" class="blank-input" data-answer="helps" maxlength="10" /></span> her mother at home. She <span class="blank-wrapper"><span class="first-letter">t</span><input type="text" class="blank-input" data-answer="talks" maxlength="10" /></span> to her family about her day. Finally, she <span class="blank-wrapper"><span class="first-letter">g</span><input type="text" class="blank-input" data-answer="goes to bed" maxlength="15" /></span> at 10pm. She loves her daily routine!</p>
+      `;
+      
+      return story;
+    }
+
+    // ============================================
+    // CARD 2: GENERATE MULTIPLE CHOICE
+    // ============================================
+    
+    function generateMultipleChoice() {
+      const name = characterData.name;
+      const verbs = characterData.verbs.slice(0, 15);
+      
+      const questions = [
+        // Affirmative (3rd person -s)
+        { text: `${name} _____ up at 6:30am every morning.`, correct: 'wakes', options: ['wake', 'wakes', 'is waking', 'woke'] },
+        { text: `She _____ her teeth after breakfast.`, correct: 'brushes', options: ['brush', 'brushes', 'is brushing', 'brushed'] },
+        { text: `${name} _____ coffee with her breakfast.`, correct: 'drinks', options: ['drink', 'drinks', 'is drinking', 'drank'] },
+        { text: `She _____ the bus to school every day.`, correct: 'takes', options: ['take', 'takes', 'is taking', 'took'] },
+        { text: `${name} _____ hard in all her classes.`, correct: 'studies', options: ['study', 'studies', 'is studying', 'studied'] },
+        
+        // Negative
+        { text: `She _____ eat meat. She's vegetarian.`, correct: "doesn't", options: ["don't", "doesn't", "isn't", "didn't"] },
+        { text: `${name} _____ like getting up early.`, correct: "doesn't", options: ["don't", "doesn't", "isn't", "didn't"] },
+        { text: `They _____ go to school on Sundays.`, correct: "don't", options: ["don't", "doesn't", "isn't", "didn't"] },
+        
+        // Questions
+        { text: `_____ she go to school by bus?`, correct: 'Does', options: ['Do', 'Does', 'Is', 'Did'] },
+        { text: `_____ ${name} like studying?`, correct: 'Does', options: ['Do', 'Does', 'Is', 'Did'] },
+        { text: `_____ they play together at school?`, correct: 'Do', options: ['Do', 'Does', 'Are', 'Did'] },
+        
+        // Mixed
+        { text: `Where _____ she live?`, correct: 'does', options: ['do', 'does', 'is', 'did'] },
+        { text: `What time _____ the lesson start?`, correct: 'does', options: ['do', 'does', 'is', 'did'] },
+        { text: `How _____ you go to school?`, correct: 'do', options: ['do', 'does', 'are', 'did'] },
+        { text: `Why _____ she study English?`, correct: 'does', options: ['do', 'does', 'is', 'did'] }
+      ];
+      
+      return questions;
+    }
+
+    // ============================================
+    // CARD 3: GENERATE SPOT THE MISTAKE
+    // ============================================
+    
+    function generateSpotMistakes() {
+      const name = characterData.name;
+      
+      const mistakes = [
+        { sentence: [name, 'drink', 'coffee', 'every', 'morning'], errorIndex: 1 },
+        { sentence: ['She', "don't", 'like', 'vegetables'], errorIndex: 1 },
+        { sentence: ['Does', 'they', 'go', 'to', 'school', '?'], errorIndex: 1 },
+        { sentence: ['He', 'watch', 'TV', 'every', 'evening'], errorIndex: 1 },
+        { sentence: ['We', "doesn't", 'eat', 'meat'], errorIndex: 1 },
+        { sentence: ['Do', 'she', 'speak', 'English', '?'], errorIndex: 1 },
+        { sentence: [name, 'study', 'hard', 'every', 'day'], errorIndex: 1 },
+        { sentence: ['They', 'goes', 'to', 'the', 'park'], errorIndex: 1 },
+        { sentence: ['She', 'do', 'her', 'homework', 'daily'], errorIndex: 1 },
+        { sentence: ['Does', 'you', 'like', 'reading', '?'], errorIndex: 1 },
+        { sentence: ['He', "don't", 'play', 'football'], errorIndex: 1 },
+        { sentence: ['My', 'friend', 'have', 'a', 'cat'], errorIndex: 2 },
+        { sentence: ['Do', name, 'likes', 'music', '?'], errorIndex: 2 },
+        { sentence: ['We', "doesn't", 'watch', 'TV', 'often'], errorIndex: 1 },
+        { sentence: ['She', 'brush', 'her', 'teeth', 'daily'], errorIndex: 1 }
+      ];
+      
+      return mistakes;
+    }
+
+    // ============================================
+    // CARD 4: GENERATE SENTENCE ORDERING
+    // ============================================
+    
+    function generateOrdering() {
+      const name = characterData.name;
+      
+      const sentences = [
+        { text: `${name} wakes up at 6:30am.`, order: 1 },
+        { text: 'She brushes her teeth and combs her hair.', order: 2 },
+        { text: 'Then she eats breakfast with her family.', order: 3 },
+        { text: 'After breakfast, she packs her school bag.', order: 4 },
+        { text: 'She takes the bus to school at 7:45am.', order: 5 },
+        { text: 'After school, she does her homework.', order: 6 },
+        { text: 'Finally, she goes to bed at 10pm.', order: 7 }
+      ];
+      
+      return sentences.sort(() => Math.random() - 0.5);
+    }
+
+    // ============================================
+    // RENDER ALL CARDS
+    // ============================================
+    
+    function renderAllCards() {
+      const track = document.getElementById('carouselTrack');
+      track.innerHTML = '';
+
+      // CARD 1: Cloze Text
+      const card1 = document.createElement('div');
+      card1.className = 'card-wrapper active';
+      card1.innerHTML = `
+        <div class="exercise-card">
+          <div class="card-title">📝 Complete the Story</div>
+          <div class="exercise-content">
+            <div class="cloze-text">${generateClozeText()}</div>
+          </div>
+        </div>
+      `;
+      track.appendChild(card1);
+
+      // CARD 2: Multiple Choice
+      const card2 = document.createElement('div');
+      card2.className = 'card-wrapper';
+      const mcQuestions = generateMultipleChoice();
+      const mcHTML = mcQuestions.map((q, i) => `
+        <div class="mc-question">
+          <div class="mc-question-text">${i + 1}. ${q.text}</div>
+          <div class="mc-options">
+            ${q.options.map(opt => `
+              <div class="mc-option" data-question="${i}" data-value="${opt}" onclick="selectMC(${i}, '${opt}')">${opt}</div>
+            `).join('')}
+          </div>
+        </div>
+      `).join('');
+      
+      card2.innerHTML = `
+        <div class="exercise-card">
+          <div class="card-title">✅ Multiple Choice</div>
+          <div class="exercise-content">${mcHTML}</div>
+        </div>
+      `;
+      track.appendChild(card2);
+
+      // CARD 3: Spot Mistakes
+      const card3 = document.createElement('div');
+      card3.className = 'card-wrapper';
+      const mistakes = generateSpotMistakes();
+      const mistakesHTML = mistakes.map((m, i) => `
+        <div class="mistake-sentence">
+          <div class="mistake-number">Sentence ${i + 1}</div>
+          <div class="mistake-words">
+            ${m.sentence.map((word, wi) => `
+              <div class="mistake-word" data-sentence="${i}" data-word="${wi}" onclick="selectMistake(${i}, ${wi})">${word}</div>
+            `).join('')}
+          </div>
+        </div>
+      `).join('');
+      
+      card3.innerHTML = `
+        <div class="exercise-card">
+          <div class="card-title">🔍 Spot the Mistake</div>
+          <div class="exercise-content">${mistakesHTML}</div>
+        </div>
+      `;
+      track.appendChild(card3);
+
+      // CARD 4: Ordering
+      const card4 = document.createElement('div');
+      card4.className = 'card-wrapper';
+      const ordering = generateOrdering();
+      const orderHTML = ordering.map((s, i) => `
+        <div class="ordering-sentence" draggable="true" data-correct="${s.order}">
+          <span class="drag-handle">⋮</span>
+          <input type="number" class="ordering-number-input" min="1" max="7" data-index="${i}" placeholder="#">
+          <div class="ordering-text">${s.text}</div>
+        </div>
+      `).join('');
+      
+      card4.innerHTML = `
+        <div class="exercise-card">
+          <div class="card-title">🔢 Order the Sentences</div>
+          <div class="exercise-content">
+            <div class="ordering-instructions">Number the sentences 1-7 to tell the story in order</div>
+            ${orderHTML}
+          </div>
+        </div>
+      `;
+      track.appendChild(card4);
+
+      // Store data for checking
+      window.mcQuestions = mcQuestions;
+      window.mistakes = mistakes;
+      window.ordering = ordering;
+
+      renderNavigation();
+      updateCarouselPosition();
+    }
+
+    // ============================================
+    // USER INTERACTION
+    // ============================================
+    
+    let userMCAnswers = {};
+    let userMistakes = {};
+
+    function selectMC(questionIndex, value) {
+      userMCAnswers[questionIndex] = value;
+      
+      const options = document.querySelectorAll(`.mc-option[data-question="${questionIndex}"]`);
+      options.forEach(opt => {
+        opt.classList.toggle('selected', opt.dataset.value === value);
+      });
+    }
+
+    function selectMistake(sentenceIndex, wordIndex) {
+      userMistakes[sentenceIndex] = wordIndex;
+      
+      const words = document.querySelectorAll(`.mistake-word[data-sentence="${sentenceIndex}"]`);
+      words.forEach(word => {
+        word.classList.toggle('selected', parseInt(word.dataset.word) === wordIndex);
+      });
+    }
+
+    // ============================================
+    // CHECK ANSWERS
+    // ============================================
+    
+    function checkAnswers() {
+      let score = 0;
+
+      if (currentCardIndex === 0) {
+        // Check cloze text
+        const inputs = document.querySelectorAll('.blank-input');
+        inputs.forEach(input => {
+          const answer = input.value.trim().toLowerCase();
+          const correct = input.dataset.answer.toLowerCase();
+          
+          if (answer === correct) {
+            input.classList.add('correct');
+            input.classList.remove('wrong');
+            score++;
+          } else {
+            input.classList.add('wrong');
+            input.classList.remove('correct');
+          }
+        });
+        cardMaxScores[0] = inputs.length;
+        
+      } else if (currentCardIndex === 1) {
+        // Check multiple choice
+        window.mcQuestions.forEach((q, i) => {
+          const userAnswer = userMCAnswers[i];
+          const options = document.querySelectorAll(`.mc-option[data-question="${i}"]`);
+          
+          options.forEach(opt => {
+            const value = opt.dataset.value;
+            if (value === q.correct) {
+              if (userAnswer === value) {
+                opt.classList.add('correct');
+                score++;
+              }
+            } else if (value === userAnswer) {
+              opt.classList.add('wrong');
+            }
+          });
+        });
+        
+      } else if (currentCardIndex === 2) {
+        // Check spot mistakes
+        window.mistakes.forEach((m, i) => {
+          const userChoice = userMistakes[i];
+          const words = document.querySelectorAll(`.mistake-word[data-sentence="${i}"]`);
+          
+          words.forEach((word, wi) => {
+            if (wi === m.errorIndex) {
+              if (userChoice === wi) {
+                word.classList.add('correct');
+                score++;
+              }
+            } else if (wi === userChoice) {
+              word.classList.add('wrong');
+            }
+          });
+        });
+        
+      } else if (currentCardIndex === 3) {
+        // Check ordering
+        const inputs = document.querySelectorAll('.ordering-number-input');
+        inputs.forEach((input, i) => {
+          const userOrder = parseInt(input.value);
+          const correctOrder = window.ordering[i].order;
+          
+          if (userOrder === correctOrder) {
+            input.classList.add('correct');
+            score++;
+          } else {
+            input.classList.add('wrong');
+          }
+        });
+      }
+
+      cardScores[currentCardIndex] = score;
+      allCardsChecked[currentCardIndex] = true;
+      updateScore();
+      updateProgress();
+      
+      if (score === cardMaxScores[currentCardIndex]) {
+        showCelebration('🎉');
+        document.getElementById('nextCardBtn').disabled = false;
+        
+        const dots = document.querySelectorAll('.nav-dot');
+        if (dots[currentCardIndex]) {
+          dots[currentCardIndex].classList.add('completed');
+        }
+      }
+
+      checkAllComplete();
+    }
+
+    function checkAllComplete() {
+      const allComplete = allCardsChecked.every(checked => checked);
+      const allPerfect = cardScores.every((score, i) => score === cardMaxScores[i]);
+      
+      if (allComplete) {
+        document.querySelector('.controls').style.display = 'none';
+        document.getElementById('footer').style.display = 'flex';
+        
+        if (allPerfect) {
+          showCelebration('🏆');
+        }
+      }
+    }
+
+    // ============================================
+    // NAVIGATION
+    // ============================================
+    
+    function nextCard() {
+      if (currentCardIndex < 3) {
+        currentCardIndex++;
+        updateCarouselPosition();
+        updateScore();
+        document.getElementById('nextCardBtn').disabled = true;
+      }
+    }
+
+    function prevCard() {
+      if (currentCardIndex > 0) {
+        currentCardIndex--;
+        updateCarouselPosition();
+        updateScore();
+      }
+    }
+
+    function updateCarouselPosition() {
+      const track = document.getElementById('carouselTrack');
+      const offset = -currentCardIndex * 100;
+      track.style.transform = `translateX(${offset}%)`;
+      
+      document.querySelectorAll('.card-wrapper').forEach((card, index) => {
+        card.classList.toggle('active', index === currentCardIndex);
+      });
+      
+      document.getElementById('cardNumber').textContent = currentCardIndex + 1;
+      document.getElementById('prevArrow').disabled = currentCardIndex === 0;
+      document.getElementById('nextArrow').disabled = currentCardIndex === 3;
+      
+      const dots = document.querySelectorAll('.nav-dot');
+      dots.forEach((dot, i) => {
+        dot.classList.toggle('active', i === currentCardIndex);
+      });
+    }
+
+    function renderNavigation() {
+      const nav = document.getElementById('scoreDots');
+      nav.innerHTML = '';
+      
+      const labels = ['Text', 'MC', 'Spot', 'Order'];
+      
+      for (let i = 0; i < 4; i++) {
+        const dot = document.createElement('div');
+        dot.className = 'nav-dot';
+        dot.setAttribute('data-label', labels[i]);
+        if (i === currentCardIndex) dot.classList.add('active');
+        dot.addEventListener('click', () => goToCard(i));
+        nav.appendChild(dot);
+      }
+    }
+
+    function goToCard(index) {
+      currentCardIndex = index;
+      updateCarouselPosition();
+      updateScore();
+    }
+
+    function updateScore() {
+      const score = cardScores[currentCardIndex];
+      const max = cardMaxScores[currentCardIndex];
+      document.getElementById('scoreDisplay').textContent = `${score}/${max}`;
+    }
+
+    function updateProgress() {
+      const totalScore = cardScores.reduce((a, b) => a + b, 0);
+      const totalMax = cardMaxScores.reduce((a, b) => a + b, 0);
+      const percentage = Math.round((totalScore / totalMax) * 100);
+      document.getElementById('progressFill').style.width = percentage + '%';
+    }
+
+    function showCelebration(emoji) {
+      const celebration = document.createElement('div');
+      celebration.className = 'celebration';
+      celebration.textContent = emoji;
+      document.body.appendChild(celebration);
+      
+      setTimeout(() => {
+        document.body.removeChild(celebration);
+      }, 1000);
+    }
+
+    // ============================================
+    // FOOTER ACTIONS
+    // ============================================
+    
+    function retryExercises() {
+      location.reload();
+    }
+
+    function goToChallenge() {
+      alert('🎮 Challenge Quiz coming soon!');
+    }
+
+    function goHome() {
+      sessionStorage.removeItem('quizData');
+      window.location.href = '../index.html';
+    }
+
+    function goBack() {
+      window.history.back();
+    }
+
+    // Touch swipe for mobile - FIXED to prevent conflicts with vertical scrolling
+    let startX = 0;
+    let startY = 0;
+    let isDragging = false;
+
+    const carouselTrack = document.getElementById('carouselTrack');
+
+    carouselTrack.addEventListener('touchstart', (e) => {
+      startX = e.touches[0].clientX;
+      startY = e.touches[0].clientY;
+      isDragging = true;
+    }, { passive: true });
+
+    carouselTrack.addEventListener('touchmove', (e) => {
+      if (!isDragging) return;
+      
+      const currentX = e.touches[0].clientX;
+      const currentY = e.touches[0].clientY;
+      const diffX = Math.abs(startX - currentX);
+      const diffY = Math.abs(startY - currentY);
+      
+      // Only prevent default if horizontal swipe (not vertical scroll)
+      if (diffX > diffY && diffX > 10) {
+        // This is a horizontal swipe, allow carousel movement
+        isDragging = true;
+      } else if (diffY > diffX) {
+        // This is vertical scroll, don't interfere
+        isDragging = false;
+      }
+    }, { passive: true });
+
+    carouselTrack.addEventListener('touchend', (e) => {
+      if (!isDragging) return;
+      
+      const endX = e.changedTouches[0].clientX;
+      const endY = e.changedTouches[0].clientY;
+      const diffX = startX - endX;
+      const diffY = Math.abs(startY - endY);
+      
+      // Only trigger card change if horizontal swipe is dominant
+      if (Math.abs(diffX) > 50 && Math.abs(diffX) > diffY) {
+        if (diffX > 0 && currentCardIndex < 3) {
+          nextCard();
+        } else if (diffX < 0 && currentCardIndex > 0) {
+          prevCard();
+        }
+      }
+      isDragging = false;
+    }, { passive: true });
+
+    // Keyboard navigation - only when not typing in inputs
+    document.addEventListener('keydown', (e) => {
+      // Don't trigger if user is typing in an input field
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+        return;
+      }
+      
+      if (e.key === 'ArrowRight' && currentCardIndex < 3) {
+        e.preventDefault();
+        nextCard();
+      } else if (e.key === 'ArrowLeft' && currentCardIndex > 0) {
+        e.preventDefault();
+        prevCard();
+      }
+    });
+
+    // Initialize
+    renderAllCards();
+    updateScore();
+  </script>
+</body>
+</html>
