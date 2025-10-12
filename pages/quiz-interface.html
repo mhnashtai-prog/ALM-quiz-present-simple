@@ -865,637 +865,599 @@
   </div>
 
   <script>
-    // ============================================
-    // DATA LOADING & GENERATION
-    // ============================================
-    
-    let characterData = {
-      name: 'SARAH',
-      emoji: '👧',
-      category: 'Daily Habits',
-      verbs: []
-    };
+   <script>
+  // ============================================
+  // LOAD SELECTION + FETCH CHARACTER DATA
+  // ============================================
+  
+  let selectionData = null;
+  let characterExerciseData = null;
+  let exerciseData = null;
 
-    // Try loading from sessionStorage
+  async function loadData() {
     try {
-      const storedData = sessionStorage.getItem('quizData');
-      if (storedData) {
-        const quizData = JSON.parse(storedData);
-        characterData.name = quizData.character;
-        characterData.emoji = quizData.characterEmoji;
-        characterData.category = quizData.cartTitle;
-        characterData.verbs = quizData.verbs.slice(0, 20);
+      // Step 1: Read user selection from sessionStorage
+      const stored = sessionStorage.getItem('selectionData');
+      
+      if (!stored) {
+        showError('No selection found. Please start from the home page.');
+        return false;
       }
+
+      selectionData = JSON.parse(stored);
+      console.log('📥 Selection loaded:', selectionData);
+
+      // Step 2: Fetch character-data.json
+      console.log('📥 Fetching character-data.json...');
+      const response = await fetch('../data/character-data.json');
+      
+      if (!response.ok) {
+        throw new Error(`Failed to load character-data.json: ${response.status}`);
+      }
+
+      characterExerciseData = await response.json();
+      console.log('✅ Character exercise data loaded');
+
+      // Step 3: Extract exercise templates
+      const charKey = selectionData.characterKey;
+      
+      if (!characterExerciseData[charKey]) {
+        throw new Error(`Character '${charKey}' not found in character-data.json`);
+      }
+
+      // Map category keys (grammar-modes uses different names than character-data)
+      const categoryMapping = {
+        'habitual': 'daily_habits',
+        'routine': 'daily_habits',
+        'frequency': 'daily_habits',
+        'conjunctions': 'daily_habits'
+      };
+      
+      const exerciseCategoryKey = categoryMapping[selectionData.category] || 'daily_habits';
+
+      if (!characterExerciseData[charKey].categories[exerciseCategoryKey]) {
+        throw new Error(`Category '${exerciseCategoryKey}' not found for ${charKey}`);
+      }
+
+      const categoryData = characterExerciseData[charKey].categories[exerciseCategoryKey];
+
+      // Validate exercise data
+      if (!categoryData.clozeTemplates || categoryData.clozeTemplates.length === 0) {
+        throw new Error('No cloze templates found');
+      }
+      if (!categoryData.multipleChoiceQuestions || categoryData.multipleChoiceQuestions.length === 0) {
+        throw new Error('No multiple choice questions found');
+      }
+      if (!categoryData.mistakeSentences || categoryData.mistakeSentences.length === 0) {
+        throw new Error('No mistake sentences found');
+      }
+      if (!categoryData.orderingSentences || categoryData.orderingSentences.length === 0) {
+        throw new Error('No ordering sentences found');
+      }
+
+      exerciseData = {
+        name: selectionData.characterName,
+        emoji: selectionData.characterEmoji,
+        category: selectionData.categoryTitle,
+        clozeTemplate: categoryData.clozeTemplates[0], // Use first template
+        multipleChoiceQuestions: categoryData.multipleChoiceQuestions.slice(0, 15), // 15 questions
+        mistakeSentences: categoryData.mistakeSentences.slice(0, 15), // 15 sentences
+        orderingSentences: categoryData.orderingSentences[0] // Use first set
+      };
+
+      // Update header display
+      document.querySelector('.character-option.active .character-emoji').textContent = exerciseData.emoji;
+      document.querySelector('.character-option.active span:last-child').textContent = exerciseData.name;
+
+      console.log('✅ Quiz interface ready with exercise templates');
+      return true;
+
     } catch (error) {
-      console.error('Error loading data:', error);
+      console.error('❌ Error loading data:', error);
+      showError(`Failed to load exercise data: ${error.message}`);
+      return false;
     }
+  }
 
-    // FALLBACK: Hardcoded sample data (will be replaced by JSON in production)
-    if (characterData.verbs.length === 0) {
-      // Randomly select one of 3 verb sets for variety
-      const verbSets = [
-        [
-          { verb: 'wakes up', object: 'at 6:30am', emoji: '⏰' },
-          { verb: 'brushes', object: 'her teeth', emoji: '🪥' },
-          { verb: 'combs', object: 'her hair', emoji: '💇' },
-          { verb: 'eats', object: 'breakfast', emoji: '🍳' },
-          { verb: 'drinks', object: 'coffee', emoji: '☕' },
-          { verb: 'packs', object: 'her bag', emoji: '🎒' },
-          { verb: 'takes', object: 'the bus', emoji: '🚌' },
-          { verb: 'arrives', object: 'at school', emoji: '🏫' },
-          { verb: 'listens', object: 'to teacher', emoji: '👂' },
-          { verb: 'asks', object: 'questions', emoji: '❓' },
-          { verb: 'studies', object: 'grammar', emoji: '📚' },
-          { verb: 'writes', object: 'notes', emoji: '✍️' },
-          { verb: 'has', object: 'lunch', emoji: '🍱' },
-          { verb: 'plays', object: 'with friends', emoji: '👥' },
-          { verb: 'does', object: 'homework', emoji: '📝' },
-          { verb: 'reads', object: 'books', emoji: '📖' },
-          { verb: 'watches', object: 'TV', emoji: '📺' },
-          { verb: 'helps', object: 'at home', emoji: '🏠' },
-          { verb: 'talks', object: 'to family', emoji: '💬' },
-          { verb: 'goes to bed', object: 'at 10pm', emoji: '😴' }
-        ],
-        [
-          { verb: 'drinks', object: 'orange juice', emoji: '🍊' },
-          { verb: 'eats', object: 'lunch', emoji: '🥗' },
-          { verb: 'catches', object: 'the train', emoji: '🚊' },
-          { verb: 'uses', object: 'her laptop', emoji: '💻' },
-          { verb: 'finishes', object: 'her work', emoji: '✅' },
-          { verb: 'enjoys', object: 'movies', emoji: '🎬' },
-          { verb: 'plays', object: 'the piano', emoji: '🎹' },
-          { verb: 'draws', object: 'pictures', emoji: '🎨' },
-          { verb: 'visits', object: 'friends', emoji: '👥' },
-          { verb: 'practices', object: 'yoga', emoji: '🧘' },
-          { verb: 'learns', object: 'new things', emoji: '📚' },
-          { verb: 'prepares', object: 'meals', emoji: '🍽️' },
-          { verb: 'organizes', object: 'her desk', emoji: '🗂️' },
-          { verb: 'charges', object: 'her tablet', emoji: '🔌' },
-          { verb: 'wears', object: 'a jacket', emoji: '🧥' },
-          { verb: 'closes', object: 'the door', emoji: '🚪' },
-          { verb: 'opens', object: 'windows', emoji: '🪟' },
-          { verb: 'sends', object: 'messages', emoji: '💬' },
-          { verb: 'saves', object: 'money', emoji: '💰' },
-          { verb: 'chooses', object: 'outfits', emoji: '👗' }
-        ],
-        [
-          { verb: 'drinks', object: 'water', emoji: '💧' },
-          { verb: 'eats', object: 'snacks', emoji: '🍿' },
-          { verb: 'rides', object: 'the subway', emoji: '🚇' },
-          { verb: 'charges', object: 'her phone', emoji: '🔋' },
-          { verb: 'completes', object: 'projects', emoji: '📊' },
-          { verb: 'streams', object: 'shows', emoji: '📺' },
-          { verb: 'sings', object: 'songs', emoji: '🎤' },
-          { verb: 'solves', object: 'puzzles', emoji: '🧩' },
-          { verb: 'writes', object: 'stories', emoji: '📝' },
-          { verb: 'follows', object: 'recipes', emoji: '📖' },
-          { verb: 'attends', object: 'classes', emoji: '🎓' },
-          { verb: 'bakes', object: 'cookies', emoji: '🍪' },
-          { verb: 'tidies', object: 'the kitchen', emoji: '🧽' },
-          { verb: 'combs', object: 'her hair', emoji: '💇' },
-          { verb: 'applies', object: 'lotion', emoji: '🧴' },
-          { verb: 'folds', object: 'laundry', emoji: '👔' },
-          { verb: 'locks', object: 'the house', emoji: '🔐' },
-          { verb: 'turns off', object: 'lights', emoji: '💡' },
-          { verb: 'answers', object: 'calls', emoji: '📞' },
-          { verb: 'plans', object: 'trips', emoji: '✈️' }
-        ]
-      ];
+  function showError(message) {
+    document.getElementById('loadingOverlay')?.classList.add('hidden');
+    document.body.innerHTML += `
+      <div style="
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: #1a1a1a;
+        padding: 2rem;
+        border-radius: 16px;
+        box-shadow: 16px 16px 32px #000000;
+        text-align: center;
+        max-width: 400px;
+        z-index: 10000;
+      ">
+        <h2 style="color: #fb923c; margin-bottom: 1rem; font-family: 'Space Grotesk', sans-serif;">⚠️ Error</h2>
+        <p style="color: rgba(232, 232, 232, 0.8); margin-bottom: 1.5rem; font-size: 0.9rem;">${message}</p>
+        <button onclick="window.location.href='../index.html'" style="
+          background: rgba(201, 169, 97, 0.2);
+          border: none;
+          border-radius: 12px;
+          padding: 0.875rem 1.5rem;
+          color: #C9A961;
+          font-size: 0.875rem;
+          font-weight: 600;
+          cursor: pointer;
+          box-shadow: 6px 6px 12px #000000;
+        ">🏠 Return to Home</button>
+      </div>
+    `;
+  }
+
+  // ============================================
+  // GAME STATE
+  // ============================================
+  
+  let currentCardIndex = 0;
+  let cardScores = [0, 0, 0, 0];
+  let cardMaxScores = [0, 15, 15, 7]; // Will be set dynamically
+  let allCardsChecked = [false, false, false, false];
+
+  // ============================================
+  // CARD 1: RENDER CLOZE TEXT
+  // ============================================
+  
+  function renderClozeCard() {
+    const template = exerciseData.clozeTemplate;
+    const text = template.text;
+    const answers = template.answers;
+
+    // Replace w_____ pattern with input fields
+    let processedText = text;
+    let answerIndex = 0;
+
+    // Find all blanks in format: w_____, b_____, etc.
+    processedText = processedText.replace(/([a-z])(_{3,})/gi, (match, firstLetter) => {
+      const answer = answers[answerIndex] || 'unknown';
+      answerIndex++;
       
-      // Randomly select one verb set
-      const randomIndex = Math.floor(Math.random() * verbSets.length);
-      characterData.verbs = verbSets[randomIndex];
-      
-      console.log(`Using verb set ${randomIndex + 1} for variety`);
-    }
-
-    let currentCardIndex = 0;
-    let cardScores = [0, 0, 0, 0];
-    let cardMaxScores = [20, 15, 15, 7]; // Adjust based on content
-    let allCardsChecked = [false, false, false, false];
-
-    // ============================================
-    // CARD 1: GENERATE CLOZE TEXT
-    // ============================================
-    
-    function generateClozeText() {
-      const name = characterData.name;
-      const verbs = characterData.verbs;
-      
-      // Build narrative using verbs
-      const story = `
-        <p>${name} is a student. Every morning, she <span class="blank-wrapper"><span class="first-letter">w</span><input type="text" class="blank-input" data-answer="wakes up" maxlength="15" /></span> at 6:30am. She goes to the bathroom and <span class="blank-wrapper"><span class="first-letter">b</span><input type="text" class="blank-input" data-answer="brushes" maxlength="10" /></span> her teeth. Then she <span class="blank-wrapper"><span class="first-letter">c</span><input type="text" class="blank-input" data-answer="combs" maxlength="10" /></span> her hair.</p>
-        
-        <p>After that, she goes to the kitchen. She <span class="blank-wrapper"><span class="first-letter">e</span><input type="text" class="blank-input" data-answer="eats" maxlength="10" /></span> breakfast with her family. She usually <span class="blank-wrapper"><span class="first-letter">d</span><input type="text" class="blank-input" data-answer="drinks" maxlength="10" /></span> orange juice or milk. She loves breakfast time!</p>
-        
-        <p>Before leaving home, she <span class="blank-wrapper"><span class="first-letter">p</span><input type="text" class="blank-input" data-answer="packs" maxlength="10" /></span> her school bag with books and notebooks. She says goodbye to her parents and <span class="blank-wrapper"><span class="first-letter">t</span><input type="text" class="blank-input" data-answer="takes" maxlength="10" /></span> the bus to school. The journey <span class="blank-wrapper"><span class="first-letter">t</span><input type="text" class="blank-input" data-answer="takes" maxlength="10" /></span> twenty minutes.</p>
-        
-        <p>When she <span class="blank-wrapper"><span class="first-letter">a</span><input type="text" class="blank-input" data-answer="arrives" maxlength="10" /></span> at school, she meets her friends. In class, she <span class="blank-wrapper"><span class="first-letter">l</span><input type="text" class="blank-input" data-answer="listens" maxlength="10" /></span> carefully to the teacher. She always <span class="blank-wrapper"><span class="first-letter">a</span><input type="text" class="blank-input" data-answer="asks" maxlength="10" /></span> questions when she doesn't understand something.</p>
-        
-        <p>${name} <span class="blank-wrapper"><span class="first-letter">s</span><input type="text" class="blank-input" data-answer="studies" maxlength="10" /></span> hard every day. She <span class="blank-wrapper"><span class="first-letter">w</span><input type="text" class="blank-input" data-answer="writes" maxlength="10" /></span> notes in her notebook. At lunchtime, she <span class="blank-wrapper"><span class="first-letter">h</span><input type="text" class="blank-input" data-answer="has" maxlength="10" /></span> lunch in the cafeteria. She <span class="blank-wrapper"><span class="first-letter">p</span><input type="text" class="blank-input" data-answer="plays" maxlength="10" /></span> with her friends during break time.</p>
-        
-        <p>After school, she goes home and <span class="blank-wrapper"><span class="first-letter">d</span><input type="text" class="blank-input" data-answer="does" maxlength="10" /></span> her homework. She <span class="blank-wrapper"><span class="first-letter">r</span><input type="text" class="blank-input" data-answer="reads" maxlength="10" /></span> books in her free time. Sometimes she <span class="blank-wrapper"><span class="first-letter">w</span><input type="text" class="blank-input" data-answer="watches" maxlength="10" /></span> TV with her family.</p>
-        
-        <p>In the evening, she <span class="blank-wrapper"><span class="first-letter">h</span><input type="text" class="blank-input" data-answer="helps" maxlength="10" /></span> her mother at home. She <span class="blank-wrapper"><span class="first-letter">t</span><input type="text" class="blank-input" data-answer="talks" maxlength="10" /></span> to her family about her day. Finally, she <span class="blank-wrapper"><span class="first-letter">g</span><input type="text" class="blank-input" data-answer="goes to bed" maxlength="15" /></span> at 10pm. She loves her daily routine!</p>
-      `;
-      
-      return story;
-    }
-
-    // ============================================
-    // CARD 2: GENERATE MULTIPLE CHOICE
-    // ============================================
-    
-    function generateMultipleChoice() {
-      const name = characterData.name;
-      const verbs = characterData.verbs.slice(0, 15);
-      
-      const questions = [
-        // Affirmative (3rd person -s)
-        { text: `${name} _____ up at 6:30am every morning.`, correct: 'wakes', options: ['wake', 'wakes', 'is waking', 'woke'] },
-        { text: `She _____ her teeth after breakfast.`, correct: 'brushes', options: ['brush', 'brushes', 'is brushing', 'brushed'] },
-        { text: `${name} _____ coffee with her breakfast.`, correct: 'drinks', options: ['drink', 'drinks', 'is drinking', 'drank'] },
-        { text: `She _____ the bus to school every day.`, correct: 'takes', options: ['take', 'takes', 'is taking', 'took'] },
-        { text: `${name} _____ hard in all her classes.`, correct: 'studies', options: ['study', 'studies', 'is studying', 'studied'] },
-        
-        // Negative
-        { text: `She _____ eat meat. She's vegetarian.`, correct: "doesn't", options: ["don't", "doesn't", "isn't", "didn't"] },
-        { text: `${name} _____ like getting up early.`, correct: "doesn't", options: ["don't", "doesn't", "isn't", "didn't"] },
-        { text: `They _____ go to school on Sundays.`, correct: "don't", options: ["don't", "doesn't", "isn't", "didn't"] },
-        
-        // Questions
-        { text: `_____ she go to school by bus?`, correct: 'Does', options: ['Do', 'Does', 'Is', 'Did'] },
-        { text: `_____ ${name} like studying?`, correct: 'Does', options: ['Do', 'Does', 'Is', 'Did'] },
-        { text: `_____ they play together at school?`, correct: 'Do', options: ['Do', 'Does', 'Are', 'Did'] },
-        
-        // Mixed
-        { text: `Where _____ she live?`, correct: 'does', options: ['do', 'does', 'is', 'did'] },
-        { text: `What time _____ the lesson start?`, correct: 'does', options: ['do', 'does', 'is', 'did'] },
-        { text: `How _____ you go to school?`, correct: 'do', options: ['do', 'does', 'are', 'did'] },
-        { text: `Why _____ she study English?`, correct: 'does', options: ['do', 'does', 'is', 'did'] }
-      ];
-      
-      return questions;
-    }
-
-    // ============================================
-    // CARD 3: GENERATE SPOT THE MISTAKE
-    // ============================================
-    
-    function generateSpotMistakes() {
-      const name = characterData.name;
-      
-      const mistakes = [
-        { sentence: [name, 'drink', 'coffee', 'every', 'morning'], errorIndex: 1 },
-        { sentence: ['She', "don't", 'like', 'vegetables'], errorIndex: 1 },
-        { sentence: ['Does', 'they', 'go', 'to', 'school', '?'], errorIndex: 1 },
-        { sentence: ['He', 'watch', 'TV', 'every', 'evening'], errorIndex: 1 },
-        { sentence: ['We', "doesn't", 'eat', 'meat'], errorIndex: 1 },
-        { sentence: ['Do', 'she', 'speak', 'English', '?'], errorIndex: 1 },
-        { sentence: [name, 'study', 'hard', 'every', 'day'], errorIndex: 1 },
-        { sentence: ['They', 'goes', 'to', 'the', 'park'], errorIndex: 1 },
-        { sentence: ['She', 'do', 'her', 'homework', 'daily'], errorIndex: 1 },
-        { sentence: ['Does', 'you', 'like', 'reading', '?'], errorIndex: 1 },
-        { sentence: ['He', "don't", 'play', 'football'], errorIndex: 1 },
-        { sentence: ['My', 'friend', 'have', 'a', 'cat'], errorIndex: 2 },
-        { sentence: ['Do', name, 'likes', 'music', '?'], errorIndex: 2 },
-        { sentence: ['We', "doesn't", 'watch', 'TV', 'often'], errorIndex: 1 },
-        { sentence: ['She', 'brush', 'her', 'teeth', 'daily'], errorIndex: 1 }
-      ];
-      
-      return mistakes;
-    }
-
-    // ============================================
-    // CARD 4: GENERATE SENTENCE ORDERING
-    // ============================================
-    
-    function generateOrdering() {
-      const name = characterData.name;
-      
-      const sentences = [
-        { text: `${name} wakes up at 6:30am.`, order: 1 },
-        { text: 'She brushes her teeth and combs her hair.', order: 2 },
-        { text: 'Then she eats breakfast with her family.', order: 3 },
-        { text: 'After breakfast, she packs her school bag.', order: 4 },
-        { text: 'She takes the bus to school at 7:45am.', order: 5 },
-        { text: 'After school, she does her homework.', order: 6 },
-        { text: 'Finally, she goes to bed at 10pm.', order: 7 }
-      ];
-      
-      return sentences.sort(() => Math.random() - 0.5);
-    }
-
-    // ============================================
-    // RENDER ALL CARDS
-    // ============================================
-    
-    function renderAllCards() {
-      const track = document.getElementById('carouselTrack');
-      track.innerHTML = '';
-
-      // CARD 1: Cloze Text
-      const card1 = document.createElement('div');
-      card1.className = 'card-wrapper active';
-      card1.innerHTML = `
-        <div class="exercise-card">
-          <div class="card-title">📝 Complete the Story</div>
-          <div class="exercise-content">
-            <div class="cloze-text">${generateClozeText()}</div>
-          </div>
-        </div>
-      `;
-      track.appendChild(card1);
-
-      // CARD 2: Multiple Choice
-      const card2 = document.createElement('div');
-      card2.className = 'card-wrapper';
-      const mcQuestions = generateMultipleChoice();
-      const mcHTML = mcQuestions.map((q, i) => `
-        <div class="mc-question">
-          <div class="mc-question-text">${i + 1}. ${q.text}</div>
-          <div class="mc-options">
-            ${q.options.map(opt => `
-              <div class="mc-option" data-question="${i}" data-value="${opt}" onclick="selectMC(${i}, '${opt}')">${opt}</div>
-            `).join('')}
-          </div>
-        </div>
-      `).join('');
-      
-      card2.innerHTML = `
-        <div class="exercise-card">
-          <div class="card-title">✅ Multiple Choice</div>
-          <div class="exercise-content">${mcHTML}</div>
-        </div>
-      `;
-      track.appendChild(card2);
-
-      // CARD 3: Spot Mistakes
-      const card3 = document.createElement('div');
-      card3.className = 'card-wrapper';
-      const mistakes = generateSpotMistakes();
-      const mistakesHTML = mistakes.map((m, i) => `
-        <div class="mistake-sentence">
-          <div class="mistake-number">Sentence ${i + 1}</div>
-          <div class="mistake-words">
-            ${m.sentence.map((word, wi) => `
-              <div class="mistake-word" data-sentence="${i}" data-word="${wi}" onclick="selectMistake(${i}, ${wi})">${word}</div>
-            `).join('')}
-          </div>
-        </div>
-      `).join('');
-      
-      card3.innerHTML = `
-        <div class="exercise-card">
-          <div class="card-title">🔍 Spot the Mistake</div>
-          <div class="exercise-content">${mistakesHTML}</div>
-        </div>
-      `;
-      track.appendChild(card3);
-
-      // CARD 4: Ordering
-      const card4 = document.createElement('div');
-      card4.className = 'card-wrapper';
-      const ordering = generateOrdering();
-      const orderHTML = ordering.map((s, i) => `
-        <div class="ordering-sentence" draggable="true" data-correct="${s.order}">
-          <span class="drag-handle">⋮</span>
-          <input type="number" class="ordering-number-input" min="1" max="7" data-index="${i}" placeholder="#">
-          <div class="ordering-text">${s.text}</div>
-        </div>
-      `).join('');
-      
-      card4.innerHTML = `
-        <div class="exercise-card">
-          <div class="card-title">🔢 Order the Sentences</div>
-          <div class="exercise-content">
-            <div class="ordering-instructions">Number the sentences 1-7 to tell the story in order</div>
-            ${orderHTML}
-          </div>
-        </div>
-      `;
-      track.appendChild(card4);
-
-      // Store data for checking
-      window.mcQuestions = mcQuestions;
-      window.mistakes = mistakes;
-      window.ordering = ordering;
-
-      renderNavigation();
-      updateCarouselPosition();
-    }
-
-    // ============================================
-    // USER INTERACTION
-    // ============================================
-    
-    let userMCAnswers = {};
-    let userMistakes = {};
-
-    function selectMC(questionIndex, value) {
-      userMCAnswers[questionIndex] = value;
-      
-      const options = document.querySelectorAll(`.mc-option[data-question="${questionIndex}"]`);
-      options.forEach(opt => {
-        opt.classList.toggle('selected', opt.dataset.value === value);
-      });
-    }
-
-    function selectMistake(sentenceIndex, wordIndex) {
-      userMistakes[sentenceIndex] = wordIndex;
-      
-      const words = document.querySelectorAll(`.mistake-word[data-sentence="${sentenceIndex}"]`);
-      words.forEach(word => {
-        word.classList.toggle('selected', parseInt(word.dataset.word) === wordIndex);
-      });
-    }
-
-    // ============================================
-    // CHECK ANSWERS
-    // ============================================
-    
-    function checkAnswers() {
-      let score = 0;
-
-      if (currentCardIndex === 0) {
-        // Check cloze text
-        const inputs = document.querySelectorAll('.blank-input');
-        inputs.forEach(input => {
-          const answer = input.value.trim().toLowerCase();
-          const correct = input.dataset.answer.toLowerCase();
-          
-          if (answer === correct) {
-            input.classList.add('correct');
-            input.classList.remove('wrong');
-            score++;
-          } else {
-            input.classList.add('wrong');
-            input.classList.remove('correct');
-          }
-        });
-        cardMaxScores[0] = inputs.length;
-        
-      } else if (currentCardIndex === 1) {
-        // Check multiple choice
-        window.mcQuestions.forEach((q, i) => {
-          const userAnswer = userMCAnswers[i];
-          const options = document.querySelectorAll(`.mc-option[data-question="${i}"]`);
-          
-          options.forEach(opt => {
-            const value = opt.dataset.value;
-            if (value === q.correct) {
-              if (userAnswer === value) {
-                opt.classList.add('correct');
-                score++;
-              }
-            } else if (value === userAnswer) {
-              opt.classList.add('wrong');
-            }
-          });
-        });
-        
-      } else if (currentCardIndex === 2) {
-        // Check spot mistakes
-        window.mistakes.forEach((m, i) => {
-          const userChoice = userMistakes[i];
-          const words = document.querySelectorAll(`.mistake-word[data-sentence="${i}"]`);
-          
-          words.forEach((word, wi) => {
-            if (wi === m.errorIndex) {
-              if (userChoice === wi) {
-                word.classList.add('correct');
-                score++;
-              }
-            } else if (wi === userChoice) {
-              word.classList.add('wrong');
-            }
-          });
-        });
-        
-      } else if (currentCardIndex === 3) {
-        // Check ordering
-        const inputs = document.querySelectorAll('.ordering-number-input');
-        inputs.forEach((input, i) => {
-          const userOrder = parseInt(input.value);
-          const correctOrder = window.ordering[i].order;
-          
-          if (userOrder === correctOrder) {
-            input.classList.add('correct');
-            score++;
-          } else {
-            input.classList.add('wrong');
-          }
-        });
-      }
-
-      cardScores[currentCardIndex] = score;
-      allCardsChecked[currentCardIndex] = true;
-      updateScore();
-      updateProgress();
-      
-      if (score === cardMaxScores[currentCardIndex]) {
-        showCelebration('🎉');
-        document.getElementById('nextCardBtn').disabled = false;
-        
-        const dots = document.querySelectorAll('.nav-dot');
-        if (dots[currentCardIndex]) {
-          dots[currentCardIndex].classList.add('completed');
-        }
-      }
-
-      checkAllComplete();
-    }
-
-    function checkAllComplete() {
-      const allComplete = allCardsChecked.every(checked => checked);
-      const allPerfect = cardScores.every((score, i) => score === cardMaxScores[i]);
-      
-      if (allComplete) {
-        document.querySelector('.controls').style.display = 'none';
-        document.getElementById('footer').style.display = 'flex';
-        
-        if (allPerfect) {
-          showCelebration('🏆');
-        }
-      }
-    }
-
-    // ============================================
-    // NAVIGATION
-    // ============================================
-    
-    function nextCard() {
-      if (currentCardIndex < 3) {
-        currentCardIndex++;
-        updateCarouselPosition();
-        updateScore();
-        document.getElementById('nextCardBtn').disabled = true;
-      }
-    }
-
-    function prevCard() {
-      if (currentCardIndex > 0) {
-        currentCardIndex--;
-        updateCarouselPosition();
-        updateScore();
-      }
-    }
-
-    function updateCarouselPosition() {
-      const track = document.getElementById('carouselTrack');
-      const offset = -currentCardIndex * 100;
-      track.style.transform = `translateX(${offset}%)`;
-      
-      document.querySelectorAll('.card-wrapper').forEach((card, index) => {
-        card.classList.toggle('active', index === currentCardIndex);
-      });
-      
-      document.getElementById('cardNumber').textContent = currentCardIndex + 1;
-      document.getElementById('prevArrow').disabled = currentCardIndex === 0;
-      document.getElementById('nextArrow').disabled = currentCardIndex === 3;
-      
-      const dots = document.querySelectorAll('.nav-dot');
-      dots.forEach((dot, i) => {
-        dot.classList.toggle('active', i === currentCardIndex);
-      });
-    }
-
-    function renderNavigation() {
-      const nav = document.getElementById('scoreDots');
-      nav.innerHTML = '';
-      
-      const labels = ['Text', 'MC', 'Spot', 'Order'];
-      
-      for (let i = 0; i < 4; i++) {
-        const dot = document.createElement('div');
-        dot.className = 'nav-dot';
-        dot.setAttribute('data-label', labels[i]);
-        if (i === currentCardIndex) dot.classList.add('active');
-        dot.addEventListener('click', () => goToCard(i));
-        nav.appendChild(dot);
-      }
-    }
-
-    function goToCard(index) {
-      currentCardIndex = index;
-      updateCarouselPosition();
-      updateScore();
-    }
-
-    function updateScore() {
-      const score = cardScores[currentCardIndex];
-      const max = cardMaxScores[currentCardIndex];
-      document.getElementById('scoreDisplay').textContent = `${score}/${max}`;
-    }
-
-    function updateProgress() {
-      const totalScore = cardScores.reduce((a, b) => a + b, 0);
-      const totalMax = cardMaxScores.reduce((a, b) => a + b, 0);
-      const percentage = Math.round((totalScore / totalMax) * 100);
-      document.getElementById('progressFill').style.width = percentage + '%';
-    }
-
-    function showCelebration(emoji) {
-      const celebration = document.createElement('div');
-      celebration.className = 'celebration';
-      celebration.textContent = emoji;
-      document.body.appendChild(celebration);
-      
-      setTimeout(() => {
-        document.body.removeChild(celebration);
-      }, 1000);
-    }
-
-    // ============================================
-    // FOOTER ACTIONS
-    // ============================================
-    
-    function retryExercises() {
-      location.reload();
-    }
-
-    function goToChallenge() {
-      alert('🎮 Challenge Quiz coming soon!');
-    }
-
-    function goHome() {
-      sessionStorage.removeItem('quizData');
-      window.location.href = '../index.html';
-    }
-
-    function goBack() {
-      window.history.back();
-    }
-
-    // Touch swipe for mobile - FIXED to prevent conflicts with vertical scrolling
-    let startX = 0;
-    let startY = 0;
-    let isDragging = false;
-
-    const carouselTrack = document.getElementById('carouselTrack');
-
-    carouselTrack.addEventListener('touchstart', (e) => {
-      startX = e.touches[0].clientX;
-      startY = e.touches[0].clientY;
-      isDragging = true;
-    }, { passive: true });
-
-    carouselTrack.addEventListener('touchmove', (e) => {
-      if (!isDragging) return;
-      
-      const currentX = e.touches[0].clientX;
-      const currentY = e.touches[0].clientY;
-      const diffX = Math.abs(startX - currentX);
-      const diffY = Math.abs(startY - currentY);
-      
-      // Only prevent default if horizontal swipe (not vertical scroll)
-      if (diffX > diffY && diffX > 10) {
-        // This is a horizontal swipe, allow carousel movement
-        isDragging = true;
-      } else if (diffY > diffX) {
-        // This is vertical scroll, don't interfere
-        isDragging = false;
-      }
-    }, { passive: true });
-
-    carouselTrack.addEventListener('touchend', (e) => {
-      if (!isDragging) return;
-      
-      const endX = e.changedTouches[0].clientX;
-      const endY = e.changedTouches[0].clientY;
-      const diffX = startX - endX;
-      const diffY = Math.abs(startY - endY);
-      
-      // Only trigger card change if horizontal swipe is dominant
-      if (Math.abs(diffX) > 50 && Math.abs(diffX) > diffY) {
-        if (diffX > 0 && currentCardIndex < 3) {
-          nextCard();
-        } else if (diffX < 0 && currentCardIndex > 0) {
-          prevCard();
-        }
-      }
-      isDragging = false;
-    }, { passive: true });
-
-    // Keyboard navigation - only when not typing in inputs
-    document.addEventListener('keydown', (e) => {
-      // Don't trigger if user is typing in an input field
-      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
-        return;
-      }
-      
-      if (e.key === 'ArrowRight' && currentCardIndex < 3) {
-        e.preventDefault();
-        nextCard();
-      } else if (e.key === 'ArrowLeft' && currentCardIndex > 0) {
-        e.preventDefault();
-        prevCard();
-      }
+      return `<span class="blank-wrapper"><span class="first-letter">${firstLetter}</span><input type="text" class="blank-input" data-answer="${answer.toLowerCase()}" maxlength="20" /></span>`;
     });
 
-    // Initialize
+    // Wrap in paragraphs
+    const paragraphs = processedText.split('\n\n').filter(p => p.trim());
+    const html = paragraphs.map(p => `<p>${p.trim()}</p>`).join('');
+
+    cardMaxScores[0] = answers.length;
+
+    return `<div class="cloze-text">${html}</div>`;
+  }
+
+  // ============================================
+  // CARD 2: RENDER MULTIPLE CHOICE
+  // ============================================
+  
+  function renderMultipleChoiceCard() {
+    const questions = exerciseData.multipleChoiceQuestions;
+
+    const html = questions.map((q, i) => `
+      <div class="mc-question">
+        <div class="mc-question-text">${i + 1}. ${q.text}</div>
+        <div class="mc-options">
+          ${q.options.map(opt => `
+            <div class="mc-option" data-question="${i}" data-value="${opt}" onclick="selectMC(${i}, '${opt}')">${opt}</div>
+          `).join('')}
+        </div>
+      </div>
+    `).join('');
+
+    return html;
+  }
+
+  // ============================================
+  // CARD 3: RENDER SPOT MISTAKES
+  // ============================================
+  
+  function renderSpotMistakesCard() {
+    const mistakes = exerciseData.mistakeSentences;
+
+    const html = mistakes.map((m, i) => `
+      <div class="mistake-sentence">
+        <div class="mistake-number">Sentence ${i + 1}</div>
+        <div class="mistake-words">
+          ${m.sentence.map((word, wi) => `
+            <div class="mistake-word" data-sentence="${i}" data-word="${wi}" onclick="selectMistake(${i}, ${wi})">${word}</div>
+          `).join('')}
+        </div>
+      </div>
+    `).join('');
+
+    return html;
+  }
+
+  // ============================================
+  // CARD 4: RENDER ORDERING
+  // ============================================
+  
+  function renderOrderingCard() {
+    const sentences = exerciseData.orderingSentences;
+    
+    // Shuffle sentences
+    const shuffled = [...sentences].sort(() => Math.random() - 0.5);
+
+    const html = `
+      <div class="ordering-instructions">Number the sentences 1-${sentences.length} to tell the story in order</div>
+      ${shuffled.map((s, i) => `
+        <div class="ordering-sentence" draggable="true" data-correct="${s.order}">
+          <span class="drag-handle">⋮</span>
+          <input type="number" class="ordering-number-input" min="1" max="${sentences.length}" data-index="${i}" placeholder="#">
+          <div class="ordering-text">${s.text}</div>
+        </div>
+      `).join('')}
+    `;
+
+    cardMaxScores[3] = sentences.length;
+
+    return html;
+  }
+
+  // ============================================
+  // RENDER ALL CARDS
+  // ============================================
+  
+  function renderAllCards() {
+    const track = document.getElementById('carouselTrack');
+    track.innerHTML = '';
+
+    // CARD 1: Cloze Text
+    const card1 = document.createElement('div');
+    card1.className = 'card-wrapper active';
+    card1.innerHTML = `
+      <div class="exercise-card">
+        <div class="card-title">📝 Complete the Story</div>
+        <div class="exercise-content">
+          ${renderClozeCard()}
+        </div>
+      </div>
+    `;
+    track.appendChild(card1);
+
+    // CARD 2: Multiple Choice
+    const card2 = document.createElement('div');
+    card2.className = 'card-wrapper';
+    card2.innerHTML = `
+      <div class="exercise-card">
+        <div class="card-title">✅ Multiple Choice</div>
+        <div class="exercise-content">
+          ${renderMultipleChoiceCard()}
+        </div>
+      </div>
+    `;
+    track.appendChild(card2);
+
+    // CARD 3: Spot Mistakes
+    const card3 = document.createElement('div');
+    card3.className = 'card-wrapper';
+    card3.innerHTML = `
+      <div class="exercise-card">
+        <div class="card-title">🔍 Spot the Mistake</div>
+        <div class="exercise-content">
+          ${renderSpotMistakesCard()}
+        </div>
+      </div>
+    `;
+    track.appendChild(card3);
+
+    // CARD 4: Ordering
+    const card4 = document.createElement('div');
+    card4.className = 'card-wrapper';
+    card4.innerHTML = `
+      <div class="exercise-card">
+        <div class="card-title">🔢 Order the Sentences</div>
+        <div class="exercise-content">
+          ${renderOrderingCard()}
+        </div>
+      </div>
+    `;
+    track.appendChild(card4);
+
+    renderNavigation();
+    updateCarouselPosition();
+  }
+
+  // ============================================
+  // USER INTERACTION
+  // ============================================
+  
+  let userMCAnswers = {};
+  let userMistakes = {};
+
+  function selectMC(questionIndex, value) {
+    userMCAnswers[questionIndex] = value;
+    
+    const options = document.querySelectorAll(`.mc-option[data-question="${questionIndex}"]`);
+    options.forEach(opt => {
+      opt.classList.toggle('selected', opt.dataset.value === value);
+    });
+  }
+
+  function selectMistake(sentenceIndex, wordIndex) {
+    userMistakes[sentenceIndex] = wordIndex;
+    
+    const words = document.querySelectorAll(`.mistake-word[data-sentence="${sentenceIndex}"]`);
+    words.forEach(word => {
+      word.classList.toggle('selected', parseInt(word.dataset.word) === wordIndex);
+    });
+  }
+
+  // ============================================
+  // CHECK ANSWERS
+  // ============================================
+  
+  function checkAnswers() {
+    let score = 0;
+
+    if (currentCardIndex === 0) {
+      // Check cloze text
+      const inputs = document.querySelectorAll('.blank-input');
+      inputs.forEach(input => {
+        const answer = input.value.trim().toLowerCase();
+        const correct = input.dataset.answer.toLowerCase();
+        
+        if (answer === correct) {
+          input.classList.add('correct');
+          input.classList.remove('wrong');
+          score++;
+        } else {
+          input.classList.add('wrong');
+          input.classList.remove('correct');
+        }
+      });
+      
+    } else if (currentCardIndex === 1) {
+      // Check multiple choice
+      exerciseData.multipleChoiceQuestions.forEach((q, i) => {
+        const userAnswer = userMCAnswers[i];
+        const options = document.querySelectorAll(`.mc-option[data-question="${i}"]`);
+        
+        options.forEach(opt => {
+          const value = opt.dataset.value;
+          if (value === q.correct) {
+            if (userAnswer === value) {
+              opt.classList.add('correct');
+              score++;
+            }
+          } else if (value === userAnswer) {
+            opt.classList.add('wrong');
+          }
+        });
+      });
+      
+    } else if (currentCardIndex === 2) {
+      // Check spot mistakes
+      exerciseData.mistakeSentences.forEach((m, i) => {
+        const userChoice = userMistakes[i];
+        const words = document.querySelectorAll(`.mistake-word[data-sentence="${i}"]`);
+        
+        words.forEach((word, wi) => {
+          if (wi === m.errorIndex) {
+            if (userChoice === wi) {
+              word.classList.add('correct');
+              score++;
+            }
+          } else if (wi === userChoice) {
+            word.classList.add('wrong');
+          }
+        });
+      });
+      
+    } else if (currentCardIndex === 3) {
+      // Check ordering
+      const inputs = document.querySelectorAll('.ordering-number-input');
+      const sentences = document.querySelectorAll('.ordering-sentence');
+      
+      inputs.forEach((input, i) => {
+        const userOrder = parseInt(input.value);
+        const correctOrder = parseInt(sentences[i].dataset.correct);
+        
+        if (userOrder === correctOrder) {
+          input.classList.add('correct');
+          score++;
+        } else {
+          input.classList.add('wrong');
+        }
+      });
+    }
+
+    cardScores[currentCardIndex] = score;
+    allCardsChecked[currentCardIndex] = true;
+    updateScore();
+    updateProgress();
+    
+    if (score === cardMaxScores[currentCardIndex]) {
+      showCelebration('🎉');
+      document.getElementById('nextCardBtn').disabled = false;
+      
+      const dots = document.querySelectorAll('.nav-dot');
+      if (dots[currentCardIndex]) {
+        dots[currentCardIndex].classList.add('completed');
+      }
+    }
+
+    checkAllComplete();
+  }
+
+  function checkAllComplete() {
+    const allComplete = allCardsChecked.every(checked => checked);
+    
+    if (allComplete) {
+      document.querySelector('.controls').style.display = 'none';
+      document.getElementById('footer').style.display = 'flex';
+      
+      const allPerfect = cardScores.every((score, i) => score === cardMaxScores[i]);
+      if (allPerfect) {
+        showCelebration('🏆');
+      }
+    }
+  }
+
+  // ============================================
+  // NAVIGATION (keep existing code)
+  // ============================================
+  
+  function nextCard() {
+    if (currentCardIndex < 3) {
+      currentCardIndex++;
+      updateCarouselPosition();
+      updateScore();
+      document.getElementById('nextCardBtn').disabled = true;
+    }
+  }
+
+  function prevCard() {
+    if (currentCardIndex > 0) {
+      currentCardIndex--;
+      updateCarouselPosition();
+      updateScore();
+    }
+  }
+
+  function updateCarouselPosition() {
+    const track = document.getElementById('carouselTrack');
+    const offset = -currentCardIndex * 100;
+    track.style.transform = `translateX(${offset}%)`;
+    
+    document.querySelectorAll('.card-wrapper').forEach((card, index) => {
+      card.classList.toggle('active', index === currentCardIndex);
+    });
+    
+    document.getElementById('cardNumber').textContent = currentCardIndex + 1;
+    document.getElementById('prevArrow').disabled = currentCardIndex === 0;
+    document.getElementById('nextArrow').disabled = currentCardIndex === 3;
+    
+    const dots = document.querySelectorAll('.nav-dot');
+    dots.forEach((dot, i) => {
+      dot.classList.toggle('active', i === currentCardIndex);
+    });
+  }
+
+  function renderNavigation() {
+    const nav = document.getElementById('scoreDots');
+    nav.innerHTML = '';
+    
+    const labels = ['Text', 'MC', 'Spot', 'Order'];
+    
+    for (let i = 0; i < 4; i++) {
+      const dot = document.createElement('div');
+      dot.className = 'nav-dot';
+      dot.setAttribute('data-label', labels[i]);
+      if (i === currentCardIndex) dot.classList.add('active');
+      dot.addEventListener('click', () => goToCard(i));
+      nav.appendChild(dot);
+    }
+  }
+
+  function goToCard(index) {
+    currentCardIndex = index;
+    updateCarouselPosition();
+    updateScore();
+  }
+
+  function updateScore() {
+    const score = cardScores[currentCardIndex];
+    const max = cardMaxScores[currentCardIndex];
+    document.getElementById('scoreDisplay').textContent = `${score}/${max}`;
+  }
+
+  function updateProgress() {
+    const totalScore = cardScores.reduce((a, b) => a + b, 0);
+    const totalMax = cardMaxScores.reduce((a, b) => a + b, 0);
+    const percentage = Math.round((totalScore / totalMax) * 100);
+    document.getElementById('progressFill').style.width = percentage + '%';
+  }
+
+  function showCelebration(emoji) {
+    const celebration = document.createElement('div');
+    celebration.className = 'celebration';
+    celebration.textContent = emoji;
+    document.body.appendChild(celebration);
+    
+    setTimeout(() => {
+      document.body.removeChild(celebration);
+    }, 1000);
+  }
+
+  function retryExercises() {
+    location.reload();
+  }
+
+  function goToChallenge() {
+    alert('🎮 Challenge mode coming soon!');
+  }
+
+  function goHome() {
+    sessionStorage.removeItem('selectionData');
+    window.location.href = '../index.html';
+  }
+
+  function goBack() {
+    window.history.back();
+  }
+
+  // Touch/keyboard navigation (keep existing code)
+  let startX = 0, startY = 0, isDragging = false;
+  const carouselTrack = document.getElementById('carouselTrack');
+
+  carouselTrack.addEventListener('touchstart', (e) => {
+    startX = e.touches[0].clientX;
+    startY = e.touches[0].clientY;
+    isDragging = true;
+  }, { passive: true });
+
+  carouselTrack.addEventListener('touchmove', (e) => {
+    if (!isDragging) return;
+    const diffX = Math.abs(startX - e.touches[0].clientX);
+    const diffY = Math.abs(startY - e.touches[0].clientY);
+    isDragging = diffX > diffY && diffX > 10;
+  }, { passive: true });
+
+  carouselTrack.addEventListener('touchend', (e) => {
+    if (!isDragging) return;
+    const diffX = startX - e.changedTouches[0].clientX;
+    if (Math.abs(diffX) > 50) {
+      if (diffX > 0 && currentCardIndex < 3) nextCard();
+      else if (diffX < 0 && currentCardIndex > 0) prevCard();
+    }
+    isDragging = false;
+  }, { passive: true });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.target.tagName === 'INPUT') return;
+    if (e.key === 'ArrowRight' && currentCardIndex < 3) { e.preventDefault(); nextCard(); }
+    else if (e.key === 'ArrowLeft' && currentCardIndex > 0) { e.preventDefault(); prevCard(); }
+  });
+
+  // ============================================
+  // INITIALIZE
+  // ============================================
+  
+  async function initialize() {
+    console.log('🎮 Initializing Quiz Interface...');
+    
+    const loaded = await loadData();
+    
+    if (!loaded) return;
+
+    document.getElementById('loadingOverlay').classList.add('hidden');
     renderAllCards();
     updateScore();
-  </script>
+    
+    console.log('✅ Quiz Interface Ready!');
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initialize);
+  } else {
+    initialize();
+  }
+</script>
 </body>
 </html>
