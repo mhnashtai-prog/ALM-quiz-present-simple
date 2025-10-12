@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>INTUITY - Practice Carousel</title>
+  <title>INTUITY - Practice Quiz</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
   
   <style>
@@ -95,64 +95,45 @@
       font-style: italic;
     }
 
-    .character-selector {
+    .character-info {
       display: flex;
       justify-content: center;
       align-items: center;
-      gap: 1.5rem;
+      gap: 0.75rem;
       margin-bottom: 0.75rem;
     }
 
-    .character-option {
+    .character-display {
       display: flex;
-      flex-direction: column;
       align-items: center;
-      gap: 0.35rem;
-      cursor: pointer;
-      transition: all 0.3s;
-      padding: 0.4rem;
-      border-radius: 10px;
-    }
-
-    .character-option:hover {
-      transform: translateY(-2px);
-    }
-
-    .character-option.active {
+      gap: 0.5rem;
       background: rgba(201, 169, 97, 0.1);
-    }
-
-    .character-label {
-      display: flex;
-      align-items: center;
-      gap: 0.3rem;
-      font-size: 0.75rem;
-      color: rgba(232, 232, 232, 0.7);
-      font-weight: 500;
-    }
-
-    .character-label.active {
-      color: #C9A961;
-      font-weight: 600;
+      padding: 0.5rem 1rem;
+      border-radius: 12px;
+      border: 2px solid rgba(201, 169, 97, 0.3);
     }
 
     .character-emoji {
+      font-size: 1.5rem;
+    }
+
+    .character-name {
       font-size: 1rem;
+      color: #C9A961;
+      font-weight: 600;
+      font-family: 'Space Grotesk', sans-serif;
     }
 
-    .character-status {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background: rgba(201, 169, 97, 0.2);
-      border: 2px solid rgba(201, 169, 97, 0.4);
-      transition: all 0.3s;
-    }
-
-    .character-status.completed {
-      background: #4ade80;
-      border-color: #4ade80;
-      box-shadow: 0 0 8px rgba(74, 222, 128, 0.5);
+    .category-display {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(201, 169, 97, 0.15);
+      padding: 0.5rem 1rem;
+      border-radius: 12px;
+      font-size: 0.9rem;
+      color: rgba(232, 232, 232, 0.85);
+      font-weight: 500;
     }
 
     .progress-bar {
@@ -502,7 +483,6 @@
       display: flex;
       align-items: center;
       gap: 1rem;
-      cursor: move;
       transition: all 0.3s;
     }
 
@@ -511,11 +491,6 @@
       box-shadow: 
         6px 6px 12px #000000,
         -6px -6px 12px #2a2a2a;
-    }
-
-    .ordering-sentence.dragging {
-      opacity: 0.5;
-      transform: rotate(3deg);
     }
 
     .ordering-number-input {
@@ -557,12 +532,6 @@
       color: rgba(232, 232, 232, 0.9);
       font-size: 0.95rem;
       line-height: 1.5;
-    }
-
-    .drag-handle {
-      color: rgba(201, 169, 97, 0.4);
-      font-size: 1.5rem;
-      cursor: move;
     }
 
     @keyframes shake {
@@ -746,7 +715,7 @@
         -6px -6px 12px #2a2a2a;
     }
 
-    .footer-btn.challenge {
+    .footer-btn.primary {
       background: rgba(201, 169, 97, 0.2);
       color: #C9A961;
     }
@@ -794,39 +763,16 @@
     
     <div class="header">
       <h1>INTUITY</h1>
-      <p class="tagline">Intuitive & Immersive</p>
+      <p class="tagline">Practice Quiz</p>
       
-      <div class="character-selector">
-        <div class="character-option active">
-          <div class="character-label active">
-            <span class="character-emoji" id="displayEmoji">👧</span>
-            <span id="displayName">Sarah</span>
-          </div>
-          <div class="character-status completed" id="sarahStatus"></div>
+      <div class="character-info">
+        <div class="character-display">
+          <span class="character-emoji" id="displayEmoji">👧</span>
+          <span class="character-name" id="displayName">Sarah</span>
         </div>
-        
-        <div class="character-option">
-          <div class="character-label">
-            <span class="character-emoji">🧑</span>
-            <span>Tom</span>
-          </div>
-          <div class="character-status" id="tomStatus"></div>
-        </div>
-        
-        <div class="character-option">
-          <div class="character-label">
-            <span class="character-emoji">👩</span>
-            <span>Emma</span>
-          </div>
-          <div class="character-status" id="emmaStatus"></div>
-        </div>
-        
-        <div class="character-option">
-          <div class="character-label">
-            <span class="character-emoji">🧒</span>
-            <span>Alex</span>
-          </div>
-          <div class="character-status" id="alexStatus"></div>
+        <div class="category-display" id="categoryDisplay">
+          <span id="categoryIcon">☕</span>
+          <span id="categoryName">Habitual Actions</span>
         </div>
       </div>
     </div>
@@ -836,7 +782,7 @@
     </div>
 
     <div class="score-display">
-      <div class="score-left">Card <span id="cardNumber">1</span>/4</div>
+      <div class="score-left">Exercise <span id="cardNumber">1</span>/4</div>
       <div class="score-dots" id="scoreDots"></div>
       <div class="score-right">Score: <span class="score-number" id="scoreDisplay">0/20</span></div>
     </div>
@@ -854,23 +800,535 @@
 
     <div class="controls">
       <button class="btn" onclick="checkAnswers()">✓ Check Answers</button>
-      <button class="btn primary" id="nextCardBtn" onclick="nextCard()" disabled>Next Card →</button>
+      <button class="btn primary" id="nextCardBtn" onclick="nextCard()" disabled>Next Exercise →</button>
     </div>
 
     <div class="footer" id="footer" style="display: none;">
-      <button class="footer-btn" onclick="retryExercises()">🔄 Repeat</button>
-      <button class="footer-btn challenge" onclick="goToChallenge()">🎮 Challenge →</button>
-      <button class="footer-btn" onclick="goHome()">🏠 Home</button>
+      <button class="footer-btn" onclick="retryExercises()">🔄 Repeat Quiz</button>
+      <button class="footer-btn primary" onclick="goHome()">🏠 Home</button>
     </div>
   </div>
 
   <script>
     // ============================================
-    // NOTE: THIS NEEDS character-data.json FILE
+    // LOAD DATA FROM character-data.json
     // ============================================
     
-    alert("⚠️ Quiz Interface needs character-data.json file to work!\n\nThis file doesn't exist yet. See README.md for the required structure.\n\nReturning to matching game...");
-    window.history.back();
+    let selectionData = null;
+    let quizData = null;
+    let currentCardIndex = 0;
+    let cardScores = [0, 0, 0, 0];
+
+    async function loadData() {
+      try {
+        // Get selection from sessionStorage
+        const stored = sessionStorage.getItem('selectionData');
+        if (!stored) {
+          showError('No selection found. Please start from the home page.');
+          return false;
+        }
+
+        selectionData = JSON.parse(stored);
+        console.log('📥 Selection loaded:', selectionData);
+
+        // Map category names from grammar-modes.json to character-data.json
+        const categoryMapping = {
+          'habitual': 'daily_habits',
+          'routine': 'daily_habits',
+          'frequency': 'daily_habits',
+          'conjunctions': 'daily_habits'
+        };
+
+        const mappedCategory = categoryMapping[selectionData.category] || 'daily_habits';
+
+        // Fetch character-data.json
+        console.log('📥 Fetching character-data.json...');
+        const response = await fetch('../data/character-data.json');
+        
+        if (!response.ok) {
+          throw new Error(`Failed to load character-data.json: ${response.status}`);
+        }
+
+        const allData = await response.json();
+        console.log('✅ Quiz data loaded');
+
+        const charKey = selectionData.characterKey;
+        
+        if (!allData[charKey]) {
+          throw new Error(`Character '${charKey}' not found in character-data.json`);
+        }
+
+        if (!allData[charKey].categories[mappedCategory]) {
+          throw new Error(`Category '${mappedCategory}' not found for ${charKey}`);
+        }
+
+        quizData = allData[charKey].categories[mappedCategory];
+
+        // Update header display
+        document.getElementById('displayEmoji').textContent = selectionData.characterEmoji;
+        document.getElementById('displayName').textContent = selectionData.characterName;
+        document.getElementById('categoryIcon').textContent = selectionData.categoryIcon;
+        document.getElementById('categoryName').textContent = selectionData.categoryTitle;
+
+        console.log('✅ Quiz interface ready!');
+        return true;
+
+      } catch (error) {
+        console.error('❌ Error loading data:', error);
+        showError(`Failed to load data: ${error.message}`);
+        return false;
+      }
+    }
+
+    function showError(message) {
+      document.body.innerHTML = `
+        <div style="
+          position: fixed;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          background: #1a1a1a;
+          padding: 2rem;
+          border-radius: 16px;
+          box-shadow: 16px 16px 32px #000000;
+          text-align: center;
+          max-width: 400px;
+          z-index: 10000;
+        ">
+          <h2 style="color: #fb923c; margin-bottom: 1rem; font-family: 'Space Grotesk', sans-serif;">⚠️ Error</h2>
+          <p style="color: rgba(232, 232, 232, 0.8); margin-bottom: 1.5rem; font-size: 0.9rem;">${message}</p>
+          <button onclick="window.location.href='../index.html'" style="
+            background: rgba(201, 169, 97, 0.2);
+            border: none;
+            border-radius: 12px;
+            padding: 0.875rem 1.5rem;
+            color: #C9A961;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 6px 6px 12px #000000;
+          ">🏠 Return to Home</button>
+        </div>
+      `;
+    }
+
+    // ============================================
+    // RENDER ALL 4 EXERCISE CARDS
+    // ============================================
+    
+    function renderAllCards() {
+      const track = document.getElementById('carouselTrack');
+      track.innerHTML = '';
+
+      // Card 1: Cloze Text
+      renderClozeCard(track);
+      
+      // Card 2: Multiple Choice
+      renderMultipleChoiceCard(track);
+      
+      // Card 3: Spot the Mistake
+      renderMistakeCard(track);
+      
+      // Card 4: Sentence Ordering
+      renderOrderingCard(track);
+
+      renderNavigation();
+      updateCarouselPosition();
+    }
+
+    function renderClozeCard(track) {
+      const cardWrapper = document.createElement('div');
+      cardWrapper.className = 'card-wrapper active';
+      cardWrapper.setAttribute('data-card-type', 'cloze');
+
+      const template = quizData.clozeTemplates[0];
+      const textWithBlanks = template.text.replace(/(\w+)___/g, (match, firstLetter) => {
+        return `${firstLetter}<input type="text" class="blank-input" data-answer="" />`;
+      });
+
+      cardWrapper.innerHTML = `
+        <div class="exercise-card">
+          <div class="card-title">Fill in the Blanks</div>
+          <div class="exercise-content">
+            <div class="cloze-text">${textWithBlanks.split('\n\n').map(p => `<p>${p}</p>`).join('')}</div>
+          </div>
+        </div>
+      `;
+
+      // Store answers in inputs
+      const inputs = cardWrapper.querySelectorAll('.blank-input');
+      template.answers.forEach((answer, i) => {
+        if (inputs[i]) {
+          inputs[i].setAttribute('data-answer', answer.toLowerCase());
+        }
+      });
+
+      track.appendChild(cardWrapper);
+    }
+
+    function renderMultipleChoiceCard(track) {
+      const cardWrapper = document.createElement('div');
+      cardWrapper.className = 'card-wrapper';
+      cardWrapper.setAttribute('data-card-type', 'mc');
+
+      const questions = quizData.multipleChoiceQuestions.slice(0, 5);
+      
+      const questionsHTML = questions.map((q, index) => `
+        <div class="mc-question" data-question="${index}">
+          <div class="mc-question-text">${index + 1}. ${q.text}</div>
+          <div class="mc-options">
+            ${q.options.map(opt => `
+              <div class="mc-option" data-answer="${opt}" data-correct="${q.correct}">
+                ${opt}
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `).join('');
+
+      cardWrapper.innerHTML = `
+        <div class="exercise-card">
+          <div class="card-title">Multiple Choice</div>
+          <div class="exercise-content">
+            ${questionsHTML}
+          </div>
+        </div>
+      `;
+
+      // Add click listeners
+      cardWrapper.querySelectorAll('.mc-option').forEach(option => {
+        option.addEventListener('click', () => {
+          const question = option.closest('.mc-question');
+          question.querySelectorAll('.mc-option').forEach(opt => {
+            opt.classList.remove('selected');
+          });
+          option.classList.add('selected');
+        });
+      });
+
+      track.appendChild(cardWrapper);
+    }
+
+    function renderMistakeCard(track) {
+      const cardWrapper = document.createElement('div');
+      cardWrapper.className = 'card-wrapper';
+      cardWrapper.setAttribute('data-card-type', 'mistake');
+
+      const sentences = quizData.mistakeSentences.slice(0, 5);
+      
+      const sentencesHTML = sentences.map((s, index) => `
+        <div class="mistake-sentence" data-sentence="${index}" data-error-index="${s.errorIndex}">
+          <div class="mistake-number">Sentence ${index + 1}</div>
+          <div class="mistake-words">
+            ${s.sentence.map((word, wordIndex) => `
+              <div class="mistake-word" data-index="${wordIndex}">${word}</div>
+            `).join('')}
+          </div>
+        </div>
+      `).join('');
+
+      cardWrapper.innerHTML = `
+        <div class="exercise-card">
+          <div class="card-title">Spot the Mistake</div>
+          <div class="exercise-content">
+            ${sentencesHTML}
+          </div>
+        </div>
+      `;
+
+      // Add click listeners
+      cardWrapper.querySelectorAll('.mistake-word').forEach(word => {
+        word.addEventListener('click', () => {
+          const sentence = word.closest('.mistake-sentence');
+          sentence.querySelectorAll('.mistake-word').forEach(w => {
+            w.classList.remove('selected');
+          });
+          word.classList.add('selected');
+        });
+      });
+
+      track.appendChild(cardWrapper);
+    }
+
+    function renderOrderingCard(track) {
+      const cardWrapper = document.createElement('div');
+      cardWrapper.className = 'card-wrapper';
+      cardWrapper.setAttribute('data-card-type', 'ordering');
+
+      const sentences = quizData.orderingSentences[0];
+      
+      // Shuffle sentences
+      const shuffled = [...sentences].sort(() => Math.random() - 0.5);
+
+      const sentencesHTML = shuffled.map((s, index) => `
+        <div class="ordering-sentence" data-correct-order="${s.order}">
+          <input type="number" class="ordering-number-input" min="1" max="${sentences.length}" placeholder="#" />
+          <div class="ordering-text">${s.text}</div>
+        </div>
+      `).join('');
+
+      cardWrapper.innerHTML = `
+        <div class="exercise-card">
+          <div class="card-title">Put Sentences in Order</div>
+          <div class="exercise-content">
+            <div class="ordering-instructions">Number these sentences from 1 to ${sentences.length}</div>
+            ${sentencesHTML}
+          </div>
+        </div>
+      `;
+
+      track.appendChild(cardWrapper);
+    }
+
+    // ============================================
+    // CHECK ANSWERS
+    // ============================================
+    
+    function checkAnswers() {
+      const currentCard = document.querySelectorAll('.card-wrapper')[currentCardIndex];
+      const cardType = currentCard.getAttribute('data-card-type');
+      let score = 0;
+
+      if (cardType === 'cloze') {
+        const inputs = currentCard.querySelectorAll('.blank-input');
+        inputs.forEach(input => {
+          const userAnswer = input.value.trim().toLowerCase();
+          const correctAnswer = input.getAttribute('data-answer');
+          
+          if (userAnswer === correctAnswer) {
+            input.classList.remove('wrong');
+            input.classList.add('correct');
+            score++;
+          } else {
+            input.classList.remove('correct');
+            input.classList.add('wrong');
+          }
+        });
+      }
+
+      if (cardType === 'mc') {
+        const questions = currentCard.querySelectorAll('.mc-question');
+        questions.forEach(question => {
+          const selected = question.querySelector('.mc-option.selected');
+          if (selected) {
+            const userAnswer = selected.getAttribute('data-answer');
+            const correctAnswer = selected.getAttribute('data-correct');
+            
+            if (userAnswer === correctAnswer) {
+              selected.classList.add('correct');
+              score++;
+            } else {
+              selected.classList.add('wrong');
+              // Show correct answer
+              question.querySelectorAll('.mc-option').forEach(opt => {
+                if (opt.getAttribute('data-answer') === correctAnswer) {
+                  opt.classList.add('correct');
+                }
+              });
+            }
+          }
+        });
+      }
+
+      if (cardType === 'mistake') {
+        const sentences = currentCard.querySelectorAll('.mistake-sentence');
+        sentences.forEach(sentence => {
+          const selected = sentence.querySelector('.mistake-word.selected');
+          const correctIndex = parseInt(sentence.getAttribute('data-error-index'));
+          
+          if (selected) {
+            const selectedIndex = parseInt(selected.getAttribute('data-index'));
+            
+            if (selectedIndex === correctIndex) {
+              selected.classList.add('correct');
+              score++;
+            } else {
+              selected.classList.add('wrong');
+              // Show correct answer
+              const correctWord = sentence.querySelector(`.mistake-word[data-index="${correctIndex}"]`);
+              if (correctWord) {
+                correctWord.classList.add('correct');
+              }
+            }
+          }
+        });
+      }
+
+      if (cardType === 'ordering') {
+        const sentences = currentCard.querySelectorAll('.ordering-sentence');
+        sentences.forEach(sentence => {
+          const input = sentence.querySelector('.ordering-number-input');
+          const userOrder = parseInt(input.value);
+          const correctOrder = parseInt(sentence.getAttribute('data-correct-order'));
+          
+          if (userOrder === correctOrder) {
+            input.classList.remove('wrong');
+            input.classList.add('correct');
+            score++;
+          } else {
+            input.classList.remove('correct');
+            input.classList.add('wrong');
+          }
+        });
+      }
+
+      cardScores[currentCardIndex] = score;
+      updateScore();
+      updateProgress();
+      
+      document.getElementById('nextCardBtn').disabled = false;
+      
+      const dots = document.querySelectorAll('.nav-dot');
+      if (dots[currentCardIndex]) {
+        dots[currentCardIndex].classList.add('completed');
+      }
+
+      if (score === 5) {
+        showCelebration('🎉');
+      }
+
+      checkAllComplete();
+    }
+
+    // ============================================
+    // NAVIGATION
+    // ============================================
+    
+    function nextCard() {
+      if (currentCardIndex < 3) {
+        currentCardIndex++;
+        updateCarouselPosition();
+        updateScore();
+        document.getElementById('nextCardBtn').disabled = true;
+      }
+    }
+
+    function prevCard() {
+      if (currentCardIndex > 0) {
+        currentCardIndex--;
+        updateCarouselPosition();
+        updateScore();
+      }
+    }
+
+    function updateCarouselPosition() {
+      const track = document.getElementById('carouselTrack');
+      const offset = -currentCardIndex * 100;
+      track.style.transform = `translateX(${offset}%)`;
+      
+      document.querySelectorAll('.card-wrapper').forEach((card, index) => {
+        card.classList.toggle('active', index === currentCardIndex);
+      });
+      
+      document.getElementById('cardNumber').textContent = currentCardIndex + 1;
+      document.getElementById('prevArrow').disabled = currentCardIndex === 0;
+      document.getElementById('nextArrow').disabled = currentCardIndex === 3;
+      
+      const dots = document.querySelectorAll('.nav-dot');
+      dots.forEach((dot, i) => {
+        dot.classList.toggle('active', i === currentCardIndex);
+      });
+    }
+
+    function renderNavigation() {
+      const nav = document.getElementById('scoreDots');
+      nav.innerHTML = '';
+      
+      for (let i = 0; i < 4; i++) {
+        const dot = document.createElement('div');
+        dot.className = 'nav-dot';
+        if (i === currentCardIndex) dot.classList.add('active');
+        dot.addEventListener('click', () => goToCard(i));
+        nav.appendChild(dot);
+      }
+    }
+
+    function goToCard(index) {
+      currentCardIndex = index;
+      updateCarouselPosition();
+      updateScore();
+    }
+
+    function updateScore() {
+      const score = cardScores[currentCardIndex];
+      document.getElementById('scoreDisplay').textContent = `${score}/5`;
+    }
+
+    function updateProgress() {
+      const totalScore = cardScores.reduce((a, b) => a + b, 0);
+      const percentage = Math.round((totalScore / 20) * 100);
+      document.getElementById('progressFill').style.width = percentage + '%';
+    }
+
+    function showCelebration(emoji) {
+      const celebration = document.createElement('div');
+      celebration.className = 'celebration';
+      celebration.textContent = emoji;
+      document.body.appendChild(celebration);
+      
+      setTimeout(() => {
+        document.body.removeChild(celebration);
+      }, 1000);
+    }
+
+    function checkAllComplete() {
+      const allChecked = cardScores.every(score => score > 0);
+      
+      if (allChecked) {
+        document.querySelector('.controls').style.display = 'none';
+        document.getElementById('footer').style.display = 'flex';
+        showCelebration('🏆');
+      }
+    }
+
+    // ============================================
+    // FOOTER ACTIONS
+    // ============================================
+    
+    function retryExercises() {
+      location.reload();
+    }
+
+    function goHome() {
+      sessionStorage.removeItem('selectionData');
+      window.location.href = '../index.html';
+    }
+
+    function goBack() {
+      window.history.back();
+    }
+
+    // ============================================
+    // KEYBOARD NAVIGATION
+    // ============================================
+    
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' && currentCardIndex < 3) nextCard();
+      else if (e.key === 'ArrowLeft' && currentCardIndex > 0) prevCard();
+    });
+
+    // ============================================
+    // INITIALIZE
+    // ============================================
+    
+    async function initialize() {
+      console.log('🎮 Initializing Quiz Interface...');
+      
+      const loaded = await loadData();
+      
+      if (!loaded) return;
+
+      renderAllCards();
+      updateScore();
+      
+      console.log('✅ Quiz Interface Ready!');
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initialize);
+    } else {
+      initialize();
+    }
   </script>
 </body>
 </html>
