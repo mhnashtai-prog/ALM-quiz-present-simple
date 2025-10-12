@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>INTUITY - Matching Game</title>
+  <title>INTUITY - Train Carousel</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
   
   <style>
@@ -18,7 +18,7 @@
       background: #000000;
       font-family: 'Inter', sans-serif;
       -webkit-font-smoothing: antialiased;
-      overflow: hidden;
+      overflow-x: hidden;
       position: relative;
     }
 
@@ -31,13 +31,55 @@
       z-index: 1;
     }
 
-    .game-container {
+    .loading-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(5px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      transition: opacity 0.5s ease;
+    }
+
+    .loading-overlay.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .loading-content {
+      background: #1a1a1a;
+      padding: 2rem;
+      border-radius: 16px;
+      text-align: center;
+      color: #C9A961;
+      box-shadow: 
+        12px 12px 24px #000000,
+        -12px -12px 24px #2a2a2a;
+    }
+
+    .loading-spinner {
+      width: 50px;
+      height: 50px;
+      border: 4px solid rgba(201, 169, 97, 0.2);
+      border-top: 4px solid #C9A961;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 1rem;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .container {
       background: #1a1a1a;
       width: 95%;
-      max-width: 1000px;
-      height: 88vh;
+      max-width: 420px;
+      min-height: 90vh;
       border-radius: 24px;
-      padding: 1.5rem;
+      padding: 2rem 1.25rem;
       box-shadow: 
         12px 12px 24px #000000,
         -12px -12px 24px #2a2a2a;
@@ -49,999 +91,941 @@
 
     .header {
       text-align: center;
-      margin-bottom: 1rem;
-    }
-
-    .back-btn {
-      position: absolute;
-      top: 1.5rem;
-      left: 1.5rem;
-      background: #1a1a1a;
-      border: none;
-      border-radius: 12px;
-      padding: 0.6rem 1rem;
-      color: #C9A961;
-      font-size: 0.8rem;
-      font-weight: 600;
-      cursor: pointer;
-      box-shadow: 
-        4px 4px 8px #000000,
-        -4px -4px 8px #2a2a2a;
-      transition: all 0.3s;
-      z-index: 10;
-    }
-
-    .back-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 
-        6px 6px 12px #000000,
-        -6px -6px 12px #2a2a2a;
+      margin-bottom: 1.5rem;
+      position: relative;
     }
 
     .header h1 {
       font-family: 'Space Grotesk', sans-serif;
-      font-size: 1.75rem;
+      font-size: 2.5rem;
       color: #C9A961;
-      margin-bottom: 0.25rem;
+      margin: 0 0 0.5rem 0;
       font-weight: 700;
       letter-spacing: -0.02em;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
     }
 
-    .tagline {
-      font-size: 0.8rem;
-      color: rgba(232, 232, 232, 0.6);
-      margin-bottom: 0.75rem;
-      font-weight: 500;
-      font-style: italic;
-    }
-
-    .character-selector {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 1.5rem;
-      margin-bottom: 0.75rem;
-    }
-
-    .character-option {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0.35rem;
-      cursor: pointer;
-      transition: all 0.3s;
-      padding: 0.4rem;
-      border-radius: 10px;
-    }
-
-    .character-option:hover {
-      transform: translateY(-2px);
-    }
-
-    .character-option.active {
-      background: rgba(201, 169, 97, 0.1);
-    }
-
-    .character-label {
-      display: flex;
-      align-items: center;
-      gap: 0.3rem;
-      font-size: 0.75rem;
-      color: rgba(232, 232, 232, 0.7);
-      font-weight: 500;
-    }
-
-    .character-label.active {
-      color: #C9A961;
-      font-weight: 600;
-    }
-
-    .character-emoji {
-      font-size: 1rem;
-    }
-
-    .character-status {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background: rgba(201, 169, 97, 0.2);
-      border: 2px solid rgba(201, 169, 97, 0.4);
-      transition: all 0.3s;
-    }
-
-    .character-status.completed {
-      background: #4ade80;
-      border-color: #4ade80;
-      box-shadow: 0 0 8px rgba(74, 222, 128, 0.5);
-    }
-
-    .progress-bar {
-      width: 100%;
-      height: 6px;
-      background: rgba(0, 0, 0, 0.3);
-      border-radius: 10px;
-      overflow: hidden;
-      box-shadow: inset 2px 2px 4px rgba(0, 0, 0, 0.5);
-      margin-bottom: 0.75rem;
-    }
-
-    .progress-fill {
-      height: 100%;
-      background: linear-gradient(90deg, #C9A961, #e8d9a8);
-      border-radius: 10px;
-      transition: width 0.5s ease;
-      box-shadow: 0 0 10px rgba(201, 169, 97, 0.5);
-    }
-
-    .score-display {
-      text-align: center;
-      margin-bottom: 0.75rem;
-      font-size: 0.95rem;
-      color: #e8e8e8;
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 1rem;
-      flex-wrap: wrap;
-      padding: 0 1rem;
-    }
-
-    .score-number {
-      color: #C9A961;
-      font-size: 1.1rem;
-      font-family: 'Space Grotesk', sans-serif;
-    }
-
-    .score-dots {
-      display: flex;
-      gap: 0.4rem;
-      position: absolute;
-      left: 50%;
-      transform: translateX(-50%);
-    }
-
-    .score-left {
-      flex: 1;
-      text-align: left;
-      font-size: 0.85rem;
-    }
-
-    .score-right {
-      flex: 1;
-      text-align: right;
-      font-size: 0.85rem;
-    }
-
-    .carousel-wrapper {
-      flex: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-      overflow: visible;
-      margin: 0 -1.5rem;
-      padding: 0 1.5rem;
-      touch-action: pan-y;
-      pointer-events: none;
-    }
-
-    .carousel-track {
-      display: flex;
-      gap: 2rem;
-      transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-      will-change: transform;
-      pointer-events: none;
-    }
-
-    .card-wrapper {
-      min-width: 100%;
-      display: flex;
-      justify-content: center;
-      padding: 0.5rem;
-      opacity: 0.4;
-      transform: scale(0.95);
-      transition: all 0.5s ease;
-      pointer-events: none;
-    }
-
-    .card-wrapper.active {
-      opacity: 1;
-      transform: scale(1);
-      pointer-events: all;
-    }
-
-    .matching-card {
-      width: 100%;
-      max-width: 800px;
-      display: flex;
-      flex-direction: column;
-      gap: 1.5rem;
-      pointer-events: all;
-    }
-
-    .card-title {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 1.1rem;
-      color: #C9A961;
-      text-align: center;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-
-    .matching-area {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1rem;
-    }
-
-    .column {
-      display: flex;
-      flex-direction: column;
-      gap: 0.75rem;
-    }
-
-    .match-item {
-      background: #1a1a1a;
-      border-radius: 12px;
-      padding: 1rem 1.25rem;
+    .subtitle {
+      font-size: 0.875rem;
       color: rgba(232, 232, 232, 0.9);
-      font-size: 0.95rem;
-      font-weight: 400;
-      cursor: pointer;
-      transition: all 0.3s;
-      box-shadow: 
-        4px 4px 8px #000000,
-        -4px -4px 8px #2a2a2a;
-      user-select: none;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border: 2px solid transparent;
+      margin-bottom: 0.25rem;
+      font-weight: 500;
+      letter-spacing: 0.03em;
     }
 
-    .match-item:hover {
-      transform: translateY(-2px);
+    .author {
+      font-size: 0.75rem;
+      color: rgba(201, 169, 97, 0.7);
+      font-weight: 400;
+      letter-spacing: 0.02em;
+    }
+
+    .qr-btn {
+      position: absolute;
+      top: 0;
+      right: 0;
+      background: #1a1a1a;
+      border: none;
+      border-radius: 50%;
+      width: 2.5rem;
+      height: 2.5rem;
+      color: #C9A961;
+      font-size: 1.25rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
       box-shadow: 
         6px 6px 12px #000000,
         -6px -6px 12px #2a2a2a;
-      border-color: rgba(201, 169, 97, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
-    .match-item.selected {
-      background: rgba(201, 169, 97, 0.2);
-      border: 2px solid #C9A961;
+    .qr-btn:hover {
+      transform: scale(1.1) rotate(5deg);
+      box-shadow: 
+        8px 8px 16px #000000,
+        -8px -8px 16px #2a2a2a;
+    }
+
+    .qr-btn:active {
+      transform: scale(0.95);
+    }
+
+    .character-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .nav-arrow {
+      background: #1a1a1a;
+      border: none;
+      border-radius: 50%;
+      width: 3rem;
+      height: 3rem;
       color: #C9A961;
+      font-size: 1.5rem;
+      cursor: pointer;
+      box-shadow: 
+        6px 6px 12px #000000,
+        -6px -6px 12px #2a2a2a;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .nav-arrow:hover:not(:disabled) {
+      transform: scale(1.1);
+      box-shadow: 
+        8px 8px 16px #000000,
+        -8px -8px 16px #2a2a2a;
+    }
+
+    .nav-arrow:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+
+    .character-bubble {
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      background: #1a1a1a;
+      box-shadow: 
+        12px 12px 24px #000000,
+        -12px -12px 24px #2a2a2a;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      animation: float 4s ease-in-out infinite;
+      transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+
+    .character-emoji {
+      font-size: 3.5rem;
+      filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.5));
+    }
+
+    .character-name {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1rem;
       font-weight: 600;
+      color: #C9A961;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
     }
 
-    .match-item.correct {
-      background: rgba(74, 222, 128, 0.2);
-      border: 2px solid #4ade80;
-      color: #4ade80;
-      animation: correctPulse 0.5s ease;
-      cursor: default;
+    .train-carts {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+      margin-top: 1.5rem;
+      flex: 1;
     }
 
-    .match-item.wrong {
-      background: rgba(251, 146, 60, 0.2);
-      border: 2px solid #fb923c;
-      color: #fb923c;
-      animation: shake 0.5s ease;
+    .cart {
+      aspect-ratio: 1.1;
+      background: #1a1a1a;
+      border-radius: 20px;
+      padding: 1rem;
+      cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 
+        8px 8px 16px #000000,
+        -8px -8px 16px #2a2a2a;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      position: relative;
+      overflow: hidden;
     }
 
-    .emoji {
+    .cart::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(201, 169, 97, 0.15), transparent);
+      transition: left 0.5s;
+    }
+
+    .cart:hover::before {
+      left: 100%;
+    }
+
+    .cart:hover {
+      transform: translateY(-4px) scale(1.02);
+      box-shadow: 
+        12px 12px 24px #000000,
+        -12px -12px 24px #2a2a2a;
+    }
+
+    .cart-icon {
+      font-size: 2.5rem;
+      filter: drop-shadow(1px 1px 2px rgba(0, 0, 0, 0.5));
+    }
+
+    .cart-title {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #e8e8e8;
+      text-align: center;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      line-height: 1.3;
+    }
+
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(8px);
+      z-index: 998;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .modal-overlay.show {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .cart-modal {
+      position: fixed;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%) scale(0.9);
+      background: #1a1a1a;
+      border-radius: 24px;
+      padding: 2rem 1.5rem;
+      max-width: 420px;
+      width: 92%;
+      max-height: 80vh;
+      z-index: 999;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      box-shadow: 
+        16px 16px 32px #000000,
+        -16px -16px 32px #2a2a2a;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .cart-modal.show {
+      opacity: 1;
+      visibility: visible;
+      transform: translate(-50%, -50%) scale(1);
+    }
+
+    .modal-header {
+      text-align: center;
+      margin-bottom: 1rem;
+      padding-bottom: 1rem;
+      border-bottom: 2px solid rgba(201, 169, 97, 0.3);
+    }
+
+    .modal-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: #C9A961;
+      letter-spacing: 0.01em;
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 1rem; right: 1rem;
+      border: none;
+      background: #1a1a1a;
+      border-radius: 50%;
+      width: 2.5rem; height: 2.5rem;
+      color: #C9A961;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 
+        6px 6px 12px #000000,
+        -6px -6px 12px #2a2a2a;
+      font-size: 1.5rem;
+      line-height: 1;
+      font-weight: 300;
+      z-index: 10;
+    }
+
+    .close-btn:hover {
+      transform: scale(1.1) rotate(90deg);
+      box-shadow: 
+        8px 8px 16px #000000,
+        -8px -8px 16px #2a2a2a;
+    }
+
+    .scroll-hint {
+      text-align: center;
+      color: rgba(201, 169, 97, 0.4);
+      font-size: 0.7rem;
+      margin-bottom: 0.75rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+    }
+
+    .verb-list {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding-right: 0.5rem;
+      -webkit-overflow-scrolling: touch;
+      scroll-behavior: smooth;
+    }
+
+    .verb-list::-webkit-scrollbar { width: 6px; }
+    .verb-list::-webkit-scrollbar-track { 
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 10px;
+    }
+    .verb-list::-webkit-scrollbar-thumb {
+      background: rgba(201, 169, 97, 0.4);
+      border-radius: 10px;
+    }
+
+    .verb-box {
+      background: #1a1a1a;
+      border-radius: 12px;
+      padding: 0.875rem 1rem;
+      margin-bottom: 0.5rem;
+      box-shadow: 
+        4px 4px 8px #000000,
+        -4px -4px 8px #2a2a2a;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      min-height: 48px;
+      transition: all 0.3s;
+    }
+
+    .verb-box:hover {
+      transform: translateX(4px);
+    }
+
+    .verb {
+      color: #C9A961;
+      font-weight: 700;
+      font-size: 0.95rem;
+      letter-spacing: 0.02em;
+    }
+
+    .object {
+      color: rgba(200, 200, 200, 0.8);
+      font-weight: 500;
+      font-size: 0.875rem;
+      text-align: right;
+    }
+
+    .emoji-icon {
       font-size: 1.25rem;
       margin-left: 0.5rem;
     }
 
-    @keyframes shake {
-      0%, 100% { transform: translateX(0); }
-      25% { transform: translateX(-5px); }
-      75% { transform: translateX(5px); }
-    }
-
-    @keyframes correctPulse {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.05); }
-    }
-
-    .controls {
-      display: flex;
-      gap: 0.75rem;
-      justify-content: center;
-      flex-wrap: wrap;
+    .modal-actions {
       margin-top: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
     }
 
-    .btn {
+    .action-btn {
       background: #1a1a1a;
       border: none;
       border-radius: 12px;
-      padding: 0.75rem 1.5rem;
+      padding: 0.875rem 1.5rem;
       color: #e8e8e8;
-      font-size: 0.8rem;
+      font-size: 0.875rem;
       font-weight: 600;
       text-transform: uppercase;
       letter-spacing: 0.03em;
       cursor: pointer;
       transition: all 0.3s ease;
       box-shadow: 
-        4px 4px 8px #000000,
-        -4px -4px 8px #2a2a2a;
+        6px 6px 12px #000000,
+        -6px -6px 12px #2a2a2a;
       font-family: 'Inter', sans-serif;
     }
 
-    .btn:hover:not(:disabled) {
+    .action-btn:hover {
       transform: translateY(-2px);
       box-shadow: 
-        6px 6px 12px #000000,
-        -6px -6px 12px #2a2a2a;
+        8px 8px 16px #000000,
+        -8px -8px 16px #2a2a2a;
     }
 
-    .btn.primary {
+    .action-btn.primary {
       background: rgba(201, 169, 97, 0.2);
       color: #C9A961;
     }
 
-    .btn:disabled {
-      opacity: 0.4;
-      cursor: not-allowed;
-    }
-
-    .nav-arrows {
-      position: absolute;
-      top: 50%;
-      left: 0;
-      right: 0;
-      transform: translateY(-50%);
-      display: flex;
-      justify-content: space-between;
-      pointer-events: none;
-      padding: 0 0.5rem;
-      z-index: 10;
-    }
-
-    .arrow {
-      width: 45px;
-      height: 45px;
-      border-radius: 50%;
-      background: #1a1a1a;
-      border: none;
-      box-shadow: 
-        4px 4px 8px #000000,
-        -4px -4px 8px #2a2a2a;
-      color: #C9A961;
-      font-size: 1.3rem;
-      cursor: pointer;
-      pointer-events: all;
-      transition: all 0.2s;
+    .qr-modal {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.9);
+      backdrop-filter: blur(10px);
+      z-index: 1001;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
       display: flex;
       align-items: center;
       justify-content: center;
     }
 
-    .arrow:hover:not(:disabled) {
+    .qr-modal.show {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .qr-content {
+      background: #1a1a1a;
+      border-radius: 24px;
+      padding: 2rem 1.5rem;
+      max-width: 380px;
+      width: 90%;
+      box-shadow: 
+        16px 16px 32px #000000,
+        -16px -16px 32px #2a2a2a;
+      position: relative;
+      text-align: center;
+    }
+
+    .qr-close {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: #1a1a1a;
+      border: none;
+      border-radius: 50%;
+      width: 2.5rem;
+      height: 2.5rem;
+      color: #C9A961;
+      cursor: pointer;
+      transition: all 0.3s ease;
       box-shadow: 
         6px 6px 12px #000000,
         -6px -6px 12px #2a2a2a;
-      transform: scale(1.05);
+      font-size: 1.5rem;
+      line-height: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
     }
 
-    .arrow:disabled {
-      opacity: 0.3;
-      cursor: not-allowed;
+    .qr-close:hover {
+      transform: scale(1.1) rotate(90deg);
+      box-shadow: 
+        8px 8px 16px #000000,
+        -8px -8px 16px #2a2a2a;
     }
 
-    .nav-dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background: rgba(201, 169, 97, 0.3);
+    .qr-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #C9A961;
+      margin-bottom: 0.5rem;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+    }
+
+    .qr-subtitle {
+      font-size: 0.8125rem;
+      color: rgba(200, 200, 200, 0.7);
+      margin-bottom: 1.5rem;
+      font-weight: 500;
+    }
+
+    .qr-code-box {
+      background: #ffffff;
+      padding: 1.5rem;
+      border-radius: 16px;
+      margin: 0 auto 1.5rem;
+      box-shadow: 
+        inset 4px 4px 8px rgba(0, 0, 0, 0.3);
+      display: inline-block;
+      min-height: 280px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .qr-code-box img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .qr-url {
+      font-size: 0.7rem;
+      color: rgba(201, 169, 97, 0.7);
+      font-family: 'Courier New', monospace;
+      background: rgba(201, 169, 97, 0.1);
+      padding: 0.75rem 1rem;
+      border-radius: 12px;
+      margin-bottom: 1rem;
+      word-break: break-all;
+      box-shadow: 
+        inset 2px 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    .download-qr-btn {
+      background: #1a1a1a;
+      border: none;
+      border-radius: 12px;
+      padding: 0.875rem 1.5rem;
+      color: #C9A961;
+      font-size: 0.875rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
       cursor: pointer;
-      transition: all 0.3s;
+      transition: all 0.3s ease;
       box-shadow: 
-        2px 2px 4px #000000,
-        -2px -2px 4px #2a2a2a;
-      position: relative;
+        6px 6px 12px #000000,
+        -6px -6px 12px #2a2a2a;
+      font-family: 'Inter', sans-serif;
+      width: 100%;
     }
 
-    .nav-dot:hover {
-      background: rgba(201, 169, 97, 0.6);
-      transform: scale(1.2);
-    }
-
-    .nav-dot.active {
-      background: #C9A961;
-      transform: scale(1.3);
-      transform-origin: center center;
+    .download-qr-btn:hover {
+      transform: translateY(-2px);
       box-shadow: 
-        0 0 10px rgba(201, 169, 97, 0.5),
-        2px 2px 4px #000000,
-        -2px -2px 4px #2a2a2a;
+        8px 8px 16px #000000,
+        -8px -8px 16px #2a2a2a;
     }
 
-    .nav-dot.completed {
-      background: #4ade80;
-    }
-
-    .celebration {
+    .error-message {
       position: fixed;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      font-size: 4rem;
-      opacity: 0;
-      pointer-events: none;
-      z-index: 1000;
-      animation: celebrate 1s ease;
-    }
-
-    @keyframes celebrate {
-      0% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
-      50% { opacity: 1; transform: translate(-50%, -50%) scale(1.2); }
-      100% { opacity: 0; transform: translate(-50%, -50%) scale(1); }
-    }
-
-    .footer {
-      display: flex;
-      gap: 0.75rem;
-      justify-content: center;
-      margin-top: 1rem;
-      padding-top: 1rem;
-      border-top: 2px solid rgba(201, 169, 97, 0.2);
-      flex-wrap: wrap;
-    }
-
-    .footer-btn {
       background: #1a1a1a;
-      border: none;
-      border-radius: 12px;
-      padding: 0.75rem 1.25rem;
-      color: #e8e8e8;
-      font-size: 0.8rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      box-shadow: 
-        4px 4px 8px #000000,
-        -4px -4px 8px #2a2a2a;
-      font-family: 'Inter', sans-serif;
+      padding: 2rem;
+      border-radius: 16px;
+      box-shadow: 16px 16px 32px #000000;
+      text-align: center;
+      z-index: 10000;
+      max-width: 400px;
     }
 
-    .footer-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 
-        6px 6px 12px #000000,
-        -6px -6px 12px #2a2a2a;
+    .error-message h2 {
+      color: #fb923c;
+      margin-bottom: 1rem;
+      font-family: 'Space Grotesk', sans-serif;
     }
 
-    .footer-btn.practice {
-      background: rgba(201, 169, 97, 0.2);
-      color: #C9A961;
+    .error-message p {
+      color: rgba(232, 232, 232, 0.8);
+      margin-bottom: 1.5rem;
     }
 
-    @media (max-width: 768px) {
-      .game-container {
-        padding: 1rem;
-        height: 92vh;
+    @media (max-width: 480px) {
+      .container {
+        width: 98%;
+        padding: 1.5rem 1rem;
       }
 
       .header h1 {
-        font-size: 1.4rem;
+        font-size: 2rem;
       }
 
-      .matching-area {
-        grid-template-columns: 1fr;
+      .character-bubble {
+        width: 120px;
+        height: 120px;
       }
 
-      .arrow {
-        width: 35px;
-        height: 35px;
-        font-size: 1.1rem;
+      .character-emoji {
+        font-size: 3rem;
+      }
+
+      .train-carts {
+        gap: 0.875rem;
       }
     }
   </style>
 </head>
 <body>
-  <div class="game-container">
-    <button class="back-btn" onclick="goBack()">← Back</button>
-    
+  <div class="loading-screen" id="loadingScreen">
+    <div class="loading-content">
+      <div class="loading-spinner"></div>
+      <p>Loading characters...</p>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="modalOverlay"></div>
+
+  <div class="container">
     <div class="header">
+      <button class="qr-btn" onclick="openQRModal()" title="Share with Students">📱</button>
       <h1>INTUITY</h1>
-      <p class="tagline">Intuitive & Immersive</p>
-      
-      <div class="character-selector">
-        <div class="character-option active">
-          <div class="character-label active">
-            <span class="character-emoji">👧</span>
-            <span>Sarah</span>
-          </div>
-          <div class="character-status completed" id="sarahStatus"></div>
-        </div>
-        
-        <div class="character-option">
-          <div class="character-label">
-            <span class="character-emoji">🧑</span>
-            <span>Tom</span>
-          </div>
-          <div class="character-status" id="tomStatus"></div>
-        </div>
-        
-        <div class="character-option">
-          <div class="character-label">
-            <span class="character-emoji">👩</span>
-            <span>Emma</span>
-          </div>
-          <div class="character-status" id="emmaStatus"></div>
-        </div>
-        
-        <div class="character-option">
-          <div class="character-label">
-            <span class="character-emoji">🧒</span>
-            <span>Alex</span>
-          </div>
-          <div class="character-status" id="alexStatus"></div>
-        </div>
+      <p class="subtitle">Intuitive & immersive</p>
+      <p class="author">Majid Nashtai</p>
+    </div>
+
+    <div class="character-nav">
+      <button class="nav-arrow" id="prevChar" onclick="changeCharacter(-1)">←</button>
+      <div class="character-bubble" id="characterBubble">
+        <div class="character-emoji" id="characterEmoji">👧</div>
+        <div class="character-name" id="characterName">SARAH</div>
+      </div>
+      <button class="nav-arrow" id="nextChar" onclick="changeCharacter(1)">→</button>
+    </div>
+
+    <div class="train-carts" id="trainCarts">
+      <!-- Carts will be dynamically loaded -->
+    </div>
+  </div>
+
+  <div class="cart-modal" id="cartModal">
+    <button class="close-btn" onclick="closeModal()">×</button>
+    <div class="modal-header">
+      <div class="modal-title" id="modalTitle">
+        <span id="modalIcon">☕</span>
+        <span id="modalText">Habitual Actions</span>
       </div>
     </div>
-
-    <div class="progress-bar">
-      <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+    <div class="scroll-hint">⋮ Swipe to explore ⋮</div>
+    <div class="verb-list" id="verbList"></div>
+    <div class="modal-actions">
+      <button class="action-btn primary" onclick="startPractice()">Start Practice Quiz →</button>
+      <button class="action-btn" onclick="closeModal()">Close & Return</button>
     </div>
+  </div>
 
-    <div class="score-display">
-      <div class="score-left">Card <span id="cardNumber">1</span>/4</div>
-      <div class="score-dots" id="scoreDots"></div>
-      <div class="score-right">Score: <span class="score-number" id="scoreDisplay">0/5</span></div>
-    </div>
-
-    <div class="carousel-wrapper">
-      <div class="nav-arrows">
-        <button class="arrow" id="prevArrow" onclick="prevCard()">‹</button>
-        <button class="arrow" id="nextArrow" onclick="nextCard()">›</button>
+  <div class="qr-modal" id="qrModal">
+    <div class="qr-content">
+      <button class="qr-close" onclick="closeQRModal()">×</button>
+      <div class="qr-title">📱 Share with Students</div>
+      <div class="qr-subtitle">Scan this QR code to access on mobile</div>
+      <div class="qr-code-box" id="qrCodeBox">
+        <div style="color: #666; font-size: 0.875rem;">Generating QR Code...</div>
       </div>
-      
-      <div class="carousel-track" id="carouselTrack">
-        <!-- Cards will be inserted here by JavaScript -->
-      </div>
-    </div>
-
-    <div class="controls">
-      <button class="btn" onclick="checkMatches()">✓ Check Answers</button>
-      <button class="btn primary" id="nextCardBtn" onclick="nextCard()" disabled>Next Card →</button>
-    </div>
-
-    <div class="footer" id="footer" style="display: none;">
-      <button class="footer-btn" onclick="retryGame()">🔄 Repeat</button>
-      <button class="footer-btn practice" onclick="goToPractice()">📚 Practice →</button>
-      <button class="footer-btn" onclick="goHome()">🏠 Home</button>
+      <div class="qr-url" id="qrUrl"></div>
+      <button class="download-qr-btn" onclick="downloadQRCode()">📥 Download QR Code</button>
     </div>
   </div>
 
   <script>
-    // Load data from sessionStorage
-    let characterData = {
-      name: 'SARAH',
-      emoji: '👧',
-      category: 'Daily Habits',
-      verbs: []
+    // ============================================
+    // CONFIGURATION
+    // ============================================
+    const CONFIG = {
+      dataFile: 'game-data.json',
+      matchingGamePage: 'pages/matching-carousel.html'
     };
 
-    try {
-      const storedData = sessionStorage.getItem('quizData');
-      if (storedData) {
-        const quizData = JSON.parse(storedData);
-        characterData.name = quizData.character;
-        characterData.emoji = quizData.characterEmoji;
-        characterData.category = quizData.cartTitle;
-        characterData.verbs = quizData.verbs.slice(0, 20);
+    // ============================================
+    // GLOBAL STATE
+    // ============================================
+    let gameData = null;
+    let characters = [];
+    let currentCharacterIndex = 0;
+    let currentCartType = null;
+
+    const CATEGORY_CONFIG = {
+      habitual: { icon: '☕', displayName: 'Habitual Actions' },
+      routine: { icon: '🌅', displayName: 'Daily Routine' },
+      frequency: { icon: '⚡', displayName: 'Frequency + Manner' },
+      conjunctions: { icon: '⏰', displayName: 'Time Conjunctions' }
+    };
+
+    // ============================================
+    // DATA LOADING
+    // ============================================
+    async function loadGameData() {
+      try {
+        console.log('📥 Loading game data from:', CONFIG.dataFile);
+        
+        const response = await fetch(CONFIG.dataFile);
+        
+        if (!response.ok) {
+          throw new Error(`Failed to load data: ${response.status}`);
+        }
+
+        gameData = await response.json();
+        console.log('✅ Game data loaded successfully');
+
+        // Convert JSON structure to characters array
+        if (!gameData.characters) {
+          throw new Error('Invalid data structure: missing characters');
+        }
+
+        characters = Object.keys(gameData.characters).map(key => {
+          const char = gameData.characters[key];
+          return {
+            key: key,
+            name: char.name,
+            emoji: char.emoji,
+            categories: char.categories
+          };
+        });
+
+        console.log('✅ Loaded', characters.length, 'characters');
+        return true;
+
+      } catch (error) {
+        console.error('❌ Error loading game data:', error);
+        showError(error.message);
+        return false;
       }
-    } catch (error) {
-      console.error('Error loading data:', error);
     }
 
-    // Fallback data
-    if (characterData.verbs.length === 0) {
-      // Randomly select one of 3 verb sets for variety
-      const verbSets = [
-        [
-          { verb: 'drinks', object: 'coffee', emoji: '☕' },
-          { verb: 'eats', object: 'breakfast', emoji: '🍳' },
-          { verb: 'takes', object: 'the bus', emoji: '🚌' },
-          { verb: 'checks', object: 'her phone', emoji: '📱' },
-          { verb: 'does', object: 'homework', emoji: '📚' },
-          { verb: 'watches', object: 'TV', emoji: '📺' },
-          { verb: 'listens to', object: 'music', emoji: '🎵' },
-          { verb: 'plays', object: 'video games', emoji: '🎮' },
-          { verb: 'reads', object: 'books', emoji: '📖' },
-          { verb: 'writes', object: 'notes', emoji: '✍️' },
-          { verb: 'studies', object: 'English', emoji: '🇬🇧' },
-          { verb: 'cooks', object: 'dinner', emoji: '🍳' },
-          { verb: 'cleans', object: 'her room', emoji: '🧹' },
-          { verb: 'brushes', object: 'her teeth', emoji: '🪥' },
-          { verb: 'washes', object: 'her hands', emoji: '🧼' },
-          { verb: 'makes', object: 'her bed', emoji: '🛏️' },
-          { verb: 'rides', object: 'a bike', emoji: '🚴' },
-          { verb: 'walks', object: 'the dog', emoji: '🐕' },
-          { verb: 'feeds', object: 'the cat', emoji: '🐱' },
-          { verb: 'waters', object: 'plants', emoji: '🌱' }
-        ],
-        [
-          { verb: 'drinks', object: 'orange juice', emoji: '🍊' },
-          { verb: 'eats', object: 'lunch', emoji: '🥗' },
-          { verb: 'catches', object: 'the train', emoji: '🚊' },
-          { verb: 'uses', object: 'her laptop', emoji: '💻' },
-          { verb: 'finishes', object: 'her work', emoji: '✅' },
-          { verb: 'enjoys', object: 'movies', emoji: '🎬' },
-          { verb: 'plays', object: 'the piano', emoji: '🎹' },
-          { verb: 'draws', object: 'pictures', emoji: '🎨' },
-          { verb: 'visits', object: 'friends', emoji: '👥' },
-          { verb: 'practices', object: 'yoga', emoji: '🧘' },
-          { verb: 'learns', object: 'new things', emoji: '📚' },
-          { verb: 'prepares', object: 'meals', emoji: '🍽️' },
-          { verb: 'organizes', object: 'her desk', emoji: '🗂️' },
-          { verb: 'charges', object: 'her tablet', emoji: '🔌' },
-          { verb: 'wears', object: 'a jacket', emoji: '🧥' },
-          { verb: 'closes', object: 'the door', emoji: '🚪' },
-          { verb: 'opens', object: 'windows', emoji: '🪟' },
-          { verb: 'sends', object: 'messages', emoji: '💬' },
-          { verb: 'saves', object: 'money', emoji: '💰' },
-          { verb: 'chooses', object: 'outfits', emoji: '👗' }
-        ],
-        [
-          { verb: 'drinks', object: 'water', emoji: '💧' },
-          { verb: 'eats', object: 'snacks', emoji: '🍿' },
-          { verb: 'rides', object: 'the subway', emoji: '🚇' },
-          { verb: 'charges', object: 'her phone', emoji: '🔋' },
-          { verb: 'completes', object: 'projects', emoji: '📊' },
-          { verb: 'streams', object: 'shows', emoji: '📺' },
-          { verb: 'sings', object: 'songs', emoji: '🎤' },
-          { verb: 'solves', object: 'puzzles', emoji: '🧩' },
-          { verb: 'writes', object: 'stories', emoji: '📝' },
-          { verb: 'follows', object: 'recipes', emoji: '📖' },
-          { verb: 'attends', object: 'classes', emoji: '🎓' },
-          { verb: 'bakes', object: 'cookies', emoji: '🍪' },
-          { verb: 'tidies', object: 'the kitchen', emoji: '🧽' },
-          { verb: 'combs', object: 'her hair', emoji: '💇' },
-          { verb: 'applies', object: 'lotion', emoji: '🧴' },
-          { verb: 'folds', object: 'laundry', emoji: '👔' },
-          { verb: 'locks', object: 'the house', emoji: '🔐' },
-          { verb: 'turns off', object: 'lights', emoji: '💡' },
-          { verb: 'answers', object: 'calls', emoji: '📞' },
-          { verb: 'plans', object: 'trips', emoji: '✈️' }
-        ]
-      ];
-      
-      // Randomly select one verb set
-      const randomIndex = Math.floor(Math.random() * verbSets.length);
-      characterData.verbs = verbSets[randomIndex];
-      
-      console.log(`Using verb set ${randomIndex + 1} for variety`);
+    function showError(message) {
+      const errorHTML = `
+        <div class="error-message">
+          <h2>⚠️ Loading Error</h2>
+          <p>${message}</p>
+          <p style="font-size: 0.85rem; margin-top: 1rem;">Please make sure <strong>game-data.json</strong> is in the correct location.</p>
+        </div>
+      `;
+      document.body.innerHTML += errorHTML;
     }
 
-    let currentCardIndex = 0;
-    let cardScores = [0, 0, 0, 0];
-    let userMatches = [[], [], [], []];
+    // ============================================
+    // CHARACTER NAVIGATION
+    // ============================================
+    function updateCharacter() {
+      if (!characters.length) return;
+      
+      const char = characters[currentCharacterIndex];
+      document.getElementById('characterEmoji').textContent = char.emoji;
+      document.getElementById('characterName').textContent = char.name;
+      
+      document.getElementById('prevChar').disabled = currentCharacterIndex === 0;
+      document.getElementById('nextChar').disabled = currentCharacterIndex === characters.length - 1;
+      
+      const bubble = document.getElementById('characterBubble');
+      bubble.style.animation = 'none';
+      setTimeout(() => {
+        bubble.style.animation = 'float 4s ease-in-out infinite';
+      }, 10);
 
-    // Split verbs into 4 cards (5 verbs each)
-    const cardVerbs = [
-      characterData.verbs.slice(0, 5),
-      characterData.verbs.slice(5, 10),
-      characterData.verbs.slice(10, 15),
-      characterData.verbs.slice(15, 20)
-    ];
+      renderCarts();
+    }
 
-    function renderAllCards() {
-      const track = document.getElementById('carouselTrack');
-      track.innerHTML = '';
+    function changeCharacter(direction) {
+      const newIndex = currentCharacterIndex + direction;
+      if (newIndex >= 0 && newIndex < characters.length) {
+        currentCharacterIndex = newIndex;
+        updateCharacter();
+      }
+    }
 
-      for (let cardIndex = 0; cardIndex < 4; cardIndex++) {
-        const cardWrapper = document.createElement('div');
-        cardWrapper.className = cardIndex === 0 ? 'card-wrapper active' : 'card-wrapper';
+    // ============================================
+    // CART RENDERING
+    // ============================================
+    function renderCarts() {
+      const char = characters[currentCharacterIndex];
+      const cartsContainer = document.getElementById('trainCarts');
+      cartsContainer.innerHTML = '';
+
+      Object.keys(CATEGORY_CONFIG).forEach(catKey => {
+        const config = CATEGORY_CONFIG[catKey];
+        const hasCategory = char.categories && char.categories[catKey];
         
-        const verbs = cardVerbs[cardIndex];
+        const cart = document.createElement('div');
+        cart.className = 'cart';
+        cart.onclick = () => hasCategory ? openCart(catKey) : alert('This category is not available yet.');
+        cart.style.opacity = hasCategory ? '1' : '0.5';
+        cart.style.cursor = hasCategory ? 'pointer' : 'not-allowed';
         
-        // CRITICAL: Shuffle objects column to prevent position-based matching!
-        const shuffledObjects = verbs.map(v => ({
-          object: v.object,
-          emoji: v.emoji,
-          correctVerb: v.verb
-        })).sort(() => Math.random() - 0.5);
-
-        const verbsHTML = verbs.map((v, i) => `
-          <div class="match-item" data-type="verb" data-value="${v.verb}" data-card="${cardIndex}" data-index="${i}">
-            ${v.verb}
-          </div>
-        `).join('');
-
-        const objectsHTML = shuffledObjects.map((obj, i) => `
-          <div class="match-item" data-type="object" data-value="${obj.object}" data-correct="${obj.correctVerb}" data-card="${cardIndex}" data-index="${i}">
-            ${obj.object} <span class="emoji">${obj.emoji}</span>
-          </div>
-        `).join('');
-
-        cardWrapper.innerHTML = `
-          <div class="matching-card">
-            <div class="card-title">Match ${cardIndex + 1}/4: Verbs & Objects</div>
-            <div class="matching-area">
-              <div class="column">${verbsHTML}</div>
-              <div class="column">${objectsHTML}</div>
-            </div>
-          </div>
+        cart.innerHTML = `
+          <div class="cart-icon">${config.icon}</div>
+          <div class="cart-title">${config.displayName.replace(' ', '<br>')}</div>
         `;
         
-        track.appendChild(cardWrapper);
-      }
-
-      attachMatchingListeners();
-      renderNavigation();
-      updateCarouselPosition();
-    }
-
-    let selectedVerb = null;
-
-    function attachMatchingListeners() {
-      document.querySelectorAll('.match-item').forEach(item => {
-        item.addEventListener('click', () => {
-          const card = parseInt(item.dataset.card);
-          if (card !== currentCardIndex) return;
-
-          if (item.dataset.type === 'verb') {
-            // Clicking a verb: select it
-            document.querySelectorAll(`.match-item[data-type="verb"][data-card="${card}"]`).forEach(v => {
-              v.classList.remove('selected');
-            });
-            item.classList.add('selected');
-            selectedVerb = item.dataset.value;
-            
-            // Visual feedback: highlight available objects
-            document.querySelectorAll(`.match-item[data-type="object"][data-card="${card}"]`).forEach(obj => {
-              if (!obj.classList.contains('correct')) {
-                obj.style.opacity = '1';
-              }
-            });
-            
-          } else if (item.dataset.type === 'object' && selectedVerb) {
-            // Clicking an object when verb is selected: create match
-            if (!item.classList.contains('correct') && !item.classList.contains('selected')) {
-              userMatches[card].push({
-                verb: selectedVerb,
-                object: item.dataset.value,
-                correct: item.dataset.correct
-              });
-              
-              // Mark both as matched
-              item.classList.add('selected');
-              const verbEl = document.querySelector(`.match-item[data-type="verb"][data-value="${selectedVerb}"][data-card="${card}"]`);
-              if (verbEl) {
-                verbEl.classList.add('selected');
-              }
-              
-              // Reset selection
-              selectedVerb = null;
-            }
-          }
-        });
+        cartsContainer.appendChild(cart);
       });
     }
 
-    function checkMatches() {
-      const card = currentCardIndex;
-      let score = 0;
-
-      userMatches[card].forEach(match => {
-        const verbEl = document.querySelector(`.match-item[data-type="verb"][data-value="${match.verb}"][data-card="${card}"]`);
-        const objEl = document.querySelector(`.match-item[data-type="object"][data-value="${match.object}"][data-card="${card}"]`);
-
-        if (match.verb === match.correct) {
-          verbEl.classList.remove('selected');
-          verbEl.classList.add('correct');
-          objEl.classList.remove('selected');
-          objEl.classList.add('correct');
-          score++;
-          showCelebration('✅');
-        } else {
-          verbEl.classList.remove('selected');
-          verbEl.classList.add('wrong');
-          objEl.classList.remove('selected');
-          objEl.classList.add('wrong');
-          
-          setTimeout(() => {
-            verbEl.classList.remove('wrong', 'selected');
-            objEl.classList.remove('wrong', 'selected');
-          }, 1000);
-        }
-      });
-
-      cardScores[card] = score;
-      userMatches[card] = userMatches[card].filter(m => m.verb === m.correct);
-      updateScore();
-      updateProgress();
-
-      if (score === 5) {
-        document.getElementById('nextCardBtn').disabled = false;
-        const dots = document.querySelectorAll('.nav-dot');
-        if (dots[card]) dots[card].classList.add('completed');
-      }
-
-      checkAllComplete();
-    }
-
-    function checkAllComplete() {
-      const allComplete = cardScores.every(score => score === 5);
-      if (allComplete) {
-        document.querySelector('.controls').style.display = 'none';
-        document.getElementById('footer').style.display = 'flex';
-        showCelebration('🏆');
-      }
-    }
-
-    function nextCard() {
-      if (currentCardIndex < 3) {
-        currentCardIndex++;
-        selectedVerb = null;
-        updateCarouselPosition();
-        updateScore();
-        document.getElementById('nextCardBtn').disabled = true;
-      }
-    }
-
-    function prevCard() {
-      if (currentCardIndex > 0) {
-        currentCardIndex--;
-        selectedVerb = null;
-        updateCarouselPosition();
-        updateScore();
-      }
-    }
-
-    function updateCarouselPosition() {
-      const track = document.getElementById('carouselTrack');
-      const offset = -currentCardIndex * 100;
-      track.style.transform = `translateX(${offset}%)`;
+    // ============================================
+    // MODAL MANAGEMENT
+    // ============================================
+    function openCart(cartType) {
+      const char = characters[currentCharacterIndex];
+      const category = char.categories[cartType];
       
-      document.querySelectorAll('.card-wrapper').forEach((card, index) => {
-        card.classList.toggle('active', index === currentCardIndex);
-      });
-      
-      document.getElementById('cardNumber').textContent = currentCardIndex + 1;
-      document.getElementById('prevArrow').disabled = currentCardIndex === 0;
-      document.getElementById('nextArrow').disabled = currentCardIndex === 3;
-      
-      const dots = document.querySelectorAll('.nav-dot');
-      dots.forEach((dot, i) => {
-        dot.classList.toggle('active', i === currentCardIndex);
-      });
-    }
-
-    function renderNavigation() {
-      const nav = document.getElementById('scoreDots');
-      nav.innerHTML = '';
-      
-      const labels = ['Card 1', 'Card 2', 'Card 3', 'Card 4'];
-      
-      for (let i = 0; i < 4; i++) {
-        const dot = document.createElement('div');
-        dot.className = 'nav-dot';
-        dot.setAttribute('data-label', labels[i]);
-        if (i === currentCardIndex) dot.classList.add('active');
-        dot.addEventListener('click', () => goToCard(i));
-        nav.appendChild(dot);
-      }
-    }
-
-    function goToCard(index) {
-      currentCardIndex = index;
-      selectedVerb = null;
-      updateCarouselPosition();
-      updateScore();
-    }
-
-    function updateScore() {
-      const score = cardScores[currentCardIndex];
-      document.getElementById('scoreDisplay').textContent = `${score}/5`;
-    }
-
-    function updateProgress() {
-      const totalScore = cardScores.reduce((a, b) => a + b, 0);
-      const percentage = (totalScore / 20) * 100;
-      document.getElementById('progressFill').style.width = percentage + '%';
-    }
-
-    function showCelebration(emoji) {
-      const celebration = document.createElement('div');
-      celebration.className = 'celebration';
-      celebration.textContent = emoji;
-      document.body.appendChild(celebration);
-      
-      setTimeout(() => {
-        document.body.removeChild(celebration);
-      }, 1000);
-    }
-
-    function retryGame() {
-      location.reload();
-    }
-
-    function goToPractice() {
-      window.location.href = 'practice-carousel.html';
-    }
-
-    function goHome() {
-      sessionStorage.removeItem('quizData');
-      window.location.href = '../index.html';
-    }
-
-    function goBack() {
-      window.history.back();
-    }
-
-    // Touch swipe - smart detection
-    let startX = 0;
-    let startY = 0;
-    let isDragging = false;
-
-    const carouselTrack = document.getElementById('carouselTrack');
-
-    carouselTrack.addEventListener('touchstart', (e) => {
-      startX = e.touches[0].clientX;
-      startY = e.touches[0].clientY;
-      isDragging = true;
-    }, { passive: true });
-
-    carouselTrack.addEventListener('touchmove', (e) => {
-      if (!isDragging) return;
-      
-      const currentX = e.touches[0].clientX;
-      const currentY = e.touches[0].clientY;
-      const diffX = Math.abs(startX - currentX);
-      const diffY = Math.abs(startY - currentY);
-      
-      if (diffX > diffY && diffX > 10) {
-        isDragging = true;
-      } else if (diffY > diffX) {
-        isDragging = false;
-      }
-    }, { passive: true });
-
-    carouselTrack.addEventListener('touchend', (e) => {
-      if (!isDragging) return;
-      
-      const endX = e.changedTouches[0].clientX;
-      const endY = e.changedTouches[0].clientY;
-      const diffX = startX - endX;
-      const diffY = Math.abs(startY - endY);
-      
-      if (Math.abs(diffX) > 50 && Math.abs(diffX) > diffY) {
-        if (diffX > 0 && currentCardIndex < 3) {
-          nextCard();
-        } else if (diffX < 0 && currentCardIndex > 0) {
-          prevCard();
-        }
-      }
-      isDragging = false;
-    }, { passive: true });
-
-    // Keyboard navigation
-    document.addEventListener('keydown', (e) => {
-      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+      if (!category) {
+        alert('This category has no data yet.');
         return;
       }
+
+      const config = CATEGORY_CONFIG[cartType];
+      currentCartType = cartType;
+
+      document.getElementById('modalIcon').textContent = config.icon;
+      document.getElementById('modalText').textContent = config.displayName;
+
+      const verbList = document.getElementById('verbList');
+      verbList.innerHTML = category.verbs.map(item => `
+        <div class="verb-box">
+          <span class="verb">${item.verb}</span>
+          <span class="object">${item.object} <span class="emoji-icon">${item.emoji}</span></span>
+        </div>
+      `).join('');
+
+      document.getElementById('modalOverlay').classList.add('show');
+      document.getElementById('cartModal').classList.add('show');
+    }
+
+    function closeModal() {
+      document.getElementById('modalOverlay').classList.remove('show');
+      document.getElementById('cartModal').classList.remove('show');
+    }
+
+    // ============================================
+    // START PRACTICE (LAUNCH MATCHING GAME)
+    // ============================================
+    function startPractice() {
+      const char = characters[currentCharacterIndex];
+      const config = CATEGORY_CONFIG[currentCartType];
       
-      if (e.key === 'ArrowRight' && currentCardIndex < 3) {
-        e.preventDefault();
-        nextCard();
-      } else if (e.key === 'ArrowLeft' && currentCardIndex > 0) {
-        e.preventDefault();
-        prevCard();
+      // Get progress from URL if exists
+      const params = new URLSearchParams(window.location.search);
+      const progress = params.get('p');
+      
+      // Build game URL with parameters
+      let gameURL = CONFIG.matchingGamePage;
+      const gameParams = new URLSearchParams();
+      
+      gameParams.set('character', char.key);
+      gameParams.set('category', currentCartType);
+      
+      if (progress) {
+        gameParams.set('p', progress);
       }
+      
+      gameURL += '?' + gameParams.toString();
+      
+      console.log('🚀 Launching game:', gameURL);
+      
+      // Navigate to matching game
+      window.location.href = gameURL;
+    }
+
+    // ============================================
+    // QR CODE MODAL
+    // ============================================
+    function openQRModal() {
+      const currentUrl = window.location.href;
+      document.getElementById('qrUrl').textContent = currentUrl;
+      generateQRCode(currentUrl);
+      document.getElementById('qrModal').classList.add('show');
+    }
+
+    function closeQRModal() {
+      document.getElementById('qrModal').classList.remove('show');
+    }
+
+    function generateQRCode(url) {
+      const qrBox = document.getElementById('qrCodeBox');
+      qrBox.innerHTML = '<div style="color: #666; font-size: 0.875rem; padding: 20px;">Generating QR Code...</div>';
+      
+      const qrCodeURL = `https://api.qrserver.com/v1/create-qr-code/?size=256x256&data=${encodeURIComponent(url)}&format=png&bgcolor=FFFFFF&color=000000&margin=10`;
+      
+      const img = new Image();
+      img.onload = () => {
+        qrBox.innerHTML = '';
+        img.style.width = '100%';
+        img.style.height = 'auto';
+        img.style.display = 'block';
+        qrBox.appendChild(img);
+      };
+      
+      img.onerror = () => {
+        qrBox.innerHTML = `
+          <div style="color: #ef4444; padding: 20px; text-align: center;">
+            <div style="font-size: 28px; margin-bottom: 12px;">⚠️</div>
+            <div style="font-size: 14px;"><strong>Failed to generate QR code</strong></div>
+            <div style="font-size: 12px; margin-top: 8px;">Check your internet connection</div>
+          </div>
+        `;
+      };
+      
+      img.src = qrCodeURL;
+    }
+
+    function downloadQRCode() {
+      const img = document.querySelector('#qrCodeBox img');
+      if (img) {
+        const link = document.createElement('a');
+        link.download = 'intuity-train-carousel-qr.png';
+        link.href = img.src;
+        link.click();
+      } else {
+        alert('⚠️ QR code not ready yet. Please wait a moment and try again.');
+      }
+    }
+
+    // ============================================
+    // EVENT LISTENERS
+    // ============================================
+    document.getElementById('modalOverlay').addEventListener('click', closeModal);
+
+    document.getElementById('qrModal').addEventListener('click', (e) => {
+      if (e.target.id === 'qrModal') closeQRModal();
     });
 
-    // Initialize
-    renderAllCards();
-    updateScore();
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeModal();
+        closeQRModal();
+      }
+      if (e.key === 'ArrowLeft') changeCharacter(-1);
+      if (e.key === 'ArrowRight') changeCharacter(1);
+    });
+
+    // ============================================
+    // INITIALIZE
+    // ============================================
+    async function initialize() {
+      console.log('🎮 Initializing INTUITY Train Carousel...');
+      
+      const loaded = await loadGameData();
+      
+      if (!loaded) {
+        return;
+      }
+
+      const loadingScreen = document.getElementById('loadingScreen');
+      loadingScreen.classList.add('hidden');
+      
+      updateCharacter();
+      
+      console.log('✅ Application Ready!');
+      console.log('📊 Characters loaded:', characters.map(c => c.name).join(', '));
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initialize);
+    } else {
+      initialize();
+    }
   </script>
 </body>
 </html>
