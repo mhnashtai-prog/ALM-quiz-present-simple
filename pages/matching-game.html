@@ -289,7 +289,7 @@
       color: rgba(232, 232, 232, 0.9);
       font-size: 0.95rem;
       font-weight: 400;
-      cursor: move;
+      cursor: pointer;
       transition: all 0.3s;
       box-shadow: 
         4px 4px 8px #000000,
@@ -298,6 +298,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
+      border: 2px solid transparent;
     }
 
     .match-item:hover {
@@ -305,11 +306,7 @@
       box-shadow: 
         6px 6px 12px #000000,
         -6px -6px 12px #2a2a2a;
-    }
-
-    .match-item.dragging {
-      opacity: 0.5;
-      transform: rotate(3deg);
+      border-color: rgba(201, 169, 97, 0.3);
     }
 
     .match-item.selected {
@@ -647,28 +644,81 @@
 
     // Fallback data
     if (characterData.verbs.length === 0) {
-      characterData.verbs = [
-        { verb: 'drinks', object: 'coffee', emoji: '☕' },
-        { verb: 'eats', object: 'breakfast', emoji: '🍳' },
-        { verb: 'takes', object: 'the bus', emoji: '🚌' },
-        { verb: 'checks', object: 'her phone', emoji: '📱' },
-        { verb: 'does', object: 'homework', emoji: '📚' },
-        { verb: 'watches', object: 'TV', emoji: '📺' },
-        { verb: 'listens to', object: 'music', emoji: '🎵' },
-        { verb: 'plays', object: 'video games', emoji: '🎮' },
-        { verb: 'reads', object: 'books', emoji: '📖' },
-        { verb: 'writes', object: 'notes', emoji: '✍️' },
-        { verb: 'studies', object: 'English', emoji: '🇬🇧' },
-        { verb: 'cooks', object: 'dinner', emoji: '🍳' },
-        { verb: 'cleans', object: 'her room', emoji: '🧹' },
-        { verb: 'brushes', object: 'her teeth', emoji: '🪥' },
-        { verb: 'washes', object: 'her hands', emoji: '🧼' },
-        { verb: 'makes', object: 'her bed', emoji: '🛏️' },
-        { verb: 'rides', object: 'a bike', emoji: '🚴' },
-        { verb: 'walks', object: 'the dog', emoji: '🐕' },
-        { verb: 'feeds', object: 'the cat', emoji: '🐱' },
-        { verb: 'waters', object: 'plants', emoji: '🌱' }
+      // Randomly select one of 3 verb sets for variety
+      const verbSets = [
+        [
+          { verb: 'drinks', object: 'coffee', emoji: '☕' },
+          { verb: 'eats', object: 'breakfast', emoji: '🍳' },
+          { verb: 'takes', object: 'the bus', emoji: '🚌' },
+          { verb: 'checks', object: 'her phone', emoji: '📱' },
+          { verb: 'does', object: 'homework', emoji: '📚' },
+          { verb: 'watches', object: 'TV', emoji: '📺' },
+          { verb: 'listens to', object: 'music', emoji: '🎵' },
+          { verb: 'plays', object: 'video games', emoji: '🎮' },
+          { verb: 'reads', object: 'books', emoji: '📖' },
+          { verb: 'writes', object: 'notes', emoji: '✍️' },
+          { verb: 'studies', object: 'English', emoji: '🇬🇧' },
+          { verb: 'cooks', object: 'dinner', emoji: '🍳' },
+          { verb: 'cleans', object: 'her room', emoji: '🧹' },
+          { verb: 'brushes', object: 'her teeth', emoji: '🪥' },
+          { verb: 'washes', object: 'her hands', emoji: '🧼' },
+          { verb: 'makes', object: 'her bed', emoji: '🛏️' },
+          { verb: 'rides', object: 'a bike', emoji: '🚴' },
+          { verb: 'walks', object: 'the dog', emoji: '🐕' },
+          { verb: 'feeds', object: 'the cat', emoji: '🐱' },
+          { verb: 'waters', object: 'plants', emoji: '🌱' }
+        ],
+        [
+          { verb: 'drinks', object: 'orange juice', emoji: '🍊' },
+          { verb: 'eats', object: 'lunch', emoji: '🥗' },
+          { verb: 'catches', object: 'the train', emoji: '🚊' },
+          { verb: 'uses', object: 'her laptop', emoji: '💻' },
+          { verb: 'finishes', object: 'her work', emoji: '✅' },
+          { verb: 'enjoys', object: 'movies', emoji: '🎬' },
+          { verb: 'plays', object: 'the piano', emoji: '🎹' },
+          { verb: 'draws', object: 'pictures', emoji: '🎨' },
+          { verb: 'visits', object: 'friends', emoji: '👥' },
+          { verb: 'practices', object: 'yoga', emoji: '🧘' },
+          { verb: 'learns', object: 'new things', emoji: '📚' },
+          { verb: 'prepares', object: 'meals', emoji: '🍽️' },
+          { verb: 'organizes', object: 'her desk', emoji: '🗂️' },
+          { verb: 'charges', object: 'her tablet', emoji: '🔌' },
+          { verb: 'wears', object: 'a jacket', emoji: '🧥' },
+          { verb: 'closes', object: 'the door', emoji: '🚪' },
+          { verb: 'opens', object: 'windows', emoji: '🪟' },
+          { verb: 'sends', object: 'messages', emoji: '💬' },
+          { verb: 'saves', object: 'money', emoji: '💰' },
+          { verb: 'chooses', object: 'outfits', emoji: '👗' }
+        ],
+        [
+          { verb: 'drinks', object: 'water', emoji: '💧' },
+          { verb: 'eats', object: 'snacks', emoji: '🍿' },
+          { verb: 'rides', object: 'the subway', emoji: '🚇' },
+          { verb: 'charges', object: 'her phone', emoji: '🔋' },
+          { verb: 'completes', object: 'projects', emoji: '📊' },
+          { verb: 'streams', object: 'shows', emoji: '📺' },
+          { verb: 'sings', object: 'songs', emoji: '🎤' },
+          { verb: 'solves', object: 'puzzles', emoji: '🧩' },
+          { verb: 'writes', object: 'stories', emoji: '📝' },
+          { verb: 'follows', object: 'recipes', emoji: '📖' },
+          { verb: 'attends', object: 'classes', emoji: '🎓' },
+          { verb: 'bakes', object: 'cookies', emoji: '🍪' },
+          { verb: 'tidies', object: 'the kitchen', emoji: '🧽' },
+          { verb: 'combs', object: 'her hair', emoji: '💇' },
+          { verb: 'applies', object: 'lotion', emoji: '🧴' },
+          { verb: 'folds', object: 'laundry', emoji: '👔' },
+          { verb: 'locks', object: 'the house', emoji: '🔐' },
+          { verb: 'turns off', object: 'lights', emoji: '💡' },
+          { verb: 'answers', object: 'calls', emoji: '📞' },
+          { verb: 'plans', object: 'trips', emoji: '✈️' }
+        ]
       ];
+      
+      // Randomly select one verb set
+      const randomIndex = Math.floor(Math.random() * verbSets.length);
+      characterData.verbs = verbSets[randomIndex];
+      
+      console.log(`Using verb set ${randomIndex + 1} for variety`);
     }
 
     let currentCardIndex = 0;
@@ -692,6 +742,8 @@
         cardWrapper.className = cardIndex === 0 ? 'card-wrapper active' : 'card-wrapper';
         
         const verbs = cardVerbs[cardIndex];
+        
+        // CRITICAL: Shuffle objects column to prevent position-based matching!
         const shuffledObjects = verbs.map(v => ({
           object: v.object,
           emoji: v.emoji,
@@ -737,25 +789,37 @@
           if (card !== currentCardIndex) return;
 
           if (item.dataset.type === 'verb') {
-            // Deselect previous verb
+            // Clicking a verb: select it
             document.querySelectorAll(`.match-item[data-type="verb"][data-card="${card}"]`).forEach(v => {
               v.classList.remove('selected');
             });
             item.classList.add('selected');
             selectedVerb = item.dataset.value;
+            
+            // Visual feedback: highlight available objects
+            document.querySelectorAll(`.match-item[data-type="object"][data-card="${card}"]`).forEach(obj => {
+              if (!obj.classList.contains('correct')) {
+                obj.style.opacity = '1';
+              }
+            });
+            
           } else if (item.dataset.type === 'object' && selectedVerb) {
-            // Match selected verb with this object
-            if (!item.classList.contains('correct')) {
+            // Clicking an object when verb is selected: create match
+            if (!item.classList.contains('correct') && !item.classList.contains('selected')) {
               userMatches[card].push({
                 verb: selectedVerb,
                 object: item.dataset.value,
                 correct: item.dataset.correct
               });
               
-              // Mark as matched (temporary)
+              // Mark both as matched
               item.classList.add('selected');
-              document.querySelector(`.match-item[data-type="verb"][data-value="${selectedVerb}"][data-card="${card}"]`).classList.add('selected');
+              const verbEl = document.querySelector(`.match-item[data-type="verb"][data-value="${selectedVerb}"][data-card="${card}"]`);
+              if (verbEl) {
+                verbEl.classList.add('selected');
+              }
               
+              // Reset selection
               selectedVerb = null;
             }
           }
