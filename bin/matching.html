@@ -1,1 +1,1047 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>INTUITY - Matching Game</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #000000;
+      font-family: 'Inter', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      overflow: hidden;
+      position: relative;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' /%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .game-container {
+      background: #1a1a1a;
+      width: 95%;
+      max-width: 1000px;
+      height: 88vh;
+      border-radius: 24px;
+      padding: 1.5rem;
+      box-shadow: 
+        12px 12px 24px #000000,
+        -12px -12px 24px #2a2a2a;
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+
+    .back-btn {
+      position: absolute;
+      top: 1.5rem;
+      left: 1.5rem;
+      background: #1a1a1a;
+      border: none;
+      border-radius: 12px;
+      padding: 0.6rem 1rem;
+      color: #C9A961;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 
+        4px 4px 8px #000000,
+        -4px -4px 8px #2a2a2a;
+      transition: all 0.3s;
+      z-index: 10;
+    }
+
+    .back-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 
+        6px 6px 12px #000000,
+        -6px -6px 12px #2a2a2a;
+    }
+
+    .header h1 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.75rem;
+      color: #C9A961;
+      margin-bottom: 0.25rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .tagline {
+      font-size: 0.8rem;
+      color: rgba(232, 232, 232, 0.6);
+      margin-bottom: 0.75rem;
+      font-weight: 500;
+      font-style: italic;
+    }
+
+    .character-selector {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 1.5rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .character-option {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.35rem;
+      cursor: pointer;
+      transition: all 0.3s;
+      padding: 0.4rem;
+      border-radius: 10px;
+    }
+
+    .character-option:hover {
+      transform: translateY(-2px);
+    }
+
+    .character-option.active {
+      background: rgba(201, 169, 97, 0.1);
+    }
+
+    .character-label {
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+      font-size: 0.75rem;
+      color: rgba(232, 232, 232, 0.7);
+      font-weight: 500;
+    }
+
+    .character-label.active {
+      color: #C9A961;
+      font-weight: 600;
+    }
+
+    .character-emoji {
+      font-size: 1rem;
+    }
+
+    .character-status {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: rgba(201, 169, 97, 0.2);
+      border: 2px solid rgba(201, 169, 97, 0.4);
+      transition: all 0.3s;
+    }
+
+    .character-status.completed {
+      background: #4ade80;
+      border-color: #4ade80;
+      box-shadow: 0 0 8px rgba(74, 222, 128, 0.5);
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 6px;
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: inset 2px 2px 4px rgba(0, 0, 0, 0.5);
+      margin-bottom: 0.75rem;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #C9A961, #e8d9a8);
+      border-radius: 10px;
+      transition: width 0.5s ease;
+      box-shadow: 0 0 10px rgba(201, 169, 97, 0.5);
+    }
+
+    .score-display {
+      text-align: center;
+      margin-bottom: 0.75rem;
+      font-size: 0.95rem;
+      color: #e8e8e8;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+      padding: 0 1rem;
+    }
+
+    .score-number {
+      color: #C9A961;
+      font-size: 1.1rem;
+      font-family: 'Space Grotesk', sans-serif;
+    }
+
+    .score-dots {
+      display: flex;
+      gap: 0.4rem;
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .score-left {
+      flex: 1;
+      text-align: left;
+      font-size: 0.85rem;
+    }
+
+    .score-right {
+      flex: 1;
+      text-align: right;
+      font-size: 0.85rem;
+    }
+
+    .carousel-wrapper {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: visible;
+      margin: 0 -1.5rem;
+      padding: 0 1.5rem;
+      touch-action: pan-y;
+      pointer-events: none;
+    }
+
+    .carousel-track {
+      display: flex;
+      gap: 2rem;
+      transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+      will-change: transform;
+      pointer-events: none;
+    }
+
+    .card-wrapper {
+      min-width: 100%;
+      display: flex;
+      justify-content: center;
+      padding: 0.5rem;
+      opacity: 0.4;
+      transform: scale(0.95);
+      transition: all 0.5s ease;
+      pointer-events: none;
+    }
+
+    .card-wrapper.active {
+      opacity: 1;
+      transform: scale(1);
+      pointer-events: all;
+    }
+
+    .matching-card {
+      width: 100%;
+      max-width: 800px;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      pointer-events: all;
+    }
+
+    .card-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.1rem;
+      color: #C9A961;
+      text-align: center;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .matching-area {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    .column {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .match-item {
+      background: #1a1a1a;
+      border-radius: 12px;
+      padding: 1rem 1.25rem;
+      color: rgba(232, 232, 232, 0.9);
+      font-size: 0.95rem;
+      font-weight: 400;
+      cursor: pointer;
+      transition: all 0.3s;
+      box-shadow: 
+        4px 4px 8px #000000,
+        -4px -4px 8px #2a2a2a;
+      user-select: none;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border: 2px solid transparent;
+    }
+
+    .match-item:hover {
+      transform: translateY(-2px);
+      box-shadow: 
+        6px 6px 12px #000000,
+        -6px -6px 12px #2a2a2a;
+      border-color: rgba(201, 169, 97, 0.3);
+    }
+
+    .match-item.selected {
+      background: rgba(201, 169, 97, 0.2);
+      border: 2px solid #C9A961;
+      color: #C9A961;
+      font-weight: 600;
+    }
+
+    .match-item.correct {
+      background: rgba(74, 222, 128, 0.2);
+      border: 2px solid #4ade80;
+      color: #4ade80;
+      animation: correctPulse 0.5s ease;
+      cursor: default;
+    }
+
+    .match-item.wrong {
+      background: rgba(251, 146, 60, 0.2);
+      border: 2px solid #fb923c;
+      color: #fb923c;
+      animation: shake 0.5s ease;
+    }
+
+    .emoji {
+      font-size: 1.25rem;
+      margin-left: 0.5rem;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      75% { transform: translateX(5px); }
+    }
+
+    @keyframes correctPulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    .controls {
+      display: flex;
+      gap: 0.75rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 1rem;
+    }
+
+    .btn {
+      background: #1a1a1a;
+      border: none;
+      border-radius: 12px;
+      padding: 0.75rem 1.5rem;
+      color: #e8e8e8;
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 
+        4px 4px 8px #000000,
+        -4px -4px 8px #2a2a2a;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .btn:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 
+        6px 6px 12px #000000,
+        -6px -6px 12px #2a2a2a;
+    }
+
+    .btn.primary {
+      background: rgba(201, 169, 97, 0.2);
+      color: #C9A961;
+    }
+
+    .btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    .nav-arrows {
+      position: absolute;
+      top: 50%;
+      left: 0;
+      right: 0;
+      transform: translateY(-50%);
+      display: flex;
+      justify-content: space-between;
+      pointer-events: none;
+      padding: 0 0.5rem;
+      z-index: 10;
+    }
+
+    .arrow {
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      background: #1a1a1a;
+      border: none;
+      box-shadow: 
+        4px 4px 8px #000000,
+        -4px -4px 8px #2a2a2a;
+      color: #C9A961;
+      font-size: 1.3rem;
+      cursor: pointer;
+      pointer-events: all;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .arrow:hover:not(:disabled) {
+      box-shadow: 
+        6px 6px 12px #000000,
+        -6px -6px 12px #2a2a2a;
+      transform: scale(1.05);
+    }
+
+    .arrow:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+
+    .nav-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: rgba(201, 169, 97, 0.3);
+      cursor: pointer;
+      transition: all 0.3s;
+      box-shadow: 
+        2px 2px 4px #000000,
+        -2px -2px 4px #2a2a2a;
+      position: relative;
+    }
+
+    .nav-dot:hover {
+      background: rgba(201, 169, 97, 0.6);
+      transform: scale(1.2);
+    }
+
+    .nav-dot.active {
+      background: #C9A961;
+      transform: scale(1.3);
+      transform-origin: center center;
+      box-shadow: 
+        0 0 10px rgba(201, 169, 97, 0.5),
+        2px 2px 4px #000000,
+        -2px -2px 4px #2a2a2a;
+    }
+
+    .nav-dot.completed {
+      background: #4ade80;
+    }
+
+    .celebration {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 4rem;
+      opacity: 0;
+      pointer-events: none;
+      z-index: 1000;
+      animation: celebrate 1s ease;
+    }
+
+    @keyframes celebrate {
+      0% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
+      50% { opacity: 1; transform: translate(-50%, -50%) scale(1.2); }
+      100% { opacity: 0; transform: translate(-50%, -50%) scale(1); }
+    }
+
+    .footer {
+      display: flex;
+      gap: 0.75rem;
+      justify-content: center;
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 2px solid rgba(201, 169, 97, 0.2);
+      flex-wrap: wrap;
+    }
+
+    .footer-btn {
+      background: #1a1a1a;
+      border: none;
+      border-radius: 12px;
+      padding: 0.75rem 1.25rem;
+      color: #e8e8e8;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 
+        4px 4px 8px #000000,
+        -4px -4px 8px #2a2a2a;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .footer-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 
+        6px 6px 12px #000000,
+        -6px -6px 12px #2a2a2a;
+    }
+
+    .footer-btn.practice {
+      background: rgba(201, 169, 97, 0.2);
+      color: #C9A961;
+    }
+
+    @media (max-width: 768px) {
+      .game-container {
+        padding: 1rem;
+        height: 92vh;
+      }
+
+      .header h1 {
+        font-size: 1.4rem;
+      }
+
+      .matching-area {
+        grid-template-columns: 1fr;
+      }
+
+      .arrow {
+        width: 35px;
+        height: 35px;
+        font-size: 1.1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="game-container">
+    <button class="back-btn" onclick="goBack()">← Back</button>
+    
+    <div class="header">
+      <h1>INTUITY</h1>
+      <p class="tagline">Intuitive & Immersive</p>
+      
+      <div class="character-selector">
+        <div class="character-option active">
+          <div class="character-label active">
+            <span class="character-emoji">👧</span>
+            <span>Sarah</span>
+          </div>
+          <div class="character-status completed" id="sarahStatus"></div>
+        </div>
+        
+        <div class="character-option">
+          <div class="character-label">
+            <span class="character-emoji">🧑</span>
+            <span>Tom</span>
+          </div>
+          <div class="character-status" id="tomStatus"></div>
+        </div>
+        
+        <div class="character-option">
+          <div class="character-label">
+            <span class="character-emoji">👩</span>
+            <span>Emma</span>
+          </div>
+          <div class="character-status" id="emmaStatus"></div>
+        </div>
+        
+        <div class="character-option">
+          <div class="character-label">
+            <span class="character-emoji">🧒</span>
+            <span>Alex</span>
+          </div>
+          <div class="character-status" id="alexStatus"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="progress-bar">
+      <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+    </div>
+
+    <div class="score-display">
+      <div class="score-left">Card <span id="cardNumber">1</span>/4</div>
+      <div class="score-dots" id="scoreDots"></div>
+      <div class="score-right">Score: <span class="score-number" id="scoreDisplay">0/5</span></div>
+    </div>
+
+    <div class="carousel-wrapper">
+      <div class="nav-arrows">
+        <button class="arrow" id="prevArrow" onclick="prevCard()">‹</button>
+        <button class="arrow" id="nextArrow" onclick="nextCard()">›</button>
+      </div>
+      
+      <div class="carousel-track" id="carouselTrack">
+        <!-- Cards will be inserted here by JavaScript -->
+      </div>
+    </div>
+
+    <div class="controls">
+      <button class="btn" onclick="checkMatches()">✓ Check Answers</button>
+      <button class="btn primary" id="nextCardBtn" onclick="nextCard()" disabled>Next Card →</button>
+    </div>
+
+    <div class="footer" id="footer" style="display: none;">
+      <button class="footer-btn" onclick="retryGame()">🔄 Repeat</button>
+      <button class="footer-btn practice" onclick="goToPractice()">📚 Practice →</button>
+      <button class="footer-btn" onclick="goHome()">🏠 Home</button>
+    </div>
+  </div>
+
+  <script>
+    // Load data from sessionStorage
+    let characterData = {
+      name: 'SARAH',
+      emoji: '👧',
+      category: 'Daily Habits',
+      verbs: []
+    };
+
+    try {
+      const storedData = sessionStorage.getItem('quizData');
+      if (storedData) {
+        const quizData = JSON.parse(storedData);
+        characterData.name = quizData.character;
+        characterData.emoji = quizData.characterEmoji;
+        characterData.category = quizData.cartTitle;
+        characterData.verbs = quizData.verbs.slice(0, 20);
+      }
+    } catch (error) {
+      console.error('Error loading data:', error);
+    }
+
+    // Fallback data
+    if (characterData.verbs.length === 0) {
+      // Randomly select one of 3 verb sets for variety
+      const verbSets = [
+        [
+          { verb: 'drinks', object: 'coffee', emoji: '☕' },
+          { verb: 'eats', object: 'breakfast', emoji: '🍳' },
+          { verb: 'takes', object: 'the bus', emoji: '🚌' },
+          { verb: 'checks', object: 'her phone', emoji: '📱' },
+          { verb: 'does', object: 'homework', emoji: '📚' },
+          { verb: 'watches', object: 'TV', emoji: '📺' },
+          { verb: 'listens to', object: 'music', emoji: '🎵' },
+          { verb: 'plays', object: 'video games', emoji: '🎮' },
+          { verb: 'reads', object: 'books', emoji: '📖' },
+          { verb: 'writes', object: 'notes', emoji: '✍️' },
+          { verb: 'studies', object: 'English', emoji: '🇬🇧' },
+          { verb: 'cooks', object: 'dinner', emoji: '🍳' },
+          { verb: 'cleans', object: 'her room', emoji: '🧹' },
+          { verb: 'brushes', object: 'her teeth', emoji: '🪥' },
+          { verb: 'washes', object: 'her hands', emoji: '🧼' },
+          { verb: 'makes', object: 'her bed', emoji: '🛏️' },
+          { verb: 'rides', object: 'a bike', emoji: '🚴' },
+          { verb: 'walks', object: 'the dog', emoji: '🐕' },
+          { verb: 'feeds', object: 'the cat', emoji: '🐱' },
+          { verb: 'waters', object: 'plants', emoji: '🌱' }
+        ],
+        [
+          { verb: 'drinks', object: 'orange juice', emoji: '🍊' },
+          { verb: 'eats', object: 'lunch', emoji: '🥗' },
+          { verb: 'catches', object: 'the train', emoji: '🚊' },
+          { verb: 'uses', object: 'her laptop', emoji: '💻' },
+          { verb: 'finishes', object: 'her work', emoji: '✅' },
+          { verb: 'enjoys', object: 'movies', emoji: '🎬' },
+          { verb: 'plays', object: 'the piano', emoji: '🎹' },
+          { verb: 'draws', object: 'pictures', emoji: '🎨' },
+          { verb: 'visits', object: 'friends', emoji: '👥' },
+          { verb: 'practices', object: 'yoga', emoji: '🧘' },
+          { verb: 'learns', object: 'new things', emoji: '📚' },
+          { verb: 'prepares', object: 'meals', emoji: '🍽️' },
+          { verb: 'organizes', object: 'her desk', emoji: '🗂️' },
+          { verb: 'charges', object: 'her tablet', emoji: '🔌' },
+          { verb: 'wears', object: 'a jacket', emoji: '🧥' },
+          { verb: 'closes', object: 'the door', emoji: '🚪' },
+          { verb: 'opens', object: 'windows', emoji: '🪟' },
+          { verb: 'sends', object: 'messages', emoji: '💬' },
+          { verb: 'saves', object: 'money', emoji: '💰' },
+          { verb: 'chooses', object: 'outfits', emoji: '👗' }
+        ],
+        [
+          { verb: 'drinks', object: 'water', emoji: '💧' },
+          { verb: 'eats', object: 'snacks', emoji: '🍿' },
+          { verb: 'rides', object: 'the subway', emoji: '🚇' },
+          { verb: 'charges', object: 'her phone', emoji: '🔋' },
+          { verb: 'completes', object: 'projects', emoji: '📊' },
+          { verb: 'streams', object: 'shows', emoji: '📺' },
+          { verb: 'sings', object: 'songs', emoji: '🎤' },
+          { verb: 'solves', object: 'puzzles', emoji: '🧩' },
+          { verb: 'writes', object: 'stories', emoji: '📝' },
+          { verb: 'follows', object: 'recipes', emoji: '📖' },
+          { verb: 'attends', object: 'classes', emoji: '🎓' },
+          { verb: 'bakes', object: 'cookies', emoji: '🍪' },
+          { verb: 'tidies', object: 'the kitchen', emoji: '🧽' },
+          { verb: 'combs', object: 'her hair', emoji: '💇' },
+          { verb: 'applies', object: 'lotion', emoji: '🧴' },
+          { verb: 'folds', object: 'laundry', emoji: '👔' },
+          { verb: 'locks', object: 'the house', emoji: '🔐' },
+          { verb: 'turns off', object: 'lights', emoji: '💡' },
+          { verb: 'answers', object: 'calls', emoji: '📞' },
+          { verb: 'plans', object: 'trips', emoji: '✈️' }
+        ]
+      ];
+      
+      // Randomly select one verb set
+      const randomIndex = Math.floor(Math.random() * verbSets.length);
+      characterData.verbs = verbSets[randomIndex];
+      
+      console.log(`Using verb set ${randomIndex + 1} for variety`);
+    }
+
+    let currentCardIndex = 0;
+    let cardScores = [0, 0, 0, 0];
+    let userMatches = [[], [], [], []];
+
+    // Split verbs into 4 cards (5 verbs each)
+    const cardVerbs = [
+      characterData.verbs.slice(0, 5),
+      characterData.verbs.slice(5, 10),
+      characterData.verbs.slice(10, 15),
+      characterData.verbs.slice(15, 20)
+    ];
+
+    function renderAllCards() {
+      const track = document.getElementById('carouselTrack');
+      track.innerHTML = '';
+
+      for (let cardIndex = 0; cardIndex < 4; cardIndex++) {
+        const cardWrapper = document.createElement('div');
+        cardWrapper.className = cardIndex === 0 ? 'card-wrapper active' : 'card-wrapper';
+        
+        const verbs = cardVerbs[cardIndex];
+        
+        // CRITICAL: Shuffle objects column to prevent position-based matching!
+        const shuffledObjects = verbs.map(v => ({
+          object: v.object,
+          emoji: v.emoji,
+          correctVerb: v.verb
+        })).sort(() => Math.random() - 0.5);
+
+        const verbsHTML = verbs.map((v, i) => `
+          <div class="match-item" data-type="verb" data-value="${v.verb}" data-card="${cardIndex}" data-index="${i}">
+            ${v.verb}
+          </div>
+        `).join('');
+
+        const objectsHTML = shuffledObjects.map((obj, i) => `
+          <div class="match-item" data-type="object" data-value="${obj.object}" data-correct="${obj.correctVerb}" data-card="${cardIndex}" data-index="${i}">
+            ${obj.object} <span class="emoji">${obj.emoji}</span>
+          </div>
+        `).join('');
+
+        cardWrapper.innerHTML = `
+          <div class="matching-card">
+            <div class="card-title">Match ${cardIndex + 1}/4: Verbs & Objects</div>
+            <div class="matching-area">
+              <div class="column">${verbsHTML}</div>
+              <div class="column">${objectsHTML}</div>
+            </div>
+          </div>
+        `;
+        
+        track.appendChild(cardWrapper);
+      }
+
+      attachMatchingListeners();
+      renderNavigation();
+      updateCarouselPosition();
+    }
+
+    let selectedVerb = null;
+
+    function attachMatchingListeners() {
+      document.querySelectorAll('.match-item').forEach(item => {
+        item.addEventListener('click', () => {
+          const card = parseInt(item.dataset.card);
+          if (card !== currentCardIndex) return;
+
+          if (item.dataset.type === 'verb') {
+            // Clicking a verb: select it
+            document.querySelectorAll(`.match-item[data-type="verb"][data-card="${card}"]`).forEach(v => {
+              v.classList.remove('selected');
+            });
+            item.classList.add('selected');
+            selectedVerb = item.dataset.value;
+            
+            // Visual feedback: highlight available objects
+            document.querySelectorAll(`.match-item[data-type="object"][data-card="${card}"]`).forEach(obj => {
+              if (!obj.classList.contains('correct')) {
+                obj.style.opacity = '1';
+              }
+            });
+            
+          } else if (item.dataset.type === 'object' && selectedVerb) {
+            // Clicking an object when verb is selected: create match
+            if (!item.classList.contains('correct') && !item.classList.contains('selected')) {
+              userMatches[card].push({
+                verb: selectedVerb,
+                object: item.dataset.value,
+                correct: item.dataset.correct
+              });
+              
+              // Mark both as matched
+              item.classList.add('selected');
+              const verbEl = document.querySelector(`.match-item[data-type="verb"][data-value="${selectedVerb}"][data-card="${card}"]`);
+              if (verbEl) {
+                verbEl.classList.add('selected');
+              }
+              
+              // Reset selection
+              selectedVerb = null;
+            }
+          }
+        });
+      });
+    }
+
+    function checkMatches() {
+      const card = currentCardIndex;
+      let score = 0;
+
+      userMatches[card].forEach(match => {
+        const verbEl = document.querySelector(`.match-item[data-type="verb"][data-value="${match.verb}"][data-card="${card}"]`);
+        const objEl = document.querySelector(`.match-item[data-type="object"][data-value="${match.object}"][data-card="${card}"]`);
+
+        if (match.verb === match.correct) {
+          verbEl.classList.remove('selected');
+          verbEl.classList.add('correct');
+          objEl.classList.remove('selected');
+          objEl.classList.add('correct');
+          score++;
+          showCelebration('✅');
+        } else {
+          verbEl.classList.remove('selected');
+          verbEl.classList.add('wrong');
+          objEl.classList.remove('selected');
+          objEl.classList.add('wrong');
+          
+          setTimeout(() => {
+            verbEl.classList.remove('wrong', 'selected');
+            objEl.classList.remove('wrong', 'selected');
+          }, 1000);
+        }
+      });
+
+      cardScores[card] = score;
+      userMatches[card] = userMatches[card].filter(m => m.verb === m.correct);
+      updateScore();
+      updateProgress();
+
+      if (score === 5) {
+        document.getElementById('nextCardBtn').disabled = false;
+        const dots = document.querySelectorAll('.nav-dot');
+        if (dots[card]) dots[card].classList.add('completed');
+      }
+
+      checkAllComplete();
+    }
+
+    function checkAllComplete() {
+      const allComplete = cardScores.every(score => score === 5);
+      if (allComplete) {
+        document.querySelector('.controls').style.display = 'none';
+        document.getElementById('footer').style.display = 'flex';
+        showCelebration('🏆');
+      }
+    }
+
+    function nextCard() {
+      if (currentCardIndex < 3) {
+        currentCardIndex++;
+        selectedVerb = null;
+        updateCarouselPosition();
+        updateScore();
+        document.getElementById('nextCardBtn').disabled = true;
+      }
+    }
+
+    function prevCard() {
+      if (currentCardIndex > 0) {
+        currentCardIndex--;
+        selectedVerb = null;
+        updateCarouselPosition();
+        updateScore();
+      }
+    }
+
+    function updateCarouselPosition() {
+      const track = document.getElementById('carouselTrack');
+      const offset = -currentCardIndex * 100;
+      track.style.transform = `translateX(${offset}%)`;
+      
+      document.querySelectorAll('.card-wrapper').forEach((card, index) => {
+        card.classList.toggle('active', index === currentCardIndex);
+      });
+      
+      document.getElementById('cardNumber').textContent = currentCardIndex + 1;
+      document.getElementById('prevArrow').disabled = currentCardIndex === 0;
+      document.getElementById('nextArrow').disabled = currentCardIndex === 3;
+      
+      const dots = document.querySelectorAll('.nav-dot');
+      dots.forEach((dot, i) => {
+        dot.classList.toggle('active', i === currentCardIndex);
+      });
+    }
+
+    function renderNavigation() {
+      const nav = document.getElementById('scoreDots');
+      nav.innerHTML = '';
+      
+      const labels = ['Card 1', 'Card 2', 'Card 3', 'Card 4'];
+      
+      for (let i = 0; i < 4; i++) {
+        const dot = document.createElement('div');
+        dot.className = 'nav-dot';
+        dot.setAttribute('data-label', labels[i]);
+        if (i === currentCardIndex) dot.classList.add('active');
+        dot.addEventListener('click', () => goToCard(i));
+        nav.appendChild(dot);
+      }
+    }
+
+    function goToCard(index) {
+      currentCardIndex = index;
+      selectedVerb = null;
+      updateCarouselPosition();
+      updateScore();
+    }
+
+    function updateScore() {
+      const score = cardScores[currentCardIndex];
+      document.getElementById('scoreDisplay').textContent = `${score}/5`;
+    }
+
+    function updateProgress() {
+      const totalScore = cardScores.reduce((a, b) => a + b, 0);
+      const percentage = (totalScore / 20) * 100;
+      document.getElementById('progressFill').style.width = percentage + '%';
+    }
+
+    function showCelebration(emoji) {
+      const celebration = document.createElement('div');
+      celebration.className = 'celebration';
+      celebration.textContent = emoji;
+      document.body.appendChild(celebration);
+      
+      setTimeout(() => {
+        document.body.removeChild(celebration);
+      }, 1000);
+    }
+
+    function retryGame() {
+      location.reload();
+    }
+
+    function goToPractice() {
+      window.location.href = 'practice-carousel.html';
+    }
+
+    function goHome() {
+      sessionStorage.removeItem('quizData');
+      window.location.href = '../index.html';
+    }
+
+    function goBack() {
+      window.history.back();
+    }
+
+    // Touch swipe - smart detection
+    let startX = 0;
+    let startY = 0;
+    let isDragging = false;
+
+    const carouselTrack = document.getElementById('carouselTrack');
+
+    carouselTrack.addEventListener('touchstart', (e) => {
+      startX = e.touches[0].clientX;
+      startY = e.touches[0].clientY;
+      isDragging = true;
+    }, { passive: true });
+
+    carouselTrack.addEventListener('touchmove', (e) => {
+      if (!isDragging) return;
+      
+      const currentX = e.touches[0].clientX;
+      const currentY = e.touches[0].clientY;
+      const diffX = Math.abs(startX - currentX);
+      const diffY = Math.abs(startY - currentY);
+      
+      if (diffX > diffY && diffX > 10) {
+        isDragging = true;
+      } else if (diffY > diffX) {
+        isDragging = false;
+      }
+    }, { passive: true });
+
+    carouselTrack.addEventListener('touchend', (e) => {
+      if (!isDragging) return;
+      
+      const endX = e.changedTouches[0].clientX;
+      const endY = e.changedTouches[0].clientY;
+      const diffX = startX - endX;
+      const diffY = Math.abs(startY - endY);
+      
+      if (Math.abs(diffX) > 50 && Math.abs(diffX) > diffY) {
+        if (diffX > 0 && currentCardIndex < 3) {
+          nextCard();
+        } else if (diffX < 0 && currentCardIndex > 0) {
+          prevCard();
+        }
+      }
+      isDragging = false;
+    }, { passive: true });
+
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+        return;
+      }
+      
+      if (e.key === 'ArrowRight' && currentCardIndex < 3) {
+        e.preventDefault();
+        nextCard();
+      } else if (e.key === 'ArrowLeft' && currentCardIndex > 0) {
+        e.preventDefault();
+        prevCard();
+      }
+    });
+
+    // Initialize
+    renderAllCards();
+    updateScore();
+  </script>
+</body>
+</html>
