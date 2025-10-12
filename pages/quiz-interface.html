@@ -890,30 +890,83 @@
       console.error('Error loading data:', error);
     }
 
-    // FALLBACK: Hardcoded sample data
+    // FALLBACK: Hardcoded sample data (will be replaced by JSON in production)
     if (characterData.verbs.length === 0) {
-      characterData.verbs = [
-        { verb: 'wakes up', object: '6:30am', emoji: '⏰' },
-        { verb: 'brushes', object: 'her teeth', emoji: '🪥' },
-        { verb: 'combs', object: 'her hair', emoji: '💇' },
-        { verb: 'eats', object: 'breakfast', emoji: '🍳' },
-        { verb: 'drinks', object: 'coffee', emoji: '☕' },
-        { verb: 'packs', object: 'her bag', emoji: '🎒' },
-        { verb: 'takes', object: 'the bus', emoji: '🚌' },
-        { verb: 'arrives', object: 'at school', emoji: '🏫' },
-        { verb: 'listens', object: 'to teacher', emoji: '👂' },
-        { verb: 'asks', object: 'questions', emoji: '❓' },
-        { verb: 'studies', object: 'grammar', emoji: '📚' },
-        { verb: 'writes', object: 'notes', emoji: '✍️' },
-        { verb: 'has', object: 'lunch', emoji: '🍱' },
-        { verb: 'plays', object: 'with friends', emoji: '👥' },
-        { verb: 'does', object: 'homework', emoji: '📝' },
-        { verb: 'reads', object: 'books', emoji: '📖' },
-        { verb: 'watches', object: 'TV', emoji: '📺' },
-        { verb: 'helps', object: 'at home', emoji: '🏠' },
-        { verb: 'talks', object: 'to family', emoji: '💬' },
-        { verb: 'goes to bed', object: '10pm', emoji: '😴' }
+      // Randomly select one of 3 verb sets for variety
+      const verbSets = [
+        [
+          { verb: 'wakes up', object: 'at 6:30am', emoji: '⏰' },
+          { verb: 'brushes', object: 'her teeth', emoji: '🪥' },
+          { verb: 'combs', object: 'her hair', emoji: '💇' },
+          { verb: 'eats', object: 'breakfast', emoji: '🍳' },
+          { verb: 'drinks', object: 'coffee', emoji: '☕' },
+          { verb: 'packs', object: 'her bag', emoji: '🎒' },
+          { verb: 'takes', object: 'the bus', emoji: '🚌' },
+          { verb: 'arrives', object: 'at school', emoji: '🏫' },
+          { verb: 'listens', object: 'to teacher', emoji: '👂' },
+          { verb: 'asks', object: 'questions', emoji: '❓' },
+          { verb: 'studies', object: 'grammar', emoji: '📚' },
+          { verb: 'writes', object: 'notes', emoji: '✍️' },
+          { verb: 'has', object: 'lunch', emoji: '🍱' },
+          { verb: 'plays', object: 'with friends', emoji: '👥' },
+          { verb: 'does', object: 'homework', emoji: '📝' },
+          { verb: 'reads', object: 'books', emoji: '📖' },
+          { verb: 'watches', object: 'TV', emoji: '📺' },
+          { verb: 'helps', object: 'at home', emoji: '🏠' },
+          { verb: 'talks', object: 'to family', emoji: '💬' },
+          { verb: 'goes to bed', object: 'at 10pm', emoji: '😴' }
+        ],
+        [
+          { verb: 'drinks', object: 'orange juice', emoji: '🍊' },
+          { verb: 'eats', object: 'lunch', emoji: '🥗' },
+          { verb: 'catches', object: 'the train', emoji: '🚊' },
+          { verb: 'uses', object: 'her laptop', emoji: '💻' },
+          { verb: 'finishes', object: 'her work', emoji: '✅' },
+          { verb: 'enjoys', object: 'movies', emoji: '🎬' },
+          { verb: 'plays', object: 'the piano', emoji: '🎹' },
+          { verb: 'draws', object: 'pictures', emoji: '🎨' },
+          { verb: 'visits', object: 'friends', emoji: '👥' },
+          { verb: 'practices', object: 'yoga', emoji: '🧘' },
+          { verb: 'learns', object: 'new things', emoji: '📚' },
+          { verb: 'prepares', object: 'meals', emoji: '🍽️' },
+          { verb: 'organizes', object: 'her desk', emoji: '🗂️' },
+          { verb: 'charges', object: 'her tablet', emoji: '🔌' },
+          { verb: 'wears', object: 'a jacket', emoji: '🧥' },
+          { verb: 'closes', object: 'the door', emoji: '🚪' },
+          { verb: 'opens', object: 'windows', emoji: '🪟' },
+          { verb: 'sends', object: 'messages', emoji: '💬' },
+          { verb: 'saves', object: 'money', emoji: '💰' },
+          { verb: 'chooses', object: 'outfits', emoji: '👗' }
+        ],
+        [
+          { verb: 'drinks', object: 'water', emoji: '💧' },
+          { verb: 'eats', object: 'snacks', emoji: '🍿' },
+          { verb: 'rides', object: 'the subway', emoji: '🚇' },
+          { verb: 'charges', object: 'her phone', emoji: '🔋' },
+          { verb: 'completes', object: 'projects', emoji: '📊' },
+          { verb: 'streams', object: 'shows', emoji: '📺' },
+          { verb: 'sings', object: 'songs', emoji: '🎤' },
+          { verb: 'solves', object: 'puzzles', emoji: '🧩' },
+          { verb: 'writes', object: 'stories', emoji: '📝' },
+          { verb: 'follows', object: 'recipes', emoji: '📖' },
+          { verb: 'attends', object: 'classes', emoji: '🎓' },
+          { verb: 'bakes', object: 'cookies', emoji: '🍪' },
+          { verb: 'tidies', object: 'the kitchen', emoji: '🧽' },
+          { verb: 'combs', object: 'her hair', emoji: '💇' },
+          { verb: 'applies', object: 'lotion', emoji: '🧴' },
+          { verb: 'folds', object: 'laundry', emoji: '👔' },
+          { verb: 'locks', object: 'the house', emoji: '🔐' },
+          { verb: 'turns off', object: 'lights', emoji: '💡' },
+          { verb: 'answers', object: 'calls', emoji: '📞' },
+          { verb: 'plans', object: 'trips', emoji: '✈️' }
+        ]
       ];
+      
+      // Randomly select one verb set
+      const randomIndex = Math.floor(Math.random() * verbSets.length);
+      characterData.verbs = verbSets[randomIndex];
+      
+      console.log(`Using verb set ${randomIndex + 1} for variety`);
     }
 
     let currentCardIndex = 0;
