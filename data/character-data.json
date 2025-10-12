@@ -1,1 +1,258 @@
-
+{
+  "sarah": {
+    "name": "SARAH",
+    "emoji": "👧",
+    "categories": {
+      "daily_habits": {
+        "title": "Daily Habits",
+        "verbSets": [
+          {
+            "id": "set1",
+            "verbs": [
+              { "verb": "drinks", "object": "coffee", "emoji": "☕" },
+              { "verb": "eats", "object": "breakfast", "emoji": "🍳" },
+              { "verb": "takes", "object": "the bus", "emoji": "🚌" },
+              { "verb": "checks", "object": "her phone", "emoji": "📱" },
+              { "verb": "does", "object": "homework", "emoji": "📚" },
+              { "verb": "watches", "object": "TV", "emoji": "📺" },
+              { "verb": "listens to", "object": "music", "emoji": "🎵" },
+              { "verb": "plays", "object": "video games", "emoji": "🎮" },
+              { "verb": "reads", "object": "books", "emoji": "📖" },
+              { "verb": "writes", "object": "notes", "emoji": "✍️" },
+              { "verb": "studies", "object": "English", "emoji": "🇬🇧" },
+              { "verb": "cooks", "object": "dinner", "emoji": "🍳" },
+              { "verb": "cleans", "object": "her room", "emoji": "🧹" },
+              { "verb": "brushes", "object": "her teeth", "emoji": "🪥" },
+              { "verb": "washes", "object": "her hands", "emoji": "🧼" },
+              { "verb": "makes", "object": "her bed", "emoji": "🛏️" },
+              { "verb": "rides", "object": "a bike", "emoji": "🚴" },
+              { "verb": "walks", "object": "the dog", "emoji": "🐕" },
+              { "verb": "feeds", "object": "the cat", "emoji": "🐱" },
+              { "verb": "waters", "object": "plants", "emoji": "🌱" }
+            ]
+          },
+          {
+            "id": "set2",
+            "verbs": [
+              { "verb": "drinks", "object": "orange juice", "emoji": "🍊" },
+              { "verb": "eats", "object": "lunch", "emoji": "🥗" },
+              { "verb": "catches", "object": "the train", "emoji": "🚊" },
+              { "verb": "uses", "object": "her laptop", "emoji": "💻" },
+              { "verb": "finishes", "object": "her work", "emoji": "✅" },
+              { "verb": "enjoys", "object": "movies", "emoji": "🎬" },
+              { "verb": "plays", "object": "the piano", "emoji": "🎹" },
+              { "verb": "draws", "object": "pictures", "emoji": "🎨" },
+              { "verb": "visits", "object": "friends", "emoji": "👥" },
+              { "verb": "practices", "object": "yoga", "emoji": "🧘" },
+              { "verb": "learns", "object": "new things", "emoji": "📚" },
+              { "verb": "prepares", "object": "meals", "emoji": "🍽️" },
+              { "verb": "organizes", "object": "her desk", "emoji": "🗂️" },
+              { "verb": "charges", "object": "her tablet", "emoji": "🔌" },
+              { "verb": "wears", "object": "a jacket", "emoji": "🧥" },
+              { "verb": "closes", "object": "the door", "emoji": "🚪" },
+              { "verb": "opens", "object": "windows", "emoji": "🪟" },
+              { "verb": "sends", "object": "messages", "emoji": "💬" },
+              { "verb": "saves", "object": "money", "emoji": "💰" },
+              { "verb": "chooses", "object": "outfits", "emoji": "👗" }
+            ]
+          },
+          {
+            "id": "set3",
+            "verbs": [
+              { "verb": "drinks", "object": "water", "emoji": "💧" },
+              { "verb": "eats", "object": "snacks", "emoji": "🍿" },
+              { "verb": "rides", "object": "the subway", "emoji": "🚇" },
+              { "verb": "charges", "object": "her phone", "emoji": "🔋" },
+              { "verb": "completes", "object": "projects", "emoji": "📊" },
+              { "verb": "streams", "object": "shows", "emoji": "📺" },
+              { "verb": "sings", "object": "songs", "emoji": "🎤" },
+              { "verb": "solves", "object": "puzzles", "emoji": "🧩" },
+              { "verb": "writes", "object": "stories", "emoji": "📝" },
+              { "verb": "follows", "object": "recipes", "emoji": "📖" },
+              { "verb": "attends", "object": "classes", "emoji": "🎓" },
+              { "verb": "bakes", "object": "cookies", "emoji": "🍪" },
+              { "verb": "tidies", "object": "the kitchen", "emoji": "🧽" },
+              { "verb": "combs", "object": "her hair", "emoji": "💇" },
+              { "verb": "applies", "object": "lotion", "emoji": "🧴" },
+              { "verb": "folds", "object": "laundry", "emoji": "👔" },
+              { "verb": "locks", "object": "the house", "emoji": "🔐" },
+              { "verb": "turns off", "object": "lights", "emoji": "💡" },
+              { "verb": "answers", "object": "calls", "emoji": "📞" },
+              { "verb": "plans", "object": "trips", "emoji": "✈️" }
+            ]
+          }
+        ],
+        "clozeTemplates": [
+          {
+            "id": "template1",
+            "text": "Sarah is a student. Every morning, she w_____ up at 6:30am. She goes to the bathroom and b_____ her teeth. Then she c_____ her hair.\n\nAfter that, she goes to the kitchen. She e_____ breakfast with her family. She usually d_____ orange juice or milk. She loves breakfast time!\n\nBefore leaving home, she p_____ her school bag with books and notebooks. She says goodbye to her parents and t_____ the bus to school. The journey t_____ twenty minutes.\n\nWhen she a_____ at school, she meets her friends. In class, she l_____ carefully to the teacher. She always a_____ questions when she doesn't understand something.\n\nSarah s_____ hard every day. She w_____ notes in her notebook. At lunchtime, she h_____ lunch in the cafeteria. She p_____ with her friends during break time.\n\nAfter school, she goes home and d_____ her homework. She r_____ books in her free time. Sometimes she w_____ TV with her family.\n\nIn the evening, she h_____ her mother at home. She t_____ to her family about her day. Finally, she g_____ to bed at 10pm. She loves her daily routine!",
+            "answers": ["wakes", "brushes", "combs", "eats", "drinks", "packs", "takes", "takes", "arrives", "listens", "asks", "studies", "writes", "has", "plays", "does", "reads", "watches", "helps", "talks", "goes"]
+          },
+          {
+            "id": "template2",
+            "text": "Sarah h_____ a busy life. She w_____ up early every day. First, she m_____ her bed and o_____ the curtains.\n\nIn the bathroom, she w_____ her face and b_____ her teeth carefully. She c_____ her hair and g_____ dressed for school.\n\nDownstairs, her mother p_____ breakfast. Sarah e_____ cereal and d_____ milk. She c_____ the news on her tablet while eating.\n\nAt 7:30am, she l_____ home. She w_____ to the bus stop and w_____ for the bus. The journey t_____ about fifteen minutes.\n\nAt school, she a_____ classes all morning. She l_____ to teachers and w_____ notes. She a_____ lots of questions because she l_____ learning.\n\nDuring lunch break, she e_____ with friends in the cafeteria. They t_____ about their day and s_____ photos on their phones.\n\nAfter school, she r_____ home on the bus. She c_____ her room and o_____ her desk. Then she d_____ her homework carefully.\n\nIn the evening, she r_____ or w_____ her favorite shows. Before bed, she b_____ her teeth again and s_____ her alarm for tomorrow.",
+            "answers": ["has", "wakes", "makes", "opens", "washes", "brushes", "combs", "gets", "prepares", "eats", "drinks", "checks", "leaves", "walks", "waits", "takes", "attends", "listens", "writes", "asks", "loves", "eats", "talk", "share", "rides", "cleans", "organizes", "does", "reads", "watches", "brushes", "sets"]
+          },
+          {
+            "id": "template3",
+            "text": "Every weekday, Sarah f_____ the same routine. Her alarm r_____ at 6:15am. She t_____ it off and g_____ out of bed.\n\nShe s_____ her pajamas and p_____ on her school uniform. In the bathroom, she w_____ her face with cold water to wake up properly.\n\nDownstairs, dad c_____ breakfast. Sarah d_____ coffee and e_____ toast with jam. She l_____ to music while eating.\n\nBefore school, she c_____ her homework is in her bag. She p_____ her lunch box and f_____ her water bottle. She never f_____ anything!\n\nThe school bus a_____ at 7:45am. Sarah c_____ the bus every day. She s_____ next to her best friend. They t_____ about their homework.\n\nAt school, she a_____ six different classes. She p_____ attention in every lesson. She w_____ all important information in her notebook.\n\nAfter school, she w_____ home with her friends. At home, she c_____ her school clothes and w_____ comfortable clothes.\n\nShe s_____ one hour doing homework. Then she r_____ or p_____ games. At dinner, the family e_____ together and d_____ their day.",
+            "answers": ["follows", "rings", "turns", "gets", "removes", "puts", "washes", "cooks", "drinks", "eats", "listens", "checks", "packs", "fills", "forgets", "arrives", "catches", "sits", "talk", "attends", "pays", "writes", "walks", "changes", "wears", "spends", "relaxes", "plays", "eats", "discusses"]
+          }
+        ],
+        "multipleChoiceQuestions": [
+          {
+            "text": "Sarah _____ up at 6:30am every morning.",
+            "correct": "wakes",
+            "options": ["wake", "wakes", "is waking", "woke"]
+          },
+          {
+            "text": "She _____ her teeth after breakfast.",
+            "correct": "brushes",
+            "options": ["brush", "brushes", "is brushing", "brushed"]
+          },
+          {
+            "text": "Sarah _____ coffee with her breakfast.",
+            "correct": "drinks",
+            "options": ["drink", "drinks", "is drinking", "drank"]
+          },
+          {
+            "text": "She _____ the bus to school every day.",
+            "correct": "takes",
+            "options": ["take", "takes", "is taking", "took"]
+          },
+          {
+            "text": "Sarah _____ hard in all her classes.",
+            "correct": "studies",
+            "options": ["study", "studies", "is studying", "studied"]
+          },
+          {
+            "text": "She _____ eat meat. She's vegetarian.",
+            "correct": "doesn't",
+            "options": ["don't", "doesn't", "isn't", "didn't"]
+          },
+          {
+            "text": "Sarah _____ like getting up early.",
+            "correct": "doesn't",
+            "options": ["don't", "doesn't", "isn't", "didn't"]
+          },
+          {
+            "text": "They _____ go to school on Sundays.",
+            "correct": "don't",
+            "options": ["don't", "doesn't", "isn't", "didn't"]
+          },
+          {
+            "text": "_____ she go to school by bus?",
+            "correct": "Does",
+            "options": ["Do", "Does", "Is", "Did"]
+          },
+          {
+            "text": "_____ Sarah like studying?",
+            "correct": "Does",
+            "options": ["Do", "Does", "Is", "Did"]
+          },
+          {
+            "text": "_____ they play together at school?",
+            "correct": "Do",
+            "options": ["Do", "Does", "Are", "Did"]
+          },
+          {
+            "text": "Where _____ she live?",
+            "correct": "does",
+            "options": ["do", "does", "is", "did"]
+          },
+          {
+            "text": "What time _____ the lesson start?",
+            "correct": "does",
+            "options": ["do", "does", "is", "did"]
+          },
+          {
+            "text": "How _____ you go to school?",
+            "correct": "do",
+            "options": ["do", "does", "are", "did"]
+          },
+          {
+            "text": "Why _____ she study English?",
+            "correct": "does",
+            "options": ["do", "does", "is", "did"]
+          },
+          {
+            "text": "Sarah _____ her homework every evening.",
+            "correct": "does",
+            "options": ["do", "does", "is doing", "did"]
+          },
+          {
+            "text": "She _____ to music while studying.",
+            "correct": "listens",
+            "options": ["listen", "listens", "is listening", "listened"]
+          },
+          {
+            "text": "Her mother _____ dinner at 6pm.",
+            "correct": "cooks",
+            "options": ["cook", "cooks", "is cooking", "cooked"]
+          },
+          {
+            "text": "_____ Sarah watch TV after dinner?",
+            "correct": "Does",
+            "options": ["Do", "Does", "Is", "Did"]
+          },
+          {
+            "text": "She _____ go to bed late on school nights.",
+            "correct": "doesn't",
+            "options": ["don't", "doesn't", "isn't", "didn't"]
+          }
+        ],
+        "mistakeSentences": [
+          { "sentence": ["Sarah", "drink", "coffee", "every", "morning"], "errorIndex": 1 },
+          { "sentence": ["She", "don't", "like", "vegetables"], "errorIndex": 1 },
+          { "sentence": ["Does", "they", "go", "to", "school", "?"], "errorIndex": 1 },
+          { "sentence": ["He", "watch", "TV", "every", "evening"], "errorIndex": 1 },
+          { "sentence": ["We", "doesn't", "eat", "meat"], "errorIndex": 1 },
+          { "sentence": ["Do", "she", "speak", "English", "?"], "errorIndex": 1 },
+          { "sentence": ["Sarah", "study", "hard", "every", "day"], "errorIndex": 1 },
+          { "sentence": ["They", "goes", "to", "the", "park"], "errorIndex": 1 },
+          { "sentence": ["She", "do", "her", "homework", "daily"], "errorIndex": 1 },
+          { "sentence": ["Does", "you", "like", "reading", "?"], "errorIndex": 1 },
+          { "sentence": ["He", "don't", "play", "football"], "errorIndex": 1 },
+          { "sentence": ["My", "friend", "have", "a", "cat"], "errorIndex": 2 },
+          { "sentence": ["Do", "Sarah", "likes", "music", "?"], "errorIndex": 2 },
+          { "sentence": ["We", "doesn't", "watch", "TV", "often"], "errorIndex": 1 },
+          { "sentence": ["She", "brush", "her", "teeth", "daily"], "errorIndex": 1 },
+          { "sentence": ["Sarah", "take", "the", "bus", "daily"], "errorIndex": 1 },
+          { "sentence": ["Does", "he", "goes", "to", "school", "?"], "errorIndex": 2 },
+          { "sentence": ["They", "doesn't", "like", "homework"], "errorIndex": 1 },
+          { "sentence": ["She", "eat", "breakfast", "early"], "errorIndex": 1 },
+          { "sentence": ["Do", "Sarah", "play", "sports", "?"], "errorIndex": 1 }
+        ],
+        "orderingSentences": [
+          [
+            { "text": "Sarah wakes up at 6:30am.", "order": 1 },
+            { "text": "She brushes her teeth and combs her hair.", "order": 2 },
+            { "text": "Then she eats breakfast with her family.", "order": 3 },
+            { "text": "After breakfast, she packs her school bag.", "order": 4 },
+            { "text": "She takes the bus to school at 7:45am.", "order": 5 },
+            { "text": "After school, she does her homework.", "order": 6 },
+            { "text": "Finally, she goes to bed at 10pm.", "order": 7 }
+          ],
+          [
+            { "text": "Every morning, Sarah's alarm rings at 6:15.", "order": 1 },
+            { "text": "She gets out of bed and goes to the bathroom.", "order": 2 },
+            { "text": "She washes her face and gets dressed.", "order": 3 },
+            { "text": "Downstairs, she drinks coffee and eats toast.", "order": 4 },
+            { "text": "At 7:45, she catches the bus to school.", "order": 5 },
+            { "text": "In the evening, she relaxes and reads books.", "order": 6 },
+            { "text": "She brushes her teeth and goes to sleep.", "order": 7 }
+          ],
+          [
+            { "text": "Sarah starts her day with exercise.", "order": 1 },
+            { "text": "Then she takes a quick shower.", "order": 2 },
+            { "text": "She chooses her clothes carefully.", "order": 3 },
+            { "text": "She prepares a healthy breakfast.", "order": 4 },
+            { "text": "She checks her bag before leaving home.", "order": 5 },
+            { "text": "At school, she attends all her classes.", "order": 6 },
+            { "text": "At night, she reviews her notes before sleeping.", "order": 7 }
+          ]
+        ]
+      }
+    }
+  }
+}
