@@ -47,34 +47,6 @@
       flex-direction: column;
     }
 
-    .qr-btn {
-      position: absolute;
-      top: 2rem;
-      right: 2rem;
-      background: #1a1a1a;
-      border: none;
-      border-radius: 50%;
-      width: 2.5rem;
-      height: 2.5rem;
-      color: #C9A961;
-      font-size: 1.25rem;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      box-shadow: 
-        6px 6px 12px #000000,
-        -6px -6px 12px #2a2a2a;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .qr-btn:hover {
-      transform: scale(1.1) rotate(5deg);
-      box-shadow: 
-        8px 8px 16px #000000,
-        -8px -8px 16px #2a2a2a;
-    }
-
     .header {
       text-align: center;
       margin-bottom: 2rem;
@@ -160,17 +132,6 @@
         0 0 30px rgba(201, 169, 97, 0.2);
     }
 
-    .character-card.locked {
-      opacity: 0.5;
-      cursor: not-allowed;
-      filter: grayscale(0.8);
-    }
-
-    .character-card.locked:hover {
-      transform: none;
-      border-color: transparent;
-    }
-
     .character-card.completed {
       border-color: #4ade80;
     }
@@ -234,12 +195,28 @@
       background: rgba(201, 169, 97, 0.2);
       border: 2px solid rgba(201, 169, 97, 0.4);
       transition: all 0.3s;
+      position: relative;
     }
 
     .progress-dot.completed {
       background: #4ade80;
       border-color: #4ade80;
       box-shadow: 0 0 8px rgba(74, 222, 128, 0.6);
+    }
+
+    .progress-dot.completed::after {
+      content: '🏆';
+      position: absolute;
+      top: -20px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 0.8rem;
+      animation: trophyFloat 2s ease-in-out infinite;
+    }
+
+    @keyframes trophyFloat {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50% { transform: translateX(-50%) translateY(-3px); }
     }
 
     .start-button {
@@ -269,29 +246,10 @@
         -6px -6px 12px #2a2a2a;
     }
 
-    .character-card.locked .start-button {
-      background: rgba(100, 100, 100, 0.2);
-      border-color: rgba(150, 150, 150, 0.4);
-      color: rgba(150, 150, 150, 0.6);
-      cursor: not-allowed;
-    }
-
-    .character-card.locked .start-button:hover {
-      transform: none;
-    }
-
     .character-card.completed .start-button {
       background: rgba(74, 222, 128, 0.2);
       border-color: #4ade80;
       color: #4ade80;
-    }
-
-    .lock-icon {
-      position: absolute;
-      top: 1rem;
-      right: 1rem;
-      font-size: 1.5rem;
-      opacity: 0.6;
     }
 
     .check-icon {
@@ -351,12 +309,13 @@
       font-family: 'Space Grotesk', sans-serif;
     }
 
-    .qr-modal {
+    /* Category Selection Modal */
+    .modal-overlay {
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
       background: rgba(0, 0, 0, 0.9);
-      backdrop-filter: blur(10px);
-      z-index: 1001;
+      backdrop-filter: blur(8px);
+      z-index: 998;
       opacity: 0;
       visibility: hidden;
       transition: all 0.3s ease;
@@ -365,25 +324,55 @@
       justify-content: center;
     }
 
-    .qr-modal.show {
+    .modal-overlay.show {
       opacity: 1;
       visibility: visible;
     }
 
-    .qr-content {
+    .category-modal {
       background: #1a1a1a;
       border-radius: 24px;
       padding: 2rem 1.5rem;
-      max-width: 380px;
-      width: 90%;
+      max-width: 500px;
+      width: 92%;
+      max-height: 80vh;
+      overflow-y: auto;
       box-shadow: 
         16px 16px 32px #000000,
         -16px -16px 32px #2a2a2a;
+      transform: scale(0.9);
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
       position: relative;
-      text-align: center;
     }
 
-    .qr-close {
+    .modal-overlay.show .category-modal {
+      transform: scale(1);
+    }
+
+    .modal-header {
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .modal-character {
+      font-size: 3rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .modal-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.5rem;
+      color: #C9A961;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .modal-subtitle {
+      font-size: 0.9rem;
+      color: rgba(232, 232, 232, 0.7);
+    }
+
+    .close-modal {
       position: absolute;
       top: 1rem;
       right: 1rem;
@@ -393,98 +382,87 @@
       width: 2.5rem;
       height: 2.5rem;
       color: #C9A961;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      box-shadow: 
-        6px 6px 12px #000000,
-        -6px -6px 12px #2a2a2a;
       font-size: 1.5rem;
-      line-height: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 10;
-    }
-
-    .qr-close:hover {
-      transform: scale(1.1) rotate(90deg);
-      box-shadow: 
-        8px 8px 16px #000000,
-        -8px -8px 16px #2a2a2a;
-    }
-
-    .qr-title {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 1.25rem;
-      font-weight: 700;
-      color: #C9A961;
-      margin-bottom: 0.5rem;
-      text-transform: uppercase;
-      letter-spacing: 0.02em;
-    }
-
-    .qr-subtitle {
-      font-size: 0.8125rem;
-      color: rgba(200, 200, 200, 0.7);
-      margin-bottom: 1.5rem;
-      font-weight: 500;
-    }
-
-    .qr-code-box {
-      background: #ffffff;
-      padding: 1.5rem;
-      border-radius: 16px;
-      margin: 0 auto 1.5rem;
-      box-shadow: inset 4px 4px 8px rgba(0, 0, 0, 0.3);
-      display: inline-block;
-      min-height: 280px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .qr-code-box img {
-      max-width: 100%;
-      height: auto;
-      display: block;
-    }
-
-    .qr-url {
-      font-size: 0.7rem;
-      color: rgba(201, 169, 97, 0.7);
-      font-family: 'Courier New', monospace;
-      background: rgba(201, 169, 97, 0.1);
-      padding: 0.75rem 1rem;
-      border-radius: 12px;
-      margin-bottom: 1rem;
-      word-break: break-all;
-      box-shadow: inset 2px 2px 4px rgba(0, 0, 0, 0.3);
-    }
-
-    .download-qr-btn {
-      background: #1a1a1a;
-      border: none;
-      border-radius: 12px;
-      padding: 0.875rem 1.5rem;
-      color: #C9A961;
-      font-size: 0.875rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.03em;
       cursor: pointer;
-      transition: all 0.3s ease;
+      transition: all 0.3s;
       box-shadow: 
         6px 6px 12px #000000,
         -6px -6px 12px #2a2a2a;
-      font-family: 'Inter', sans-serif;
-      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
-    .download-qr-btn:hover {
-      transform: translateY(-2px);
+    .close-modal:hover {
+      transform: scale(1.1) rotate(90deg);
+    }
+
+    .category-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+    }
+
+    .category-tile {
+      background: #1a1a1a;
+      border-radius: 16px;
+      padding: 1.5rem 1rem;
+      cursor: pointer;
+      transition: all 0.3s;
+      box-shadow: 
+        6px 6px 12px #000000,
+        -6px -6px 12px #2a2a2a;
+      border: 2px solid transparent;
+      text-align: center;
+      position: relative;
+    }
+
+    .category-tile:hover {
+      transform: translateY(-4px);
+      border-color: rgba(201, 169, 97, 0.5);
       box-shadow: 
         8px 8px 16px #000000,
         -8px -8px 16px #2a2a2a;
+    }
+
+    .category-tile.completed {
+      border-color: #4ade80;
+    }
+
+    .category-icon {
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .category-name {
+      font-size: 0.85rem;
+      color: rgba(232, 232, 232, 0.9);
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      line-height: 1.3;
+    }
+
+    .category-status {
+      font-size: 0.75rem;
+      color: rgba(201, 169, 97, 0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.25rem;
+    }
+
+    .category-trophy {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+      font-size: 1.2rem;
+      animation: trophySpin 3s ease-in-out infinite;
+    }
+
+    @keyframes trophySpin {
+      0%, 100% { transform: rotate(0deg); }
+      25% { transform: rotate(-10deg); }
+      75% { transform: rotate(10deg); }
     }
 
     @media (max-width: 768px) {
@@ -513,13 +491,15 @@
       .character-name {
         font-size: 1.25rem;
       }
+
+      .category-grid {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <button class="qr-btn" onclick="openQRModal()" title="Share with Students">📱</button>
-
     <div class="header">
       <h1>INTUITY</h1>
       <p class="subtitle">Intuitive & immersive</p>
@@ -527,8 +507,8 @@
     </div>
 
     <div class="welcome-message">
-      Meet your study buddies!<br>
-      Choose a character to start your learning journey
+      Choose your study buddy!<br>
+      Pick a character to start your learning journey
     </div>
 
     <div class="characters-grid" id="charactersGrid">
@@ -540,26 +520,31 @@
       <div class="overall-progress-bar">
         <div class="overall-progress-fill" id="overallProgressFill" style="width: 0%"></div>
       </div>
-      <div class="overall-progress-text" id="overallProgressText">0 / 16 Complete</div>
+      <div class="overall-progress-text" id="overallProgressText">0 / 16 Trophies</div>
     </div>
   </div>
 
-  <div class="qr-modal" id="qrModal">
-    <div class="qr-content">
-      <button class="qr-close" onclick="closeQRModal()">×</button>
-      <div class="qr-title">📱 Share with Students</div>
-      <div class="qr-subtitle">Scan this QR code to access on mobile</div>
-      <div class="qr-code-box" id="qrCodeBox">
-        <div style="color: #666; font-size: 0.875rem;">Generating QR Code...</div>
+  <!-- Category Selection Modal -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="category-modal">
+      <button class="close-modal" onclick="closeModal()">×</button>
+      <div class="modal-header">
+        <div class="modal-character" id="modalEmoji">👧</div>
+        <div class="modal-title" id="modalName">Sarah</div>
+        <div class="modal-subtitle">Choose a category to practice</div>
       </div>
-      <div class="qr-url" id="qrUrl"></div>
-      <button class="download-qr-btn" onclick="downloadQRCode()">📥 Download QR Code</button>
+      <div class="category-grid" id="categoryGrid">
+        <!-- Categories will be inserted here -->
+      </div>
     </div>
   </div>
+
+  <!-- Load Progress Tracker -->
+  <script src="js/progress-tracker.js"></script>
 
   <script>
     // ============================================
-    // CHARACTER DATA WITH PERSONALITIES
+    // CHARACTER DATA
     // ============================================
     
     const characters = [
@@ -568,87 +553,32 @@
         name: 'Sarah', 
         emoji: '👧', 
         description: 'The Morning Person',
-        tagline: '"I love starting my day with coffee and learning!"',
-        unlockLevel: 0
+        tagline: '"I love starting my day with coffee and learning!"'
       },
       { 
         key: 'tom', 
         name: 'Tom', 
         emoji: '🧑', 
         description: 'The Athlete',
-        tagline: '"Sports and schedules keep me going!"',
-        unlockLevel: 1
+        tagline: '"Sports and schedules keep me going!"'
       },
       { 
         key: 'emma', 
         name: 'Emma', 
         emoji: '👩', 
         description: 'The Creative',
-        tagline: '"Art and expression are my daily routine!"',
-        unlockLevel: 2
+        tagline: '"Art and expression are my daily routine!"'
       },
       { 
         key: 'alex', 
         name: 'Alex', 
         emoji: '🧒', 
         description: 'The Gamer',
-        tagline: '"Level up your skills with me!"',
-        unlockLevel: 3
+        tagline: '"Level up your skills with me!"'
       }
     ];
 
-    const CATEGORY_CONFIG = {
-      habitual: { icon: '☕', displayName: 'Habitual Actions' },
-      routine: { icon: '🌅', displayName: 'Daily Routine' },
-      frequency: { icon: '⚡', displayName: 'Frequency + Manner' },
-      conjunctions: { icon: '⏰', displayName: 'Time Conjunctions' }
-    };
-
-    // ============================================
-    // PROGRESS TRACKING
-    // ============================================
-    
-    function getProgress() {
-      const saved = localStorage.getItem('intuityProgress');
-      if (!saved) {
-        return {
-          completedCharacters: [],
-          currentCharacter: 'sarah',
-          characterProgress: {
-            sarah: [],
-            tom: [],
-            emma: [],
-            alex: []
-          }
-        };
-      }
-      return JSON.parse(saved);
-    }
-
-    function saveProgress(progress) {
-      localStorage.setItem('intuityProgress', JSON.stringify(progress));
-    }
-
-    function isCharacterUnlocked(charIndex) {
-      const progress = getProgress();
-      
-      // Sarah is always unlocked
-      if (charIndex === 0) return true;
-      
-      // Others unlock sequentially when previous is completed
-      const previousCharKey = characters[charIndex - 1].key;
-      return progress.completedCharacters.includes(previousCharKey);
-    }
-
-    function isCharacterCompleted(charKey) {
-      const progress = getProgress();
-      return progress.completedCharacters.includes(charKey);
-    }
-
-    function getCharacterCategoryProgress(charKey) {
-      const progress = getProgress();
-      return progress.characterProgress[charKey] || [];
-    }
+    let selectedCharacter = null;
 
     // ============================================
     // RENDER CHARACTERS
@@ -658,25 +588,20 @@
       const grid = document.getElementById('charactersGrid');
       grid.innerHTML = '';
 
-      characters.forEach((char, index) => {
-        const unlocked = isCharacterUnlocked(index);
-        const completed = isCharacterCompleted(char.key);
-        const categoryProgress = getCharacterCategoryProgress(char.key);
+      characters.forEach(char => {
+        const progress = ProgressTracker.getCharacterProgress(char.key);
+        const completed = progress.completed;
 
         const card = document.createElement('div');
         card.className = 'character-card';
-        
-        if (!unlocked) card.classList.add('locked');
         if (completed) card.classList.add('completed');
 
         // Create progress dots
-        const progressDotsHTML = Object.keys(CATEGORY_CONFIG).map(catKey => {
-          const isCompleted = categoryProgress.includes(catKey);
-          return `<div class="progress-dot ${isCompleted ? 'completed' : ''}"></div>`;
+        const progressDotsHTML = progress.categories.map(cat => {
+          return `<div class="progress-dot ${cat.trophy ? 'completed' : ''}"></div>`;
         }).join('');
 
         card.innerHTML = `
-          ${!unlocked ? '<div class="lock-icon">🔒</div>' : ''}
           ${completed ? '<div class="check-icon">✅</div>' : ''}
           <div class="character-emoji">${char.emoji}</div>
           <div class="character-name">${char.name}</div>
@@ -685,15 +610,12 @@
           <div class="character-progress">
             ${progressDotsHTML}
           </div>
-          <button class="start-button" ${!unlocked ? 'disabled' : ''}>
-            ${completed ? '✨ Practice Again' : unlocked ? '🚀 Start Learning' : '🔒 Locked'}
+          <button class="start-button">
+            ${completed ? '✨ Practice Again' : '🚀 Start Learning'}
           </button>
         `;
 
-        if (unlocked) {
-          card.addEventListener('click', () => startCharacterJourney(char.key));
-        }
-
+        card.addEventListener('click', () => openCategoryModal(char));
         grid.appendChild(card);
       });
 
@@ -701,41 +623,68 @@
     }
 
     // ============================================
-    // START CHARACTER JOURNEY
+    // CATEGORY MODAL
     // ============================================
     
-    function startCharacterJourney(charKey) {
-      const char = characters.find(c => c.key === charKey);
-      const progress = getProgress();
+    function openCategoryModal(character) {
+      selectedCharacter = character;
       
-      // Update current character
-      progress.currentCharacter = charKey;
-      saveProgress(progress);
+      document.getElementById('modalEmoji').textContent = character.emoji;
+      document.getElementById('modalName').textContent = character.name;
 
-      // Find first incomplete category or start from beginning
-      const completedCategories = progress.characterProgress[charKey] || [];
-      const allCategories = Object.keys(CATEGORY_CONFIG);
-      
-      let nextCategory = allCategories.find(cat => !completedCategories.includes(cat));
-      if (!nextCategory) nextCategory = allCategories[0]; // All complete? Start over
+      const progress = ProgressTracker.getCharacterProgress(character.key);
+      const categoryGrid = document.getElementById('categoryGrid');
+      categoryGrid.innerHTML = '';
 
-      // Package selection data
+      progress.categories.forEach(cat => {
+        const tile = document.createElement('div');
+        tile.className = 'category-tile';
+        if (cat.trophy) tile.classList.add('completed');
+
+        const statusText = cat.trophy 
+          ? '🏆 Trophy Earned' 
+          : cat.matchingScore > 0 || cat.quizScore > 0
+            ? 'In Progress'
+            : 'Ready to Start';
+
+        tile.innerHTML = `
+          ${cat.trophy ? '<div class="category-trophy">🏆</div>' : ''}
+          <div class="category-icon">${cat.icon}</div>
+          <div class="category-name">${cat.name}</div>
+          <div class="category-status">${statusText}</div>
+        `;
+
+        tile.addEventListener('click', () => startCategory(character.key, cat.key));
+        categoryGrid.appendChild(tile);
+      });
+
+      document.getElementById('modalOverlay').classList.add('show');
+    }
+
+    function closeModal() {
+      document.getElementById('modalOverlay').classList.remove('show');
+    }
+
+    // ============================================
+    // START CATEGORY
+    // ============================================
+    
+    function startCategory(characterKey, categoryKey) {
+      const character = characters.find(c => c.key === characterKey);
+      const categoryInfo = ProgressTracker.CATEGORIES[categoryKey];
+
       const selectionData = {
-        characterKey: charKey,
-        characterName: char.name,
-        characterEmoji: char.emoji,
-        category: nextCategory,
-        categoryTitle: CATEGORY_CONFIG[nextCategory].displayName,
-        categoryIcon: CATEGORY_CONFIG[nextCategory].icon,
-        autoSequence: true // Flag to enable auto-progression
+        characterKey: characterKey,
+        characterName: character.name,
+        characterEmoji: character.emoji,
+        category: categoryKey,
+        categoryTitle: categoryInfo.name,
+        categoryIcon: categoryInfo.icon
       };
 
-      // Save to sessionStorage
       sessionStorage.setItem('selectionData', JSON.stringify(selectionData));
       
-      console.log('🚀 Starting journey with', char.name, '→', nextCategory);
-      
-      // Navigate to matching game
+      console.log('🚀 Starting:', selectionData);
       window.location.href = 'pages/matching-game.html';
     }
 
@@ -744,87 +693,24 @@
     // ============================================
     
     function updateOverallProgress() {
-      const progress = getProgress();
-      let totalCompleted = 0;
-
-      characters.forEach(char => {
-        const categoryProgress = progress.characterProgress[char.key] || [];
-        totalCompleted += categoryProgress.length;
-      });
-
-      const totalPossible = characters.length * Object.keys(CATEGORY_CONFIG).length;
-      const percentage = Math.round((totalCompleted / totalPossible) * 100);
+      const overall = ProgressTracker.getOverallProgress();
+      const percentage = overall.percentage;
 
       document.getElementById('overallProgressFill').style.width = percentage + '%';
       document.getElementById('overallProgressText').textContent = 
-        `${totalCompleted} / ${totalPossible} Complete`;
-    }
-
-    // ============================================
-    // QR CODE MODAL
-    // ============================================
-    
-    function openQRModal() {
-      const currentUrl = window.location.href;
-      document.getElementById('qrUrl').textContent = currentUrl;
-      generateQRCode(currentUrl);
-      document.getElementById('qrModal').classList.add('show');
-    }
-
-    function closeQRModal() {
-      document.getElementById('qrModal').classList.remove('show');
-    }
-
-    function generateQRCode(url) {
-      const qrBox = document.getElementById('qrCodeBox');
-      qrBox.innerHTML = '<div style="color: #666; font-size: 0.875rem; padding: 20px;">Generating QR Code...</div>';
-      
-      const qrCodeURL = `https://api.qrserver.com/v1/create-qr-code/?size=256x256&data=${encodeURIComponent(url)}&format=png&bgcolor=FFFFFF&color=000000&margin=10`;
-      
-      const img = new Image();
-      img.onload = () => {
-        qrBox.innerHTML = '';
-        img.style.width = '100%';
-        img.style.height = 'auto';
-        img.style.display = 'block';
-        qrBox.appendChild(img);
-      };
-      
-      img.onerror = () => {
-        qrBox.innerHTML = `
-          <div style="color: #ef4444; padding: 20px; text-align: center;">
-            <div style="font-size: 28px; margin-bottom: 12px;">⚠️</div>
-            <div style="font-size: 14px;"><strong>Failed to generate QR code</strong></div>
-            <div style="font-size: 12px; margin-top: 8px;">Check your internet connection</div>
-          </div>
-        `;
-      };
-      
-      img.src = qrCodeURL;
-    }
-
-    function downloadQRCode() {
-      const img = document.querySelector('#qrCodeBox img');
-      if (img) {
-        const link = document.createElement('a');
-        link.download = 'intuity-qr-code.png';
-        link.href = img.src;
-        link.click();
-      } else {
-        alert('⚠️ QR code not ready yet. Please wait a moment and try again.');
-      }
+        `${overall.trophies} / ${overall.total} Trophies`;
     }
 
     // ============================================
     // EVENT LISTENERS
     // ============================================
     
-    document.getElementById('qrModal').addEventListener('click', (e) => {
-      if (e.target.id === 'qrModal') closeQRModal();
+    document.getElementById('modalOverlay').addEventListener('click', (e) => {
+      if (e.target.id === 'modalOverlay') closeModal();
     });
 
     document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') closeQRModal();
+      if (e.key === 'Escape') closeModal();
     });
 
     // ============================================
@@ -833,6 +719,7 @@
     
     function initialize() {
       console.log('🎮 Initializing INTUITY Character Selection...');
+      ProgressTracker.init();
       renderCharacters();
       console.log('✅ Ready!');
     }
