@@ -35,7 +35,8 @@
       background: #1a1a1a;
       width: 95%;
       max-width: 1000px;
-      height: 88vh;
+      min-height: 88vh;
+      max-height: 95vh;
       border-radius: 24px;
       padding: 1.5rem;
       box-shadow: 
@@ -49,7 +50,8 @@
 
     .header {
       text-align: center;
-      margin-bottom: 1rem;
+      margin-bottom: 0.75rem;
+      flex-shrink: 0;
     }
 
     .back-btn {
@@ -101,6 +103,7 @@
       align-items: center;
       gap: 0.75rem;
       margin-bottom: 0.75rem;
+      flex-wrap: wrap;
     }
 
     .character-display {
@@ -136,6 +139,55 @@
       font-weight: 500;
     }
 
+    /* Category Pills - Desktop */
+    .category-pills {
+      display: flex;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-bottom: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .category-pill {
+      background: #1a1a1a;
+      border: 2px solid rgba(201, 169, 97, 0.3);
+      border-radius: 12px;
+      padding: 0.5rem 0.75rem;
+      font-size: 0.8rem;
+      color: rgba(232, 232, 232, 0.7);
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      box-shadow: 
+        3px 3px 6px #000000,
+        -3px -3px 6px #2a2a2a;
+    }
+
+    .category-pill:hover {
+      border-color: #C9A961;
+      color: #C9A961;
+      transform: translateY(-2px);
+    }
+
+    .category-pill.active {
+      background: rgba(201, 169, 97, 0.2);
+      border-color: #C9A961;
+      color: #C9A961;
+      font-weight: 600;
+    }
+
+    .category-pill.completed {
+      border-color: #4ade80;
+      color: #4ade80;
+    }
+
+    .category-pill.completed::after {
+      content: '✓';
+      font-size: 0.9rem;
+    }
+
     .progress-bar {
       width: 100%;
       height: 6px;
@@ -144,6 +196,7 @@
       overflow: hidden;
       box-shadow: inset 2px 2px 4px rgba(0, 0, 0, 0.5);
       margin-bottom: 0.75rem;
+      flex-shrink: 0;
     }
 
     .progress-fill {
@@ -166,6 +219,8 @@
       gap: 1rem;
       flex-wrap: wrap;
       padding: 0 1rem;
+      position: relative;
+      flex-shrink: 0;
     }
 
     .score-number {
@@ -205,6 +260,7 @@
       padding: 0 1.5rem;
       touch-action: pan-y;
       pointer-events: none;
+      min-height: 0;
     }
 
     .carousel-track {
@@ -213,6 +269,8 @@
       transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
       will-change: transform;
       pointer-events: none;
+      width: 100%;
+      height: 100%;
     }
 
     .card-wrapper {
@@ -237,8 +295,9 @@
       max-width: 800px;
       display: flex;
       flex-direction: column;
-      gap: 1.5rem;
+      gap: 1rem;
       pointer-events: all;
+      height: 100%;
     }
 
     .card-title {
@@ -249,12 +308,28 @@
       font-weight: 600;
       text-transform: uppercase;
       letter-spacing: 0.05em;
+      flex-shrink: 0;
     }
 
     .matching-area {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 1rem;
+      gap: 0.75rem;
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding: 0.25rem;
+      min-height: 0;
+    }
+
+    .matching-area::-webkit-scrollbar { width: 6px; }
+    .matching-area::-webkit-scrollbar-track { 
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 10px;
+    }
+    .matching-area::-webkit-scrollbar-thumb {
+      background: rgba(201, 169, 97, 0.4);
+      border-radius: 10px;
     }
 
     .column {
@@ -266,10 +341,10 @@
     .match-item {
       background: #1a1a1a;
       border-radius: 12px;
-      padding: 1rem 1.25rem;
+      padding: 0.85rem 1rem;
       color: rgba(232, 232, 232, 0.9);
-      font-size: 0.95rem;
-      font-weight: 400;
+      font-size: 0.9rem;
+      font-weight: 500;
       cursor: pointer;
       transition: all 0.3s;
       box-shadow: 
@@ -280,6 +355,8 @@
       align-items: center;
       justify-content: space-between;
       border: 2px solid transparent;
+      min-height: 48px;
+      line-height: 1.3;
     }
 
     .match-item:hover {
@@ -313,8 +390,9 @@
     }
 
     .emoji {
-      font-size: 1.25rem;
-      margin-left: 0.5rem;
+      font-size: 1rem;
+      margin-left: 0.4rem;
+      line-height: 1;
     }
 
     @keyframes shake {
@@ -333,7 +411,8 @@
       gap: 0.75rem;
       justify-content: center;
       flex-wrap: wrap;
-      margin-top: 1rem;
+      margin-top: 0.75rem;
+      flex-shrink: 0;
     }
 
     .btn {
@@ -436,7 +515,6 @@
     .nav-dot.active {
       background: #C9A961;
       transform: scale(1.3);
-      transform-origin: center center;
       box-shadow: 
         0 0 10px rgba(201, 169, 97, 0.5),
         2px 2px 4px #000000,
@@ -469,10 +547,11 @@
       display: flex;
       gap: 0.75rem;
       justify-content: center;
-      margin-top: 1rem;
-      padding-top: 1rem;
+      margin-top: 0.75rem;
+      padding-top: 0.75rem;
       border-top: 2px solid rgba(201, 169, 97, 0.2);
       flex-wrap: wrap;
+      flex-shrink: 0;
     }
 
     .footer-btn {
@@ -503,25 +582,145 @@
       color: #C9A961;
     }
 
+    .footer-btn.quiz {
+      background: rgba(74, 222, 128, 0.2);
+      border: 2px solid #4ade80;
+      color: #4ade80;
+      font-weight: 700;
+    }
+
+    /* Mobile Optimizations */
     @media (max-width: 768px) {
       .game-container {
-        padding: 1rem;
-        height: 92vh;
+        padding: 1rem 0.75rem;
+        max-height: 100vh;
+        min-height: 100vh;
+        border-radius: 16px;
+      }
+
+      .header {
+        margin-bottom: 0.5rem;
       }
 
       .header h1 {
-        font-size: 1.4rem;
+        font-size: 1.3rem;
+        margin-bottom: 0.15rem;
+      }
+
+      .tagline {
+        display: none;
+      }
+
+      .character-info {
+        gap: 0.5rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .character-display,
+      .category-display {
+        padding: 0.4rem 0.75rem;
+        font-size: 0.8rem;
+      }
+
+      .character-emoji {
+        font-size: 1.2rem;
+      }
+
+      .character-name {
+        font-size: 0.85rem;
+      }
+
+      .category-pills {
+        display: none;
+      }
+
+      .progress-bar {
+        height: 4px;
+        margin-bottom: 0.5rem;
+      }
+
+      .score-display {
+        margin-bottom: 0.5rem;
+        font-size: 0.8rem;
+        padding: 0 0.5rem;
+      }
+
+      .score-dots .nav-dot {
+        width: 8px;
+        height: 8px;
       }
 
       .matching-area {
-        grid-template-columns: 1fr;
+        gap: 0.65rem;
+      }
+
+      .match-item {
+        padding: 0.7rem 0.85rem;
+        font-size: 0.85rem;
+        min-height: 44px;
+      }
+
+      .emoji {
+        font-size: 0.95rem;
+        margin-left: 0.35rem;
+      }
+
+      .controls {
+        gap: 0.5rem;
+        margin-top: 0.5rem;
+      }
+
+      .btn {
+        padding: 0.65rem 1rem;
+        font-size: 0.75rem;
       }
 
       .arrow {
-        width: 35px;
-        height: 35px;
-        font-size: 1.1rem;
+        width: 38px;
+        height: 38px;
+        font-size: 1.2rem;
       }
+
+      .back-btn {
+        top: 1rem;
+        left: 1rem;
+        padding: 0.5rem 0.8rem;
+        font-size: 0.75rem;
+      }
+
+      .footer {
+        margin-top: 0.5rem;
+        padding-top: 0.5rem;
+      }
+
+      .footer-btn {
+        padding: 0.65rem 1rem;
+        font-size: 0.75rem;
+      }
+    }
+
+    /* Landscape phone hint */
+    @media (max-width: 768px) and (orientation: portrait) {
+      .landscape-hint {
+        position: fixed;
+        bottom: 1rem;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(201, 169, 97, 0.9);
+        color: #000;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        z-index: 100;
+        animation: fadeIn 0.5s ease;
+        display: none;
+      }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateX(-50%) translateY(10px); }
+      to { opacity: 1; transform: translateX(-50%) translateY(0); }
     }
   </style>
 </head>
@@ -542,6 +741,11 @@
           <span id="categoryIcon">☕</span>
           <span id="categoryName">Habitual Actions</span>
         </div>
+      </div>
+
+      <!-- Category Pills (Desktop only) -->
+      <div class="category-pills" id="categoryPills">
+        <!-- Pills inserted by JavaScript -->
       </div>
     </div>
 
@@ -573,24 +777,15 @@
 
     <div class="footer" id="footer" style="display: none;">
       <button class="footer-btn" onclick="retryGame()">🔄 Repeat</button>
-      <button class="footer-btn primary" onclick="handleComplete()">Continue →</button>
+      <button class="footer-btn quiz" onclick="goToQuiz()">🎯 Take Quiz →</button>
+      <button class="footer-btn primary" onclick="goHome()">🏠 Home</button>
     </div>
   </div>
 
+  <!-- Load Progress Tracker -->
+  <script src="../js/progress-tracker.js"></script>
+
   <script>
-    // ============================================
-    // CATEGORY CONFIG
-    // ============================================
-    
-    const CATEGORY_CONFIG = {
-      habitual: { icon: '☕', displayName: 'Habitual Actions' },
-      routine: { icon: '🌅', displayName: 'Daily Routine' },
-      frequency: { icon: '⚡', displayName: 'Frequency + Manner' },
-      conjunctions: { icon: '⏰', displayName: 'Time Conjunctions' }
-    };
-
-    const ALL_CATEGORIES = Object.keys(CATEGORY_CONFIG);
-
     // ============================================
     // LOAD SELECTION + FETCH GRAMMAR DATA
     // ============================================
@@ -601,7 +796,6 @@
 
     async function loadData() {
       try {
-        // Step 1: Read user selection from sessionStorage
         const stored = sessionStorage.getItem('selectionData');
         
         if (!stored) {
@@ -612,7 +806,6 @@
         selectionData = JSON.parse(stored);
         console.log('📥 Selection loaded:', selectionData);
 
-        // Step 2: Fetch grammar-modes.json
         console.log('📥 Fetching grammar-modes.json...');
         const response = await fetch('../data/grammar-modes.json');
         
@@ -623,12 +816,11 @@
         grammarData = await response.json();
         console.log('✅ Grammar data loaded');
 
-        // Step 3: Extract character data
         const charKey = selectionData.characterKey;
         const category = selectionData.category;
 
         if (!grammarData[charKey]) {
-          throw new Error(`Character '${charKey}' not found in grammar-modes.json`);
+          throw new Error(`Character '${charKey}' not found`);
         }
 
         if (!grammarData[charKey].categories[category]) {
@@ -641,7 +833,6 @@
           throw new Error(`No verbs found in ${category} for ${charKey}`);
         }
 
-        // Get 20 verbs from first set (A1 difficulty)
         const verbs = categoryData.sets[0].verbs.slice(0, 20);
 
         if (verbs.length < 20) {
@@ -655,11 +846,12 @@
           verbs: verbs
         };
 
-        // Update header display
         document.getElementById('displayEmoji').textContent = characterData.emoji;
         document.getElementById('displayName').textContent = characterData.name;
         document.getElementById('categoryIcon').textContent = selectionData.categoryIcon;
         document.getElementById('categoryName').textContent = characterData.category;
+
+        renderCategoryPills();
 
         console.log('✅ Matching game ready with', characterData.verbs.length, 'verbs');
         return true;
@@ -704,6 +896,51 @@
     }
 
     // ============================================
+    // CATEGORY PILLS
+    // ============================================
+
+    function renderCategoryPills() {
+      const pillsContainer = document.getElementById('categoryPills');
+      const categories = ProgressTracker.CATEGORIES;
+      const charKey = selectionData.characterKey;
+      const currentCat = selectionData.category;
+
+      pillsContainer.innerHTML = '';
+
+      Object.keys(categories).forEach(catKey => {
+        const cat = categories[catKey];
+        const progress = ProgressTracker.getCategoryProgress(charKey, catKey);
+
+        const pill = document.createElement('div');
+        pill.className = 'category-pill';
+        if (catKey === currentCat) pill.classList.add('active');
+        if (progress.trophy) pill.classList.add('completed');
+
+        pill.innerHTML = `<span>${cat.icon}</span><span>${cat.name}</span>`;
+        
+        pill.addEventListener('click', () => switchCategory(catKey));
+        pillsContainer.appendChild(pill);
+      });
+    }
+
+    function switchCategory(newCategory) {
+      if (newCategory === selectionData.category) return;
+
+      const categoryInfo = ProgressTracker.CATEGORIES[newCategory];
+      
+      selectionData.category = newCategory;
+      selectionData.categoryTitle = categoryInfo.name;
+      selectionData.categoryIcon = categoryInfo.icon;
+
+      sessionStorage.setItem('selectionData', JSON.stringify(selectionData));
+      
+      showCelebration('🔄');
+      setTimeout(() => {
+        location.reload();
+      }, 500);
+    }
+
+    // ============================================
     // GAME STATE
     // ============================================
     
@@ -720,7 +957,6 @@
     // ============================================
     
     function renderAllCards() {
-      // Split 20 verbs into 4 cards of 5 each
       cardVerbs = [
         characterData.verbs.slice(0, 5),
         characterData.verbs.slice(5, 10),
@@ -737,7 +973,6 @@
         
         const verbs = cardVerbs[cardIndex];
         
-        // CRITICAL: Shuffle objects column to prevent position-based matching
         const shuffledObjects = verbs.map(v => ({
           object: v.object,
           emoji: v.emoji,
@@ -788,23 +1023,18 @@
       const item = e.currentTarget;
       const cardIndex = parseInt(item.dataset.card);
       
-      // Only interact with current card
       if (cardIndex !== currentCardIndex) return;
-      
-      // Ignore if already marked correct
       if (item.classList.contains('correct')) return;
       
       const type = item.dataset.type;
       
       if (type === 'verb') {
-        // Deselect other verbs
         document.querySelectorAll(`.match-item[data-type="verb"][data-card="${cardIndex}"]`).forEach(v => {
           v.classList.remove('selected');
         });
         item.classList.add('selected');
         selectedVerb = item.dataset.value;
       } else {
-        // Deselect other objects
         document.querySelectorAll(`.match-item[data-type="object"][data-card="${cardIndex}"]`).forEach(o => {
           o.classList.remove('selected');
         });
@@ -812,7 +1042,6 @@
         selectedObject = { value: item.dataset.value, correct: item.dataset.correct };
       }
       
-      // Try to match if both selected
       if (selectedVerb && selectedObject) {
         attemptMatch(cardIndex);
       }
@@ -820,7 +1049,6 @@
 
     function attemptMatch(cardIndex) {
       if (selectedVerb === selectedObject.correct) {
-        // CORRECT MATCH
         const verbItems = document.querySelectorAll(`.match-item[data-type="verb"][data-value="${selectedVerb}"][data-card="${cardIndex}"]`);
         const objItems = document.querySelectorAll(`.match-item[data-type="object"][data-value="${selectedObject.value}"][data-card="${cardIndex}"]`);
         
@@ -834,12 +1062,11 @@
           o.classList.add('correct');
         });
         
-        // Record match
         userMatches[cardIndex].push({ verb: selectedVerb, object: selectedObject.value });
         
+        if (navigator.vibrate) navigator.vibrate(50);
         showCelebration('✨');
         
-        // Check if card is complete
         if (userMatches[cardIndex].length === 5) {
           cardScores[cardIndex] = 5;
           allCardsChecked[cardIndex] = true;
@@ -856,7 +1083,6 @@
         }
         
       } else {
-        // WRONG MATCH
         const verbItems = document.querySelectorAll(`.match-item[data-type="verb"][data-value="${selectedVerb}"][data-card="${cardIndex}"]`);
         const objItems = document.querySelectorAll(`.match-item[data-type="object"][data-value="${selectedObject.value}"][data-card="${cardIndex}"]`);
         
@@ -873,9 +1099,10 @@
             o.classList.remove('wrong', 'selected');
           }, 500);
         });
+
+        if (navigator.vibrate) navigator.vibrate(200);
       }
       
-      // Reset selections
       selectedVerb = null;
       selectedObject = null;
     }
@@ -885,7 +1112,6 @@
     // ============================================
     
     function checkMatches() {
-      // This function can show hints or reveal answers
       alert('💡 Tip: Click a verb, then click its matching object!');
     }
 
@@ -974,128 +1200,19 @@
       const allComplete = cardScores.every(score => score === 5);
       
       if (allComplete) {
+        const totalScore = 20;
+        ProgressTracker.saveMatchingScore(
+          selectionData.characterKey, 
+          selectionData.category, 
+          totalScore
+        );
+
         document.querySelector('.controls').style.display = 'none';
         document.getElementById('footer').style.display = 'flex';
         showCelebration('🏆');
+
+        console.log('✅ Matching complete: 20/20 saved');
       }
-    }
-
-    // ============================================
-    // AUTO-SEQUENCE LOGIC (NEW!)
-    // ============================================
-    
-    function handleComplete() {
-      // Mark current category as complete
-      saveCurrentCategoryProgress();
-
-      if (selectionData.autoSequence) {
-        // Find next category
-        const nextCategory = getNextCategory();
-        
-        if (nextCategory) {
-          // Load next category
-          loadNextCategory(nextCategory);
-        } else {
-          // All categories complete for this character!
-          markCharacterComplete();
-          showCompletionMessage();
-        }
-      } else {
-        // Manual mode - just go back
-        goHome();
-      }
-    }
-
-    function saveCurrentCategoryProgress() {
-      const progress = getProgress();
-      const charKey = selectionData.characterKey;
-      const category = selectionData.category;
-
-      if (!progress.characterProgress[charKey]) {
-        progress.characterProgress[charKey] = [];
-      }
-
-      if (!progress.characterProgress[charKey].includes(category)) {
-        progress.characterProgress[charKey].push(category);
-      }
-
-      saveProgress(progress);
-      console.log('✅ Category marked complete:', category);
-    }
-
-    function getNextCategory() {
-      const progress = getProgress();
-      const charKey = selectionData.characterKey;
-      const completedCategories = progress.characterProgress[charKey] || [];
-      
-      return ALL_CATEGORIES.find(cat => !completedCategories.includes(cat));
-    }
-
-    function loadNextCategory(nextCategoryKey) {
-      console.log('🚀 Loading next category:', nextCategoryKey);
-
-      // Update selection data
-      selectionData.category = nextCategoryKey;
-      selectionData.categoryTitle = CATEGORY_CONFIG[nextCategoryKey].displayName;
-      selectionData.categoryIcon = CATEGORY_CONFIG[nextCategoryKey].icon;
-
-      // Save and reload
-      sessionStorage.setItem('selectionData', JSON.stringify(selectionData));
-      
-      // Show loading message
-      showCelebration('⏭️');
-      
-      setTimeout(() => {
-        location.reload();
-      }, 1000);
-    }
-
-    function markCharacterComplete() {
-      const progress = getProgress();
-      const charKey = selectionData.characterKey;
-
-      if (!progress.completedCharacters.includes(charKey)) {
-        progress.completedCharacters.push(charKey);
-        saveProgress(progress);
-      }
-
-      console.log('🎉 Character complete:', charKey);
-    }
-
-    function showCompletionMessage() {
-      const charName = selectionData.characterName;
-      const charEmoji = selectionData.characterEmoji;
-      
-      showCelebration('🏆');
-      
-      setTimeout(() => {
-        if (confirm(`🎉 Congratulations! You've completed ${charName}'s journey!\n\nReady to unlock the next character?`)) {
-          goHome();
-        } else {
-          goHome();
-        }
-      }, 1500);
-    }
-
-    function getProgress() {
-      const saved = localStorage.getItem('intuityProgress');
-      if (!saved) {
-        return {
-          completedCharacters: [],
-          currentCharacter: 'sarah',
-          characterProgress: {
-            sarah: [],
-            tom: [],
-            emma: [],
-            alex: []
-          }
-        };
-      }
-      return JSON.parse(saved);
-    }
-
-    function saveProgress(progress) {
-      localStorage.setItem('intuityProgress', JSON.stringify(progress));
     }
 
     // ============================================
@@ -1104,6 +1221,10 @@
     
     function retryGame() {
       location.reload();
+    }
+
+    function goToQuiz() {
+      window.location.href = 'quiz-interface.html';
     }
 
     function goHome() {
@@ -1145,7 +1266,6 @@
       isDragging = false;
     }, { passive: true });
 
-    // Keyboard navigation
     document.addEventListener('keydown', (e) => {
       if (e.key === 'ArrowRight' && currentCardIndex < 3) nextCard();
       else if (e.key === 'ArrowLeft' && currentCardIndex > 0) prevCard();
