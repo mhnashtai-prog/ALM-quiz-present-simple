@@ -95,64 +95,45 @@
       font-style: italic;
     }
 
-    .character-selector {
+    .character-info {
       display: flex;
       justify-content: center;
       align-items: center;
-      gap: 1.5rem;
+      gap: 0.75rem;
       margin-bottom: 0.75rem;
     }
 
-    .character-option {
+    .character-display {
       display: flex;
-      flex-direction: column;
       align-items: center;
-      gap: 0.35rem;
-      cursor: pointer;
-      transition: all 0.3s;
-      padding: 0.4rem;
-      border-radius: 10px;
-    }
-
-    .character-option:hover {
-      transform: translateY(-2px);
-    }
-
-    .character-option.active {
+      gap: 0.5rem;
       background: rgba(201, 169, 97, 0.1);
-    }
-
-    .character-label {
-      display: flex;
-      align-items: center;
-      gap: 0.3rem;
-      font-size: 0.75rem;
-      color: rgba(232, 232, 232, 0.7);
-      font-weight: 500;
-    }
-
-    .character-label.active {
-      color: #C9A961;
-      font-weight: 600;
+      padding: 0.5rem 1rem;
+      border-radius: 12px;
+      border: 2px solid rgba(201, 169, 97, 0.3);
     }
 
     .character-emoji {
+      font-size: 1.5rem;
+    }
+
+    .character-name {
       font-size: 1rem;
+      color: #C9A961;
+      font-weight: 600;
+      font-family: 'Space Grotesk', sans-serif;
     }
 
-    .character-status {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background: rgba(201, 169, 97, 0.2);
-      border: 2px solid rgba(201, 169, 97, 0.4);
-      transition: all 0.3s;
-    }
-
-    .character-status.completed {
-      background: #4ade80;
-      border-color: #4ade80;
-      box-shadow: 0 0 8px rgba(74, 222, 128, 0.5);
+    .category-display {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(201, 169, 97, 0.15);
+      padding: 0.5rem 1rem;
+      border-radius: 12px;
+      font-size: 0.9rem;
+      color: rgba(232, 232, 232, 0.85);
+      font-weight: 500;
     }
 
     .progress-bar {
@@ -517,7 +498,7 @@
         -6px -6px 12px #2a2a2a;
     }
 
-    .footer-btn.practice {
+    .footer-btn.primary {
       background: rgba(201, 169, 97, 0.2);
       color: #C9A961;
     }
@@ -552,37 +533,14 @@
       <h1>INTUITY</h1>
       <p class="tagline">Intuitive & Immersive</p>
       
-      <div class="character-selector">
-        <div class="character-option active">
-          <div class="character-label active">
-            <span class="character-emoji" id="displayEmoji">👧</span>
-            <span id="displayName">Sarah</span>
-          </div>
-          <div class="character-status completed" id="sarahStatus"></div>
+      <div class="character-info">
+        <div class="character-display">
+          <span class="character-emoji" id="displayEmoji">👧</span>
+          <span class="character-name" id="displayName">Sarah</span>
         </div>
-        
-        <div class="character-option">
-          <div class="character-label">
-            <span class="character-emoji">🧑</span>
-            <span>Tom</span>
-          </div>
-          <div class="character-status" id="tomStatus"></div>
-        </div>
-        
-        <div class="character-option">
-          <div class="character-label">
-            <span class="character-emoji">👩</span>
-            <span>Emma</span>
-          </div>
-          <div class="character-status" id="emmaStatus"></div>
-        </div>
-        
-        <div class="character-option">
-          <div class="character-label">
-            <span class="character-emoji">🧒</span>
-            <span>Alex</span>
-          </div>
-          <div class="character-status" id="alexStatus"></div>
+        <div class="category-display" id="categoryDisplay">
+          <span id="categoryIcon">☕</span>
+          <span id="categoryName">Habitual Actions</span>
         </div>
       </div>
     </div>
@@ -615,12 +573,24 @@
 
     <div class="footer" id="footer" style="display: none;">
       <button class="footer-btn" onclick="retryGame()">🔄 Repeat</button>
-      <button class="footer-btn practice" onclick="goToPractice()">📚 Practice →</button>
-      <button class="footer-btn" onclick="goHome()">🏠 Home</button>
+      <button class="footer-btn primary" onclick="handleComplete()">Continue →</button>
     </div>
   </div>
 
   <script>
+    // ============================================
+    // CATEGORY CONFIG
+    // ============================================
+    
+    const CATEGORY_CONFIG = {
+      habitual: { icon: '☕', displayName: 'Habitual Actions' },
+      routine: { icon: '🌅', displayName: 'Daily Routine' },
+      frequency: { icon: '⚡', displayName: 'Frequency + Manner' },
+      conjunctions: { icon: '⏰', displayName: 'Time Conjunctions' }
+    };
+
+    const ALL_CATEGORIES = Object.keys(CATEGORY_CONFIG);
+
     // ============================================
     // LOAD SELECTION + FETCH GRAMMAR DATA
     // ============================================
@@ -688,6 +658,8 @@
         // Update header display
         document.getElementById('displayEmoji').textContent = characterData.emoji;
         document.getElementById('displayName').textContent = characterData.name;
+        document.getElementById('categoryIcon').textContent = selectionData.categoryIcon;
+        document.getElementById('categoryName').textContent = characterData.category;
 
         console.log('✅ Matching game ready with', characterData.verbs.length, 'verbs');
         return true;
@@ -1009,15 +981,129 @@
     }
 
     // ============================================
+    // AUTO-SEQUENCE LOGIC (NEW!)
+    // ============================================
+    
+    function handleComplete() {
+      // Mark current category as complete
+      saveCurrentCategoryProgress();
+
+      if (selectionData.autoSequence) {
+        // Find next category
+        const nextCategory = getNextCategory();
+        
+        if (nextCategory) {
+          // Load next category
+          loadNextCategory(nextCategory);
+        } else {
+          // All categories complete for this character!
+          markCharacterComplete();
+          showCompletionMessage();
+        }
+      } else {
+        // Manual mode - just go back
+        goHome();
+      }
+    }
+
+    function saveCurrentCategoryProgress() {
+      const progress = getProgress();
+      const charKey = selectionData.characterKey;
+      const category = selectionData.category;
+
+      if (!progress.characterProgress[charKey]) {
+        progress.characterProgress[charKey] = [];
+      }
+
+      if (!progress.characterProgress[charKey].includes(category)) {
+        progress.characterProgress[charKey].push(category);
+      }
+
+      saveProgress(progress);
+      console.log('✅ Category marked complete:', category);
+    }
+
+    function getNextCategory() {
+      const progress = getProgress();
+      const charKey = selectionData.characterKey;
+      const completedCategories = progress.characterProgress[charKey] || [];
+      
+      return ALL_CATEGORIES.find(cat => !completedCategories.includes(cat));
+    }
+
+    function loadNextCategory(nextCategoryKey) {
+      console.log('🚀 Loading next category:', nextCategoryKey);
+
+      // Update selection data
+      selectionData.category = nextCategoryKey;
+      selectionData.categoryTitle = CATEGORY_CONFIG[nextCategoryKey].displayName;
+      selectionData.categoryIcon = CATEGORY_CONFIG[nextCategoryKey].icon;
+
+      // Save and reload
+      sessionStorage.setItem('selectionData', JSON.stringify(selectionData));
+      
+      // Show loading message
+      showCelebration('⏭️');
+      
+      setTimeout(() => {
+        location.reload();
+      }, 1000);
+    }
+
+    function markCharacterComplete() {
+      const progress = getProgress();
+      const charKey = selectionData.characterKey;
+
+      if (!progress.completedCharacters.includes(charKey)) {
+        progress.completedCharacters.push(charKey);
+        saveProgress(progress);
+      }
+
+      console.log('🎉 Character complete:', charKey);
+    }
+
+    function showCompletionMessage() {
+      const charName = selectionData.characterName;
+      const charEmoji = selectionData.characterEmoji;
+      
+      showCelebration('🏆');
+      
+      setTimeout(() => {
+        if (confirm(`🎉 Congratulations! You've completed ${charName}'s journey!\n\nReady to unlock the next character?`)) {
+          goHome();
+        } else {
+          goHome();
+        }
+      }, 1500);
+    }
+
+    function getProgress() {
+      const saved = localStorage.getItem('intuityProgress');
+      if (!saved) {
+        return {
+          completedCharacters: [],
+          currentCharacter: 'sarah',
+          characterProgress: {
+            sarah: [],
+            tom: [],
+            emma: [],
+            alex: []
+          }
+        };
+      }
+      return JSON.parse(saved);
+    }
+
+    function saveProgress(progress) {
+      localStorage.setItem('intuityProgress', JSON.stringify(progress));
+    }
+
+    // ============================================
     // FOOTER ACTIONS
     // ============================================
     
     function retryGame() {
       location.reload();
-    }
-
-    function goToPractice() {
-      window.location.href = 'quiz-interface.html';
     }
 
     function goHome() {
