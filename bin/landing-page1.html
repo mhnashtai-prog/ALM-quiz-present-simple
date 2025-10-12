@@ -1,0 +1,980 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>INTUITY - Character Hub</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #000000;
+      font-family: 'Inter', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' /%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .loading-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.9);
+      backdrop-filter: blur(5px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      transition: opacity 0.5s ease;
+    }
+
+    .loading-overlay.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .loading-content {
+      background: #1a1a1a;
+      padding: 2rem;
+      border-radius: 16px;
+      text-align: center;
+      color: #C9A961;
+      box-shadow: 
+        12px 12px 24px #000000,
+        -12px -12px 24px #2a2a2a;
+    }
+
+    .loading-spinner {
+      width: 50px;
+      height: 50px;
+      border: 4px solid rgba(201, 169, 97, 0.2);
+      border-top: 4px solid #C9A961;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 1rem;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .container {
+      background: #1a1a1a;
+      width: 95%;
+      max-width: 420px;
+      min-height: 90vh;
+      border-radius: 24px;
+      padding: 2rem 1.25rem;
+      box-shadow: 
+        12px 12px 24px #000000,
+        -12px -12px 24px #2a2a2a;
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 1.5rem;
+      position: relative;
+    }
+
+    .header h1 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 2.5rem;
+      color: #C9A961;
+      margin: 0 0 0.5rem 0;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    }
+
+    .subtitle {
+      font-size: 0.875rem;
+      color: rgba(232, 232, 232, 0.9);
+      margin-bottom: 0.25rem;
+      font-weight: 500;
+      letter-spacing: 0.03em;
+    }
+
+    .author {
+      font-size: 0.75rem;
+      color: rgba(201, 169, 97, 0.7);
+      font-weight: 400;
+      letter-spacing: 0.02em;
+    }
+
+    .qr-btn {
+      position: absolute;
+      top: 0;
+      right: 0;
+      background: #1a1a1a;
+      border: none;
+      border-radius: 50%;
+      width: 2.5rem;
+      height: 2.5rem;
+      color: #C9A961;
+      font-size: 1.25rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 
+        6px 6px 12px #000000,
+        -6px -6px 12px #2a2a2a;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .qr-btn:hover {
+      transform: scale(1.1) rotate(5deg);
+      box-shadow: 
+        8px 8px 16px #000000,
+        -8px -8px 16px #2a2a2a;
+    }
+
+    .character-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .nav-arrow {
+      background: #1a1a1a;
+      border: none;
+      border-radius: 50%;
+      width: 3rem;
+      height: 3rem;
+      color: #C9A961;
+      font-size: 1.5rem;
+      cursor: pointer;
+      box-shadow: 
+        6px 6px 12px #000000,
+        -6px -6px 12px #2a2a2a;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .nav-arrow:hover:not(:disabled) {
+      transform: scale(1.1);
+      box-shadow: 
+        8px 8px 16px #000000,
+        -8px -8px 16px #2a2a2a;
+    }
+
+    .nav-arrow:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+
+    .character-bubble {
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      background: #1a1a1a;
+      box-shadow: 
+        12px 12px 24px #000000,
+        -12px -12px 24px #2a2a2a;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      animation: float 4s ease-in-out infinite;
+      transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+
+    .character-emoji {
+      font-size: 3.5rem;
+      filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.5));
+    }
+
+    .character-name {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1rem;
+      font-weight: 600;
+      color: #C9A961;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .train-carts {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+      margin-top: 1.5rem;
+      flex: 1;
+    }
+
+    .cart {
+      aspect-ratio: 1.1;
+      background: #1a1a1a;
+      border-radius: 20px;
+      padding: 1rem;
+      cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 
+        8px 8px 16px #000000,
+        -8px -8px 16px #2a2a2a;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cart::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(201, 169, 97, 0.15), transparent);
+      transition: left 0.5s;
+    }
+
+    .cart:hover::before {
+      left: 100%;
+    }
+
+    .cart:hover {
+      transform: translateY(-4px) scale(1.02);
+      box-shadow: 
+        12px 12px 24px #000000,
+        -12px -12px 24px #2a2a2a;
+    }
+
+    .cart.disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .cart-icon {
+      font-size: 2.5rem;
+      filter: drop-shadow(1px 1px 2px rgba(0, 0, 0, 0.5));
+    }
+
+    .cart-title {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #e8e8e8;
+      text-align: center;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      line-height: 1.3;
+    }
+
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(8px);
+      z-index: 998;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .modal-overlay.show {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .cart-modal {
+      position: fixed;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%) scale(0.9);
+      background: #1a1a1a;
+      border-radius: 24px;
+      padding: 2rem 1.5rem;
+      max-width: 420px;
+      width: 92%;
+      max-height: 80vh;
+      z-index: 999;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      box-shadow: 
+        16px 16px 32px #000000,
+        -16px -16px 32px #2a2a2a;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .cart-modal.show {
+      opacity: 1;
+      visibility: visible;
+      transform: translate(-50%, -50%) scale(1);
+    }
+
+    .modal-header {
+      text-align: center;
+      margin-bottom: 1rem;
+      padding-bottom: 1rem;
+      border-bottom: 2px solid rgba(201, 169, 97, 0.3);
+    }
+
+    .modal-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: #C9A961;
+      letter-spacing: 0.01em;
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 1rem; right: 1rem;
+      border: none;
+      background: #1a1a1a;
+      border-radius: 50%;
+      width: 2.5rem; height: 2.5rem;
+      color: #C9A961;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 
+        6px 6px 12px #000000,
+        -6px -6px 12px #2a2a2a;
+      font-size: 1.5rem;
+      line-height: 1;
+      font-weight: 300;
+      z-index: 10;
+    }
+
+    .close-btn:hover {
+      transform: scale(1.1) rotate(90deg);
+      box-shadow: 
+        8px 8px 16px #000000,
+        -8px -8px 16px #2a2a2a;
+    }
+
+    .scroll-hint {
+      text-align: center;
+      color: rgba(201, 169, 97, 0.4);
+      font-size: 0.7rem;
+      margin-bottom: 0.75rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+    }
+
+    .verb-list {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding-right: 0.5rem;
+      -webkit-overflow-scrolling: touch;
+      scroll-behavior: smooth;
+    }
+
+    .verb-list::-webkit-scrollbar { width: 6px; }
+    .verb-list::-webkit-scrollbar-track { 
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 10px;
+    }
+    .verb-list::-webkit-scrollbar-thumb {
+      background: rgba(201, 169, 97, 0.4);
+      border-radius: 10px;
+    }
+
+    .verb-box {
+      background: #1a1a1a;
+      border-radius: 12px;
+      padding: 0.875rem 1rem;
+      margin-bottom: 0.5rem;
+      box-shadow: 
+        4px 4px 8px #000000,
+        -4px -4px 8px #2a2a2a;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      min-height: 48px;
+      transition: all 0.3s;
+    }
+
+    .verb-box:hover {
+      transform: translateX(4px);
+    }
+
+    .verb {
+      color: #C9A961;
+      font-weight: 700;
+      font-size: 0.95rem;
+      letter-spacing: 0.02em;
+    }
+
+    .object {
+      color: rgba(200, 200, 200, 0.8);
+      font-weight: 500;
+      font-size: 0.875rem;
+      text-align: right;
+    }
+
+    .emoji-icon {
+      font-size: 1.25rem;
+      margin-left: 0.5rem;
+    }
+
+    .modal-actions {
+      margin-top: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .action-btn {
+      background: #1a1a1a;
+      border: none;
+      border-radius: 12px;
+      padding: 0.875rem 1.5rem;
+      color: #e8e8e8;
+      font-size: 0.875rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 
+        6px 6px 12px #000000,
+        -6px -6px 12px #2a2a2a;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .action-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 
+        8px 8px 16px #000000,
+        -8px -8px 16px #2a2a2a;
+    }
+
+    .action-btn.primary {
+      background: rgba(201, 169, 97, 0.2);
+      color: #C9A961;
+    }
+
+    .qr-modal {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.9);
+      backdrop-filter: blur(10px);
+      z-index: 1001;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .qr-modal.show {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .qr-content {
+      background: #1a1a1a;
+      border-radius: 24px;
+      padding: 2rem 1.5rem;
+      max-width: 380px;
+      width: 90%;
+      box-shadow: 
+        16px 16px 32px #000000,
+        -16px -16px 32px #2a2a2a;
+      position: relative;
+      text-align: center;
+    }
+
+    .qr-close {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: #1a1a1a;
+      border: none;
+      border-radius: 50%;
+      width: 2.5rem;
+      height: 2.5rem;
+      color: #C9A961;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 
+        6px 6px 12px #000000,
+        -6px -6px 12px #2a2a2a;
+      font-size: 1.5rem;
+      line-height: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+    }
+
+    .qr-close:hover {
+      transform: scale(1.1) rotate(90deg);
+      box-shadow: 
+        8px 8px 16px #000000,
+        -8px -8px 16px #2a2a2a;
+    }
+
+    .qr-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #C9A961;
+      margin-bottom: 0.5rem;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+    }
+
+    .qr-subtitle {
+      font-size: 0.8125rem;
+      color: rgba(200, 200, 200, 0.7);
+      margin-bottom: 1.5rem;
+      font-weight: 500;
+    }
+
+    .qr-code-box {
+      background: #ffffff;
+      padding: 1.5rem;
+      border-radius: 16px;
+      margin: 0 auto 1.5rem;
+      box-shadow: 
+        inset 4px 4px 8px rgba(0, 0, 0, 0.3);
+      display: inline-block;
+      min-height: 280px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .qr-code-box img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .qr-url {
+      font-size: 0.7rem;
+      color: rgba(201, 169, 97, 0.7);
+      font-family: 'Courier New', monospace;
+      background: rgba(201, 169, 97, 0.1);
+      padding: 0.75rem 1rem;
+      border-radius: 12px;
+      margin-bottom: 1rem;
+      word-break: break-all;
+      box-shadow: 
+        inset 2px 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    .download-qr-btn {
+      background: #1a1a1a;
+      border: none;
+      border-radius: 12px;
+      padding: 0.875rem 1.5rem;
+      color: #C9A961;
+      font-size: 0.875rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 
+        6px 6px 12px #000000,
+        -6px -6px 12px #2a2a2a;
+      font-family: 'Inter', sans-serif;
+      width: 100%;
+    }
+
+    .download-qr-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 
+        8px 8px 16px #000000,
+        -8px -8px 16px #2a2a2a;
+    }
+
+    .error-message {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: #1a1a1a;
+      padding: 2rem;
+      border-radius: 16px;
+      box-shadow: 16px 16px 32px #000000;
+      text-align: center;
+      z-index: 10000;
+      max-width: 400px;
+    }
+
+    .error-message h2 {
+      color: #fb923c;
+      margin-bottom: 1rem;
+      font-family: 'Space Grotesk', sans-serif;
+    }
+
+    .error-message p {
+      color: rgba(232, 232, 232, 0.8);
+      margin-bottom: 1.5rem;
+    }
+
+    @media (max-width: 480px) {
+      .container {
+        width: 98%;
+        padding: 1.5rem 1rem;
+      }
+
+      .header h1 {
+        font-size: 2rem;
+      }
+
+      .character-bubble {
+        width: 120px;
+        height: 120px;
+      }
+
+      .character-emoji {
+        font-size: 3rem;
+      }
+
+      .train-carts {
+        gap: 0.875rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="loading-overlay" id="loadingOverlay">
+    <div class="loading-content">
+      <div class="loading-spinner"></div>
+      <p>Loading data...</p>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="modalOverlay"></div>
+
+  <div class="container">
+    <div class="header">
+      <button class="qr-btn" onclick="openQRModal()" title="Share with Students">📱</button>
+      <h1>INTUITY</h1>
+      <p class="subtitle">Intuitive & immersive</p>
+      <p class="author">Majid Nashtai</p>
+    </div>
+
+    <div class="character-nav">
+      <button class="nav-arrow" id="prevChar" onclick="changeCharacter(-1)">←</button>
+      <div class="character-bubble" id="characterBubble">
+        <div class="character-emoji" id="characterEmoji">👧</div>
+        <div class="character-name" id="characterName">SARAH</div>
+      </div>
+      <button class="nav-arrow" id="nextChar" onclick="changeCharacter(1)">→</button>
+    </div>
+
+    <div class="train-carts" id="trainCarts"></div>
+  </div>
+
+  <div class="cart-modal" id="cartModal">
+    <button class="close-btn" onclick="closeModal()">×</button>
+    <div class="modal-header">
+      <div class="modal-title" id="modalTitle">
+        <span id="modalIcon">☕</span>
+        <span id="modalText">Habitual Actions</span>
+      </div>
+    </div>
+    <div class="scroll-hint">⋮ Swipe to explore ⋮</div>
+    <div class="verb-list" id="verbList"></div>
+    <div class="modal-actions">
+      <button class="action-btn primary" onclick="startPractice()">Start Practice Quiz →</button>
+      <button class="action-btn" onclick="closeModal()">Close & Return</button>
+    </div>
+  </div>
+
+  <div class="qr-modal" id="qrModal">
+    <div class="qr-content">
+      <button class="qr-close" onclick="closeQRModal()">×</button>
+      <div class="qr-title">📱 Share with Students</div>
+      <div class="qr-subtitle">Scan this QR code to access on mobile</div>
+      <div class="qr-code-box" id="qrCodeBox">
+        <div style="color: #666; font-size: 0.875rem;">Generating QR Code...</div>
+      </div>
+      <div class="qr-url" id="qrUrl"></div>
+      <button class="download-qr-btn" onclick="downloadQRCode()">📥 Download QR Code</button>
+    </div>
+  </div>
+
+  <script>
+    // ============================================
+    // SIMPLE CHARACTER SELECTION - NO DATA LOADING
+    // ============================================
+    
+    const characters = [
+      { key: 'sarah', name: 'SARAH', emoji: '👧', description: 'Academic and organized student' },
+      { key: 'tom', name: 'TOM', emoji: '🧑', description: 'Sporty and active student' },
+      { key: 'emma', name: 'EMMA', emoji: '👩', description: 'Creative and social student' },
+      { key: 'alex', name: 'ALEX', emoji: '🧒', description: 'Tech-savvy gamer student' }
+    ];
+
+    const CATEGORY_CONFIG = {
+      habitual: { icon: '☕', displayName: 'Habitual Actions' },
+      routine: { icon: '🌅', displayName: 'Daily Routine' },
+      frequency: { icon: '⚡', displayName: 'Frequency + Manner' },
+      conjunctions: { icon: '⏰', displayName: 'Time Conjunctions' }
+    };
+
+    let currentCharacterIndex = 0;
+    let currentCategory = null;
+
+    // ============================================
+    // CHARACTER NAVIGATION
+    // ============================================
+    
+    function updateCharacter() {
+      const char = characters[currentCharacterIndex];
+      document.getElementById('characterEmoji').textContent = char.emoji;
+      document.getElementById('characterName').textContent = char.name;
+      
+      document.getElementById('prevChar').disabled = currentCharacterIndex === 0;
+      document.getElementById('nextChar').disabled = currentCharacterIndex === characters.length - 1;
+      
+      const bubble = document.getElementById('characterBubble');
+      bubble.style.animation = 'none';
+      setTimeout(() => {
+        bubble.style.animation = 'float 4s ease-in-out infinite';
+      }, 10);
+
+      renderCarts();
+    }
+
+    function changeCharacter(direction) {
+      const newIndex = currentCharacterIndex + direction;
+      if (newIndex >= 0 && newIndex < characters.length) {
+        currentCharacterIndex = newIndex;
+        updateCharacter();
+      }
+    }
+
+    // ============================================
+    // CART RENDERING
+    // ============================================
+    
+    function renderCarts() {
+      const cartsContainer = document.getElementById('trainCarts');
+      cartsContainer.innerHTML = '';
+
+      Object.keys(CATEGORY_CONFIG).forEach(catKey => {
+        const config = CATEGORY_CONFIG[catKey];
+        
+        const cart = document.createElement('div');
+        cart.className = 'cart';
+        cart.onclick = () => openCart(catKey);
+        
+        cart.innerHTML = `
+          <div class="cart-icon">${config.icon}</div>
+          <div class="cart-title">${config.displayName.replace(' ', '<br>')}</div>
+        `;
+        
+        cartsContainer.appendChild(cart);
+      });
+    }
+
+    // ============================================
+    // MODAL MANAGEMENT
+    // ============================================
+    
+    function openCart(categoryKey) {
+      const config = CATEGORY_CONFIG[categoryKey];
+      currentCategory = categoryKey;
+
+      document.getElementById('modalIcon').textContent = config.icon;
+      document.getElementById('modalText').textContent = config.displayName;
+
+      // Simple preview list (not actual verbs yet)
+      const verbList = document.getElementById('verbList');
+      verbList.innerHTML = `
+        <div style="text-align: center; color: rgba(232, 232, 232, 0.7); padding: 2rem;">
+          <div style="font-size: 3rem; margin-bottom: 1rem;">${config.icon}</div>
+          <p style="font-size: 1rem; margin-bottom: 1rem;">Ready to practice<br><strong>${config.displayName}</strong>?</p>
+          <p style="font-size: 0.85rem; opacity: 0.8;">20 vocabulary items<br>4 matching cards<br>Interactive exercises</p>
+        </div>
+      `;
+
+      document.getElementById('modalOverlay').classList.add('show');
+      document.getElementById('cartModal').classList.add('show');
+    }
+
+    function closeModal() {
+      document.getElementById('modalOverlay').classList.remove('show');
+      document.getElementById('cartModal').classList.remove('show');
+    }
+
+    // ============================================
+    // START PRACTICE - SAVE TO SESSIONSTORAGE
+    // ============================================
+    
+    function startPractice() {
+      const char = characters[currentCharacterIndex];
+      
+      // Package minimal data
+      const selectionData = {
+        characterKey: char.key,
+        characterName: char.name,
+        characterEmoji: char.emoji,
+        category: currentCategory,
+        categoryTitle: CATEGORY_CONFIG[currentCategory].displayName,
+        categoryIcon: CATEGORY_CONFIG[currentCategory].icon
+      };
+
+      // Save to sessionStorage
+      sessionStorage.setItem('selectionData', JSON.stringify(selectionData));
+      
+      console.log('🚀 Navigating to matching game:', selectionData);
+      
+      // Navigate to matching interface
+      window.location.href = 'pages/matching-game.html';
+    }
+
+    // ============================================
+    // QR CODE MODAL
+    // ============================================
+    
+    function openQRModal() {
+      const currentUrl = window.location.href;
+      document.getElementById('qrUrl').textContent = currentUrl;
+      generateQRCode(currentUrl);
+      document.getElementById('qrModal').classList.add('show');
+    }
+
+    function closeQRModal() {
+      document.getElementById('qrModal').classList.remove('show');
+    }
+
+    function generateQRCode(url) {
+      const qrBox = document.getElementById('qrCodeBox');
+      qrBox.innerHTML = '<div style="color: #666; font-size: 0.875rem; padding: 20px;">Generating QR Code...</div>';
+      
+      const qrCodeURL = `https://api.qrserver.com/v1/create-qr-code/?size=256x256&data=${encodeURIComponent(url)}&format=png&bgcolor=FFFFFF&color=000000&margin=10`;
+      
+      const img = new Image();
+      img.onload = () => {
+        qrBox.innerHTML = '';
+        img.style.width = '100%';
+        img.style.height = 'auto';
+        img.style.display = 'block';
+        qrBox.appendChild(img);
+      };
+      
+      img.onerror = () => {
+        qrBox.innerHTML = `
+          <div style="color: #ef4444; padding: 20px; text-align: center;">
+            <div style="font-size: 28px; margin-bottom: 12px;">⚠️</div>
+            <div style="font-size: 14px;"><strong>Failed to generate QR code</strong></div>
+            <div style="font-size: 12px; margin-top: 8px;">Check your internet connection</div>
+          </div>
+        `;
+      };
+      
+      img.src = qrCodeURL;
+    }
+
+    function downloadQRCode() {
+      const img = document.querySelector('#qrCodeBox img');
+      if (img) {
+        const link = document.createElement('a');
+        link.download = 'intuity-qr-code.png';
+        link.href = img.src;
+        link.click();
+      } else {
+        alert('⚠️ QR code not ready yet. Please wait a moment and try again.');
+      }
+    }
+
+    // ============================================
+    // EVENT LISTENERS
+    // ============================================
+    
+    document.getElementById('modalOverlay').addEventListener('click', closeModal);
+
+    document.getElementById('qrModal').addEventListener('click', (e) => {
+      if (e.target.id === 'qrModal') closeQRModal();
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeModal();
+        closeQRModal();
+      }
+      if (e.key === 'ArrowLeft') changeCharacter(-1);
+      if (e.key === 'ArrowRight') changeCharacter(1);
+    });
+
+    // ============================================
+    // INITIALIZE
+    // ============================================
+    
+    function initialize() {
+      console.log('🎮 Initializing INTUITY Landing Page...');
+      document.getElementById('loadingOverlay').classList.add('hidden');
+      updateCharacter();
+      updateCharacterStatuses(); // Call achievement tracker if available
+      console.log('✅ Landing Page Ready!');
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initialize);
+    } else {
+      initialize();
+    }
+  </script>
+
+  <!-- Achievement Tracker (optional - will gracefully fail if file doesn't exist) -->
+  <script src="js/achievement-tracker.js"></script>
+  
+  <script>
+    // Update character completion status indicators
+    function updateCharacterStatuses() {
+      if (!window.achievementTracker) {
+        console.log('ℹ️ Achievement tracker not loaded');
+        return; // Graceful fallback
+      }
+      
+      const tracker = window.achievementTracker;
+      
+      characters.forEach(char => {
+        const status = tracker.getCharacterStatus(char.key);
+        const statusEl = document.getElementById(`${char.key}Status`);
+        
+        if (statusEl && status.completed) {
+          statusEl.classList.add('completed');
+        }
+      });
+    }
+  </script>
+</body>
+</html>
