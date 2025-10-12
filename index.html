@@ -858,7 +858,7 @@
     console.log('🚀 Navigating to matching game:', selectionData);
     
     // Navigate to matching interface
-    window.location.href = 'bin/matching.html';
+    window.location.href = 'pages/matching-game.html';
   }
 
   // ============================================
@@ -951,6 +951,28 @@
   } else {
     initialize();
   }
+</script>
+  <script src="js/achievement-tracker.js"></script>
+<script>
+  // Update character completion status indicators
+  function updateCharacterStatuses() {
+    if (!window.achievementTracker) return; // Graceful fallback
+    
+    const tracker = window.achievementTracker;
+    
+    characters.forEach(char => {
+      const status = tracker.getCharacterStatus(char.key);
+      const statusEl = document.getElementById(`${char.key}Status`);
+      
+      if (statusEl && status.completed) {
+        statusEl.classList.add('completed');
+      }
+    });
+  }
+
+  // Call this in initialize()
+  // Find the initialize() function and add this line at the end:
+  // updateCharacterStatuses();
 </script>
 </body>
 </html>
