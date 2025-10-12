@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>INTUITY - Character Hub</title>
+  <title>INTUITY - Choose Your Study Buddy</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
   
   <style>
@@ -31,55 +31,13 @@
       z-index: 1;
     }
 
-    .loading-overlay {
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0, 0, 0, 0.9);
-      backdrop-filter: blur(5px);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 9999;
-      transition: opacity 0.5s ease;
-    }
-
-    .loading-overlay.hidden {
-      opacity: 0;
-      pointer-events: none;
-    }
-
-    .loading-content {
-      background: #1a1a1a;
-      padding: 2rem;
-      border-radius: 16px;
-      text-align: center;
-      color: #C9A961;
-      box-shadow: 
-        12px 12px 24px #000000,
-        -12px -12px 24px #2a2a2a;
-    }
-
-    .loading-spinner {
-      width: 50px;
-      height: 50px;
-      border: 4px solid rgba(201, 169, 97, 0.2);
-      border-top: 4px solid #C9A961;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-      margin: 0 auto 1rem;
-    }
-
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-
     .container {
       background: #1a1a1a;
       width: 95%;
-      max-width: 420px;
+      max-width: 900px;
       min-height: 90vh;
       border-radius: 24px;
-      padding: 2rem 1.25rem;
+      padding: 2.5rem 2rem;
       box-shadow: 
         12px 12px 24px #000000,
         -12px -12px 24px #2a2a2a;
@@ -89,41 +47,10 @@
       flex-direction: column;
     }
 
-    .header {
-      text-align: center;
-      margin-bottom: 1.5rem;
-      position: relative;
-    }
-
-    .header h1 {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 2.5rem;
-      color: #C9A961;
-      margin: 0 0 0.5rem 0;
-      font-weight: 700;
-      letter-spacing: -0.02em;
-      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-    }
-
-    .subtitle {
-      font-size: 0.875rem;
-      color: rgba(232, 232, 232, 0.9);
-      margin-bottom: 0.25rem;
-      font-weight: 500;
-      letter-spacing: 0.03em;
-    }
-
-    .author {
-      font-size: 0.75rem;
-      color: rgba(201, 169, 97, 0.7);
-      font-weight: 400;
-      letter-spacing: 0.02em;
-    }
-
     .qr-btn {
       position: absolute;
-      top: 0;
-      right: 0;
+      top: 2rem;
+      right: 2rem;
       background: #1a1a1a;
       border: none;
       border-radius: 50%;
@@ -148,107 +75,68 @@
         -8px -8px 16px #2a2a2a;
     }
 
-    .character-nav {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1.5rem;
+    .header {
+      text-align: center;
+      margin-bottom: 2rem;
     }
 
-    .nav-arrow {
-      background: #1a1a1a;
-      border: none;
-      border-radius: 50%;
-      width: 3rem;
-      height: 3rem;
-      color: #C9A961;
-      font-size: 1.5rem;
-      cursor: pointer;
-      box-shadow: 
-        6px 6px 12px #000000,
-        -6px -6px 12px #2a2a2a;
-      transition: all 0.3s;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .nav-arrow:hover:not(:disabled) {
-      transform: scale(1.1);
-      box-shadow: 
-        8px 8px 16px #000000,
-        -8px -8px 16px #2a2a2a;
-    }
-
-    .nav-arrow:disabled {
-      opacity: 0.3;
-      cursor: not-allowed;
-    }
-
-    .character-bubble {
-      width: 140px;
-      height: 140px;
-      border-radius: 50%;
-      background: #1a1a1a;
-      box-shadow: 
-        12px 12px 24px #000000,
-        -12px -12px 24px #2a2a2a;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
-      animation: float 4s ease-in-out infinite;
-      transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
-
-    @keyframes float {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-8px); }
-    }
-
-    .character-emoji {
-      font-size: 3.5rem;
-      filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.5));
-    }
-
-    .character-name {
+    .header h1 {
       font-family: 'Space Grotesk', sans-serif;
-      font-size: 1rem;
-      font-weight: 600;
+      font-size: 3rem;
       color: #C9A961;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
     }
 
-    .train-carts {
+    .subtitle {
+      font-size: 1rem;
+      color: rgba(232, 232, 232, 0.9);
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+      letter-spacing: 0.03em;
+    }
+
+    .author {
+      font-size: 0.85rem;
+      color: rgba(201, 169, 97, 0.7);
+      font-weight: 400;
+      letter-spacing: 0.02em;
+      margin-bottom: 1rem;
+    }
+
+    .welcome-message {
+      text-align: center;
+      font-size: 1.25rem;
+      color: rgba(232, 232, 232, 0.85);
+      margin-bottom: 2.5rem;
+      font-weight: 500;
+      line-height: 1.6;
+    }
+
+    .characters-grid {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 1rem;
-      margin-top: 1.5rem;
-      flex: 1;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
     }
 
-    .cart {
-      aspect-ratio: 1.1;
+    .character-card {
       background: #1a1a1a;
       border-radius: 20px;
-      padding: 1rem;
+      padding: 2rem 1.5rem;
       cursor: pointer;
       transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
       box-shadow: 
         8px 8px 16px #000000,
         -8px -8px 16px #2a2a2a;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
+      border: 3px solid transparent;
       position: relative;
       overflow: hidden;
     }
 
-    .cart::before {
+    .character-card::before {
       content: '';
       position: absolute;
       top: 0;
@@ -256,230 +144,211 @@
       width: 100%;
       height: 100%;
       background: linear-gradient(90deg, transparent, rgba(201, 169, 97, 0.15), transparent);
-      transition: left 0.5s;
+      transition: left 0.6s;
     }
 
-    .cart:hover::before {
+    .character-card:hover::before {
       left: 100%;
     }
 
-    .cart:hover {
-      transform: translateY(-4px) scale(1.02);
+    .character-card:hover {
+      transform: translateY(-8px) scale(1.02);
+      border-color: rgba(201, 169, 97, 0.5);
       box-shadow: 
         12px 12px 24px #000000,
-        -12px -12px 24px #2a2a2a;
+        -12px -12px 24px #2a2a2a,
+        0 0 30px rgba(201, 169, 97, 0.2);
     }
 
-    .cart.disabled {
+    .character-card.locked {
       opacity: 0.5;
       cursor: not-allowed;
+      filter: grayscale(0.8);
     }
 
-    .cart-icon {
-      font-size: 2.5rem;
-      filter: drop-shadow(1px 1px 2px rgba(0, 0, 0, 0.5));
+    .character-card.locked:hover {
+      transform: none;
+      border-color: transparent;
     }
 
-    .cart-title {
-      font-size: 0.75rem;
-      font-weight: 700;
-      color: #e8e8e8;
-      text-align: center;
-      text-transform: uppercase;
-      letter-spacing: 0.03em;
-      line-height: 1.3;
+    .character-card.completed {
+      border-color: #4ade80;
     }
 
-    .modal-overlay {
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0, 0, 0, 0.85);
-      backdrop-filter: blur(8px);
-      z-index: 998;
-      opacity: 0;
-      visibility: hidden;
-      transition: all 0.3s ease;
-    }
-
-    .modal-overlay.show {
-      opacity: 1;
-      visibility: visible;
-    }
-
-    .cart-modal {
-      position: fixed;
-      top: 50%; left: 50%;
-      transform: translate(-50%, -50%) scale(0.9);
-      background: #1a1a1a;
-      border-radius: 24px;
-      padding: 2rem 1.5rem;
-      max-width: 420px;
-      width: 92%;
-      max-height: 80vh;
-      z-index: 999;
-      opacity: 0;
-      visibility: hidden;
-      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-      box-shadow: 
-        16px 16px 32px #000000,
-        -16px -16px 32px #2a2a2a;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .cart-modal.show {
-      opacity: 1;
-      visibility: visible;
-      transform: translate(-50%, -50%) scale(1);
-    }
-
-    .modal-header {
+    .character-emoji {
+      font-size: 4.5rem;
       text-align: center;
       margin-bottom: 1rem;
-      padding-bottom: 1rem;
-      border-bottom: 2px solid rgba(201, 169, 97, 0.3);
+      filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.5));
+      animation: float 3s ease-in-out infinite;
     }
 
-    .modal-title {
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+
+    .character-name {
       font-family: 'Space Grotesk', sans-serif;
-      font-size: 1.25rem;
-      font-weight: 600;
+      font-size: 1.5rem;
+      font-weight: 700;
       color: #C9A961;
-      letter-spacing: 0.01em;
-      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+      text-align: center;
+      margin-bottom: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .character-description {
+      font-size: 0.95rem;
+      color: rgba(232, 232, 232, 0.8);
+      text-align: center;
+      margin-bottom: 1rem;
+      line-height: 1.5;
+      font-style: italic;
+    }
+
+    .character-tagline {
+      font-size: 0.9rem;
+      color: rgba(201, 169, 97, 0.9);
+      text-align: center;
+      margin-bottom: 1.25rem;
+      font-weight: 500;
+      min-height: 2.5rem;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 0.5rem;
     }
 
-    .close-btn {
-      position: absolute;
-      top: 1rem; right: 1rem;
-      border: none;
-      background: #1a1a1a;
-      border-radius: 50%;
-      width: 2.5rem; height: 2.5rem;
-      color: #C9A961;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      box-shadow: 
-        6px 6px 12px #000000,
-        -6px -6px 12px #2a2a2a;
-      font-size: 1.5rem;
-      line-height: 1;
-      font-weight: 300;
-      z-index: 10;
-    }
-
-    .close-btn:hover {
-      transform: scale(1.1) rotate(90deg);
-      box-shadow: 
-        8px 8px 16px #000000,
-        -8px -8px 16px #2a2a2a;
-    }
-
-    .scroll-hint {
-      text-align: center;
-      color: rgba(201, 169, 97, 0.4);
-      font-size: 0.7rem;
-      margin-bottom: 0.75rem;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-    }
-
-    .verb-list {
-      flex: 1;
-      overflow-y: auto;
-      overflow-x: hidden;
-      padding-right: 0.5rem;
-      -webkit-overflow-scrolling: touch;
-      scroll-behavior: smooth;
-    }
-
-    .verb-list::-webkit-scrollbar { width: 6px; }
-    .verb-list::-webkit-scrollbar-track { 
-      background: rgba(0, 0, 0, 0.3);
-      border-radius: 10px;
-    }
-    .verb-list::-webkit-scrollbar-thumb {
-      background: rgba(201, 169, 97, 0.4);
-      border-radius: 10px;
-    }
-
-    .verb-box {
-      background: #1a1a1a;
-      border-radius: 12px;
-      padding: 0.875rem 1rem;
-      margin-bottom: 0.5rem;
-      box-shadow: 
-        4px 4px 8px #000000,
-        -4px -4px 8px #2a2a2a;
+    .character-progress {
       display: flex;
-      justify-content: space-between;
-      align-items: center;
-      min-height: 48px;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .progress-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: rgba(201, 169, 97, 0.2);
+      border: 2px solid rgba(201, 169, 97, 0.4);
       transition: all 0.3s;
     }
 
-    .verb-box:hover {
-      transform: translateX(4px);
+    .progress-dot.completed {
+      background: #4ade80;
+      border-color: #4ade80;
+      box-shadow: 0 0 8px rgba(74, 222, 128, 0.6);
     }
 
-    .verb {
-      color: #C9A961;
-      font-weight: 700;
-      font-size: 0.95rem;
-      letter-spacing: 0.02em;
-    }
-
-    .object {
-      color: rgba(200, 200, 200, 0.8);
-      font-weight: 500;
-      font-size: 0.875rem;
-      text-align: right;
-    }
-
-    .emoji-icon {
-      font-size: 1.25rem;
-      margin-left: 0.5rem;
-    }
-
-    .modal-actions {
-      margin-top: 1rem;
-      display: flex;
-      flex-direction: column;
-      gap: 0.75rem;
-    }
-
-    .action-btn {
-      background: #1a1a1a;
-      border: none;
+    .start-button {
+      background: rgba(201, 169, 97, 0.2);
+      border: 2px solid #C9A961;
       border-radius: 12px;
       padding: 0.875rem 1.5rem;
-      color: #e8e8e8;
-      font-size: 0.875rem;
-      font-weight: 600;
+      color: #C9A961;
+      font-size: 0.95rem;
+      font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.03em;
+      letter-spacing: 0.05em;
       cursor: pointer;
       transition: all 0.3s ease;
       box-shadow: 
-        6px 6px 12px #000000,
-        -6px -6px 12px #2a2a2a;
+        4px 4px 8px #000000,
+        -4px -4px 8px #2a2a2a;
       font-family: 'Inter', sans-serif;
+      width: 100%;
     }
 
-    .action-btn:hover {
+    .start-button:hover {
+      background: rgba(201, 169, 97, 0.3);
       transform: translateY(-2px);
       box-shadow: 
-        8px 8px 16px #000000,
-        -8px -8px 16px #2a2a2a;
+        6px 6px 12px #000000,
+        -6px -6px 12px #2a2a2a;
     }
 
-    .action-btn.primary {
-      background: rgba(201, 169, 97, 0.2);
+    .character-card.locked .start-button {
+      background: rgba(100, 100, 100, 0.2);
+      border-color: rgba(150, 150, 150, 0.4);
+      color: rgba(150, 150, 150, 0.6);
+      cursor: not-allowed;
+    }
+
+    .character-card.locked .start-button:hover {
+      transform: none;
+    }
+
+    .character-card.completed .start-button {
+      background: rgba(74, 222, 128, 0.2);
+      border-color: #4ade80;
+      color: #4ade80;
+    }
+
+    .lock-icon {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      font-size: 1.5rem;
+      opacity: 0.6;
+    }
+
+    .check-icon {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      font-size: 1.5rem;
+      color: #4ade80;
+      animation: checkPop 0.5s ease;
+    }
+
+    @keyframes checkPop {
+      0% { transform: scale(0); }
+      50% { transform: scale(1.2); }
+      100% { transform: scale(1); }
+    }
+
+    .overall-progress {
+      text-align: center;
+      margin-top: 2rem;
+      padding-top: 2rem;
+      border-top: 2px solid rgba(201, 169, 97, 0.2);
+    }
+
+    .overall-progress-title {
+      font-size: 1rem;
+      color: rgba(232, 232, 232, 0.7);
+      margin-bottom: 1rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .overall-progress-bar {
+      width: 100%;
+      max-width: 500px;
+      height: 12px;
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: inset 2px 2px 4px rgba(0, 0, 0, 0.5);
+      margin: 0 auto 0.75rem;
+    }
+
+    .overall-progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #C9A961, #e8d9a8);
+      border-radius: 10px;
+      transition: width 0.8s ease;
+      box-shadow: 0 0 10px rgba(201, 169, 97, 0.5);
+    }
+
+    .overall-progress-text {
+      font-size: 1.25rem;
       color: #C9A961;
+      font-weight: 700;
+      font-family: 'Space Grotesk', sans-serif;
     }
 
     .qr-modal {
@@ -566,8 +435,7 @@
       padding: 1.5rem;
       border-radius: 16px;
       margin: 0 auto 1.5rem;
-      box-shadow: 
-        inset 4px 4px 8px rgba(0, 0, 0, 0.3);
+      box-shadow: inset 4px 4px 8px rgba(0, 0, 0, 0.3);
       display: inline-block;
       min-height: 280px;
       display: flex;
@@ -590,8 +458,7 @@
       border-radius: 12px;
       margin-bottom: 1rem;
       word-break: break-all;
-      box-shadow: 
-        inset 2px 2px 4px rgba(0, 0, 0, 0.3);
+      box-shadow: inset 2px 2px 4px rgba(0, 0, 0, 0.3);
     }
 
     .download-qr-btn {
@@ -620,32 +487,7 @@
         -8px -8px 16px #2a2a2a;
     }
 
-    .error-message {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: #1a1a1a;
-      padding: 2rem;
-      border-radius: 16px;
-      box-shadow: 16px 16px 32px #000000;
-      text-align: center;
-      z-index: 10000;
-      max-width: 400px;
-    }
-
-    .error-message h2 {
-      color: #fb923c;
-      margin-bottom: 1rem;
-      font-family: 'Space Grotesk', sans-serif;
-    }
-
-    .error-message p {
-      color: rgba(232, 232, 232, 0.8);
-      margin-bottom: 1.5rem;
-    }
-
-    @media (max-width: 480px) {
+    @media (max-width: 768px) {
       .container {
         width: 98%;
         padding: 1.5rem 1rem;
@@ -655,64 +497,50 @@
         font-size: 2rem;
       }
 
-      .character-bubble {
-        width: 120px;
-        height: 120px;
+      .welcome-message {
+        font-size: 1rem;
+      }
+
+      .characters-grid {
+        grid-template-columns: 1fr;
+        gap: 1.25rem;
       }
 
       .character-emoji {
-        font-size: 3rem;
+        font-size: 3.5rem;
       }
 
-      .train-carts {
-        gap: 0.875rem;
+      .character-name {
+        font-size: 1.25rem;
       }
     }
   </style>
 </head>
 <body>
-  <div class="loading-overlay" id="loadingOverlay">
-    <div class="loading-content">
-      <div class="loading-spinner"></div>
-      <p>Loading data...</p>
-    </div>
-  </div>
-
-  <div class="modal-overlay" id="modalOverlay"></div>
-
   <div class="container">
+    <button class="qr-btn" onclick="openQRModal()" title="Share with Students">📱</button>
+
     <div class="header">
-      <button class="qr-btn" onclick="openQRModal()" title="Share with Students">📱</button>
       <h1>INTUITY</h1>
       <p class="subtitle">Intuitive & immersive</p>
       <p class="author">Majid Nashtai</p>
     </div>
 
-    <div class="character-nav">
-      <button class="nav-arrow" id="prevChar" onclick="changeCharacter(-1)">←</button>
-      <div class="character-bubble" id="characterBubble">
-        <div class="character-emoji" id="characterEmoji">👧</div>
-        <div class="character-name" id="characterName">SARAH</div>
-      </div>
-      <button class="nav-arrow" id="nextChar" onclick="changeCharacter(1)">→</button>
+    <div class="welcome-message">
+      Meet your study buddies!<br>
+      Choose a character to start your learning journey
     </div>
 
-    <div class="train-carts" id="trainCarts"></div>
-  </div>
-
-  <div class="cart-modal" id="cartModal">
-    <button class="close-btn" onclick="closeModal()">×</button>
-    <div class="modal-header">
-      <div class="modal-title" id="modalTitle">
-        <span id="modalIcon">☕</span>
-        <span id="modalText">Habitual Actions</span>
-      </div>
+    <div class="characters-grid" id="charactersGrid">
+      <!-- Characters will be inserted here by JavaScript -->
     </div>
-    <div class="scroll-hint">⋮ Swipe to explore ⋮</div>
-    <div class="verb-list" id="verbList"></div>
-    <div class="modal-actions">
-      <button class="action-btn primary" onclick="startPractice()">Start Practice Quiz →</button>
-      <button class="action-btn" onclick="closeModal()">Close & Return</button>
+
+    <div class="overall-progress">
+      <div class="overall-progress-title">Your Overall Progress</div>
+      <div class="overall-progress-bar">
+        <div class="overall-progress-fill" id="overallProgressFill" style="width: 0%"></div>
+      </div>
+      <div class="overall-progress-text" id="overallProgressText">0 / 16 Complete</div>
     </div>
   </div>
 
@@ -731,14 +559,42 @@
 
   <script>
     // ============================================
-    // SIMPLE CHARACTER SELECTION - NO DATA LOADING
+    // CHARACTER DATA WITH PERSONALITIES
     // ============================================
     
     const characters = [
-      { key: 'sarah', name: 'SARAH', emoji: '👧', description: 'Academic and organized student' },
-      { key: 'tom', name: 'TOM', emoji: '🧑', description: 'Sporty and active student' },
-      { key: 'emma', name: 'EMMA', emoji: '👩', description: 'Creative and social student' },
-      { key: 'alex', name: 'ALEX', emoji: '🧒', description: 'Tech-savvy gamer student' }
+      { 
+        key: 'sarah', 
+        name: 'Sarah', 
+        emoji: '👧', 
+        description: 'The Morning Person',
+        tagline: '"I love starting my day with coffee and learning!"',
+        unlockLevel: 0
+      },
+      { 
+        key: 'tom', 
+        name: 'Tom', 
+        emoji: '🧑', 
+        description: 'The Athlete',
+        tagline: '"Sports and schedules keep me going!"',
+        unlockLevel: 1
+      },
+      { 
+        key: 'emma', 
+        name: 'Emma', 
+        emoji: '👩', 
+        description: 'The Creative',
+        tagline: '"Art and expression are my daily routine!"',
+        unlockLevel: 2
+      },
+      { 
+        key: 'alex', 
+        name: 'Alex', 
+        emoji: '🧒', 
+        description: 'The Gamer',
+        tagline: '"Level up your skills with me!"',
+        unlockLevel: 3
+      }
     ];
 
     const CATEGORY_CONFIG = {
@@ -748,116 +604,160 @@
       conjunctions: { icon: '⏰', displayName: 'Time Conjunctions' }
     };
 
-    let currentCharacterIndex = 0;
-    let currentCategory = null;
-
     // ============================================
-    // CHARACTER NAVIGATION
+    // PROGRESS TRACKING
     // ============================================
     
-    function updateCharacter() {
-      const char = characters[currentCharacterIndex];
-      document.getElementById('characterEmoji').textContent = char.emoji;
-      document.getElementById('characterName').textContent = char.name;
-      
-      document.getElementById('prevChar').disabled = currentCharacterIndex === 0;
-      document.getElementById('nextChar').disabled = currentCharacterIndex === characters.length - 1;
-      
-      const bubble = document.getElementById('characterBubble');
-      bubble.style.animation = 'none';
-      setTimeout(() => {
-        bubble.style.animation = 'float 4s ease-in-out infinite';
-      }, 10);
-
-      renderCarts();
-    }
-
-    function changeCharacter(direction) {
-      const newIndex = currentCharacterIndex + direction;
-      if (newIndex >= 0 && newIndex < characters.length) {
-        currentCharacterIndex = newIndex;
-        updateCharacter();
+    function getProgress() {
+      const saved = localStorage.getItem('intuityProgress');
+      if (!saved) {
+        return {
+          completedCharacters: [],
+          currentCharacter: 'sarah',
+          characterProgress: {
+            sarah: [],
+            tom: [],
+            emma: [],
+            alex: []
+          }
+        };
       }
+      return JSON.parse(saved);
     }
 
-    // ============================================
-    // CART RENDERING
-    // ============================================
-    
-    function renderCarts() {
-      const cartsContainer = document.getElementById('trainCarts');
-      cartsContainer.innerHTML = '';
-
-      Object.keys(CATEGORY_CONFIG).forEach(catKey => {
-        const config = CATEGORY_CONFIG[catKey];
-        
-        const cart = document.createElement('div');
-        cart.className = 'cart';
-        cart.onclick = () => openCart(catKey);
-        
-        cart.innerHTML = `
-          <div class="cart-icon">${config.icon}</div>
-          <div class="cart-title">${config.displayName.replace(' ', '<br>')}</div>
-        `;
-        
-        cartsContainer.appendChild(cart);
-      });
+    function saveProgress(progress) {
+      localStorage.setItem('intuityProgress', JSON.stringify(progress));
     }
 
-    // ============================================
-    // MODAL MANAGEMENT
-    // ============================================
-    
-    function openCart(categoryKey) {
-      const config = CATEGORY_CONFIG[categoryKey];
-      currentCategory = categoryKey;
-
-      document.getElementById('modalIcon').textContent = config.icon;
-      document.getElementById('modalText').textContent = config.displayName;
-
-      // Simple preview list (not actual verbs yet)
-      const verbList = document.getElementById('verbList');
-      verbList.innerHTML = `
-        <div style="text-align: center; color: rgba(232, 232, 232, 0.7); padding: 2rem;">
-          <div style="font-size: 3rem; margin-bottom: 1rem;">${config.icon}</div>
-          <p style="font-size: 1rem; margin-bottom: 1rem;">Ready to practice<br><strong>${config.displayName}</strong>?</p>
-          <p style="font-size: 0.85rem; opacity: 0.8;">20 vocabulary items<br>4 matching cards<br>Interactive exercises</p>
-        </div>
-      `;
-
-      document.getElementById('modalOverlay').classList.add('show');
-      document.getElementById('cartModal').classList.add('show');
-    }
-
-    function closeModal() {
-      document.getElementById('modalOverlay').classList.remove('show');
-      document.getElementById('cartModal').classList.remove('show');
-    }
-
-    // ============================================
-    // START PRACTICE - SAVE TO SESSIONSTORAGE
-    // ============================================
-    
-    function startPractice() {
-      const char = characters[currentCharacterIndex];
+    function isCharacterUnlocked(charIndex) {
+      const progress = getProgress();
       
-      // Package minimal data
+      // Sarah is always unlocked
+      if (charIndex === 0) return true;
+      
+      // Others unlock sequentially when previous is completed
+      const previousCharKey = characters[charIndex - 1].key;
+      return progress.completedCharacters.includes(previousCharKey);
+    }
+
+    function isCharacterCompleted(charKey) {
+      const progress = getProgress();
+      return progress.completedCharacters.includes(charKey);
+    }
+
+    function getCharacterCategoryProgress(charKey) {
+      const progress = getProgress();
+      return progress.characterProgress[charKey] || [];
+    }
+
+    // ============================================
+    // RENDER CHARACTERS
+    // ============================================
+    
+    function renderCharacters() {
+      const grid = document.getElementById('charactersGrid');
+      grid.innerHTML = '';
+
+      characters.forEach((char, index) => {
+        const unlocked = isCharacterUnlocked(index);
+        const completed = isCharacterCompleted(char.key);
+        const categoryProgress = getCharacterCategoryProgress(char.key);
+
+        const card = document.createElement('div');
+        card.className = 'character-card';
+        
+        if (!unlocked) card.classList.add('locked');
+        if (completed) card.classList.add('completed');
+
+        // Create progress dots
+        const progressDotsHTML = Object.keys(CATEGORY_CONFIG).map(catKey => {
+          const isCompleted = categoryProgress.includes(catKey);
+          return `<div class="progress-dot ${isCompleted ? 'completed' : ''}"></div>`;
+        }).join('');
+
+        card.innerHTML = `
+          ${!unlocked ? '<div class="lock-icon">🔒</div>' : ''}
+          ${completed ? '<div class="check-icon">✅</div>' : ''}
+          <div class="character-emoji">${char.emoji}</div>
+          <div class="character-name">${char.name}</div>
+          <div class="character-description">${char.description}</div>
+          <div class="character-tagline">${char.tagline}</div>
+          <div class="character-progress">
+            ${progressDotsHTML}
+          </div>
+          <button class="start-button" ${!unlocked ? 'disabled' : ''}>
+            ${completed ? '✨ Practice Again' : unlocked ? '🚀 Start Learning' : '🔒 Locked'}
+          </button>
+        `;
+
+        if (unlocked) {
+          card.addEventListener('click', () => startCharacterJourney(char.key));
+        }
+
+        grid.appendChild(card);
+      });
+
+      updateOverallProgress();
+    }
+
+    // ============================================
+    // START CHARACTER JOURNEY
+    // ============================================
+    
+    function startCharacterJourney(charKey) {
+      const char = characters.find(c => c.key === charKey);
+      const progress = getProgress();
+      
+      // Update current character
+      progress.currentCharacter = charKey;
+      saveProgress(progress);
+
+      // Find first incomplete category or start from beginning
+      const completedCategories = progress.characterProgress[charKey] || [];
+      const allCategories = Object.keys(CATEGORY_CONFIG);
+      
+      let nextCategory = allCategories.find(cat => !completedCategories.includes(cat));
+      if (!nextCategory) nextCategory = allCategories[0]; // All complete? Start over
+
+      // Package selection data
       const selectionData = {
-        characterKey: char.key,
+        characterKey: charKey,
         characterName: char.name,
         characterEmoji: char.emoji,
-        category: currentCategory,
-        categoryTitle: CATEGORY_CONFIG[currentCategory].displayName,
-        categoryIcon: CATEGORY_CONFIG[currentCategory].icon
+        category: nextCategory,
+        categoryTitle: CATEGORY_CONFIG[nextCategory].displayName,
+        categoryIcon: CATEGORY_CONFIG[nextCategory].icon,
+        autoSequence: true // Flag to enable auto-progression
       };
 
       // Save to sessionStorage
       sessionStorage.setItem('selectionData', JSON.stringify(selectionData));
       
-      console.log('🚀 Navigating to matching game:', selectionData);
+      console.log('🚀 Starting journey with', char.name, '→', nextCategory);
       
-      // Navigate to matching interface
+      // Navigate to matching game
       window.location.href = 'pages/matching-game.html';
+    }
+
+    // ============================================
+    // OVERALL PROGRESS
+    // ============================================
+    
+    function updateOverallProgress() {
+      const progress = getProgress();
+      let totalCompleted = 0;
+
+      characters.forEach(char => {
+        const categoryProgress = progress.characterProgress[char.key] || [];
+        totalCompleted += categoryProgress.length;
+      });
+
+      const totalPossible = characters.length * Object.keys(CATEGORY_CONFIG).length;
+      const percentage = Math.round((totalCompleted / totalPossible) * 100);
+
+      document.getElementById('overallProgressFill').style.width = percentage + '%';
+      document.getElementById('overallProgressText').textContent = 
+        `${totalCompleted} / ${totalPossible} Complete`;
     }
 
     // ============================================
@@ -919,19 +819,12 @@
     // EVENT LISTENERS
     // ============================================
     
-    document.getElementById('modalOverlay').addEventListener('click', closeModal);
-
     document.getElementById('qrModal').addEventListener('click', (e) => {
       if (e.target.id === 'qrModal') closeQRModal();
     });
 
     document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') {
-        closeModal();
-        closeQRModal();
-      }
-      if (e.key === 'ArrowLeft') changeCharacter(-1);
-      if (e.key === 'ArrowRight') changeCharacter(1);
+      if (e.key === 'Escape') closeQRModal();
     });
 
     // ============================================
@@ -939,41 +832,15 @@
     // ============================================
     
     function initialize() {
-      console.log('🎮 Initializing INTUITY Landing Page...');
-      document.getElementById('loadingOverlay').classList.add('hidden');
-      updateCharacter();
-      updateCharacterStatuses(); // Call achievement tracker if available
-      console.log('✅ Landing Page Ready!');
+      console.log('🎮 Initializing INTUITY Character Selection...');
+      renderCharacters();
+      console.log('✅ Ready!');
     }
 
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', initialize);
     } else {
       initialize();
-    }
-  </script>
-
-  <!-- Achievement Tracker (optional - will gracefully fail if file doesn't exist) -->
-  <script src="js/achievement-tracker.js"></script>
-  
-  <script>
-    // Update character completion status indicators
-    function updateCharacterStatuses() {
-      if (!window.achievementTracker) {
-        console.log('ℹ️ Achievement tracker not loaded');
-        return; // Graceful fallback
-      }
-      
-      const tracker = window.achievementTracker;
-      
-      characters.forEach(char => {
-        const status = tracker.getCharacterStatus(char.key);
-        const statusEl = document.getElementById(`${char.key}Status`);
-        
-        if (statusEl && status.completed) {
-          statusEl.classList.add('completed');
-        }
-      });
     }
   </script>
 </body>
