@@ -35,8 +35,8 @@
       background: #1a1a1a;
       width: 95%;
       max-width: 1000px;
-      min-height: 88vh;
-      max-height: 95vh;
+      height: 95vh;
+      max-height: 900px;
       border-radius: 24px;
       padding: 1.5rem;
       box-shadow: 
@@ -46,12 +46,7 @@
       z-index: 2;
       display: flex;
       flex-direction: column;
-    }
-
-    .header {
-      text-align: center;
-      margin-bottom: 0.75rem;
-      flex-shrink: 0;
+      overflow: hidden;
     }
 
     .back-btn {
@@ -80,21 +75,26 @@
         -6px -6px 12px #2a2a2a;
     }
 
+    .header {
+      text-align: center;
+      margin-bottom: 0.75rem;
+      flex-shrink: 0;
+    }
+
     .header h1 {
       font-family: 'Space Grotesk', sans-serif;
       font-size: 1.75rem;
       color: #C9A961;
-      margin-bottom: 0.25rem;
+      margin-bottom: 0.15rem;
       font-weight: 700;
       letter-spacing: -0.02em;
     }
 
     .tagline {
-      font-size: 0.8rem;
+      font-size: 0.75rem;
       color: rgba(232, 232, 232, 0.6);
       margin-bottom: 0.75rem;
       font-weight: 500;
-      font-style: italic;
     }
 
     .character-info {
@@ -127,7 +127,6 @@
       font-family: 'Space Grotesk', sans-serif;
     }
 
-    /* Category Pills - Desktop */
     .category-pills {
       display: flex;
       justify-content: center;
@@ -176,31 +175,12 @@
       font-size: 0.9rem;
     }
 
-    .progress-bar {
-      width: 100%;
-      height: 6px;
-      background: rgba(0, 0, 0, 0.3);
-      border-radius: 10px;
-      overflow: hidden;
-      box-shadow: inset 2px 2px 4px rgba(0, 0, 0, 0.5);
-      margin-bottom: 0.75rem;
-      flex-shrink: 0;
-    }
-
-    .progress-fill {
-      height: 100%;
-      background: linear-gradient(90deg, #C9A961, #e8d9a8);
-      border-radius: 10px;
-      transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-      box-shadow: 0 0 10px rgba(201, 169, 97, 0.5);
-    }
-
     /* Navigation header */
     .nav-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 0.75rem;
+      margin-bottom: 0.5rem;
       padding: 0 0.5rem;
       gap: 1rem;
       flex-shrink: 0;
@@ -246,7 +226,6 @@
       transform: scale(1.5);
     }
 
-    /* Mode Toggle */
     .mode-toggle-container {
       display: flex;
       align-items: center;
@@ -306,42 +285,86 @@
       background: #C9A961;
     }
 
-    /* Match progress dots */
-    .match-progress-dots {
+    /* Match navigation dots - 20 small dots for all matches */
+    .match-nav-dots-container {
       display: flex;
       justify-content: center;
       gap: 0.5rem;
-      margin-bottom: 1rem;
+      margin-bottom: 0.75rem;
+      flex-wrap: wrap;
+      padding: 0 0.5rem;
       flex-shrink: 0;
     }
 
-    .match-dot {
-      width: 0.75rem;
-      height: 0.75rem;
+    .match-nav-dots-container.hidden-single {
+      display: none;
+    }
+
+    .match-nav-dot {
+      width: 0.625rem;
+      height: 0.625rem;
       border-radius: 50%;
       background: rgba(99, 99, 102, 0.3);
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      border: 2px solid rgba(99, 99, 102, 0.2);
+      border: 1px solid rgba(99, 99, 102, 0.2);
+      cursor: pointer;
     }
 
-    .match-dot.completed {
+    .match-nav-dot:hover {
+      transform: scale(1.3);
+      background: rgba(142, 142, 147, 0.5);
+    }
+
+    .match-nav-dot.current {
+      background: #C9A961;
+      box-shadow: 0 0 0 2px rgba(201, 169, 97, 0.4);
+      transform: scale(1.3);
+    }
+
+    .match-nav-dot.completed {
       background: linear-gradient(135deg, #84cc16 0%, #65a30d 100%);
-      box-shadow: 0 0 8px rgba(132, 204, 22, 0.4);
+      box-shadow: 0 0 6px rgba(132, 204, 22, 0.4);
+    }
+
+    .match-nav-dot.completed.current {
+      background: linear-gradient(135deg, #84cc16 0%, #65a30d 100%);
+      box-shadow: 0 0 0 2px rgba(201, 169, 97, 0.6);
+      transform: scale(1.3);
     }
 
     .score-display {
       text-align: center;
       margin-bottom: 0.75rem;
-      font-size: 0.85rem;
-      color: #e8e8e8;
-      font-weight: 600;
+      font-size: 0.8rem;
+      color: rgba(232, 232, 232, 0.7);
+      font-weight: 500;
       flex-shrink: 0;
     }
 
     .score-number {
       color: #C9A961;
-      font-size: 1.1rem;
+      font-size: 1rem;
       font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 4px;
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: inset 2px 2px 4px rgba(0, 0, 0, 0.5);
+      margin-bottom: 0.75rem;
+      flex-shrink: 0;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #C9A961, #e8d9a8);
+      border-radius: 10px;
+      transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 0 10px rgba(201, 169, 97, 0.5);
     }
 
     /* Content container */
@@ -403,7 +426,7 @@
 
     .card-title {
       font-family: 'Space Grotesk', sans-serif;
-      font-size: 1.1rem;
+      font-size: 1rem;
       color: #C9A961;
       text-align: center;
       font-weight: 600;
@@ -548,50 +571,6 @@
       cursor: not-allowed;
     }
 
-    .controls {
-      display: flex;
-      gap: 0.75rem;
-      justify-content: center;
-      flex-wrap: wrap;
-      margin-top: 0.75rem;
-      flex-shrink: 0;
-    }
-
-    .btn {
-      background: #1a1a1a;
-      border: none;
-      border-radius: 12px;
-      padding: 0.75rem 1.5rem;
-      color: #e8e8e8;
-      font-size: 0.8rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.03em;
-      cursor: pointer;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      box-shadow: 
-        4px 4px 8px #000000,
-        -4px -4px 8px #2a2a2a;
-      font-family: 'Inter', sans-serif;
-    }
-
-    .btn:hover:not(:disabled) {
-      transform: translateY(-2px);
-      box-shadow: 
-        6px 6px 12px #000000,
-        -6px -6px 12px #2a2a2a;
-    }
-
-    .btn.primary {
-      background: rgba(201, 169, 97, 0.2);
-      color: #C9A961;
-    }
-
-    .btn:disabled {
-      opacity: 0.4;
-      cursor: not-allowed;
-    }
-
     .celebration {
       position: fixed;
       top: 50%;
@@ -611,7 +590,7 @@
     }
 
     .footer {
-      display: flex;
+      display: none;
       gap: 0.75rem;
       justify-content: center;
       margin-top: 0.75rem;
@@ -619,6 +598,10 @@
       border-top: 2px solid rgba(201, 169, 97, 0.2);
       flex-wrap: wrap;
       flex-shrink: 0;
+    }
+
+    .footer.active {
+      display: flex;
     }
 
     .footer-btn {
@@ -663,31 +646,20 @@
       .game-container {
         padding: 1rem 0.75rem;
         max-height: 100vh;
-        min-height: 100vh;
+        height: 100vh;
         border-radius: 16px;
-      }
-
-      .header {
-        margin-bottom: 0.5rem;
       }
 
       .header h1 {
         font-size: 1.3rem;
-        margin-bottom: 0.15rem;
       }
 
       .tagline {
         display: none;
       }
 
-      .character-info {
-        gap: 0.5rem;
-        margin-bottom: 0.5rem;
-      }
-
       .character-display {
         padding: 0.4rem 0.75rem;
-        font-size: 0.8rem;
       }
 
       .character-emoji {
@@ -730,24 +702,9 @@
         left: 1.35rem;
       }
 
-      .progress-bar {
-        height: 4px;
-        margin-bottom: 0.5rem;
-      }
-
-      .score-display {
-        margin-bottom: 0.5rem;
-        font-size: 0.8rem;
-      }
-
-      .match-progress-dots {
-        gap: 0.4rem;
-        margin-bottom: 0.75rem;
-      }
-
-      .match-dot {
-        width: 0.625rem;
-        height: 0.625rem;
+      .match-nav-dot {
+        width: 0.5rem;
+        height: 0.5rem;
       }
 
       .matching-area {
@@ -762,17 +719,6 @@
 
       .emoji {
         font-size: 0.95rem;
-        margin-left: 0.35rem;
-      }
-
-      .controls {
-        gap: 0.5rem;
-        margin-top: 0.5rem;
-      }
-
-      .btn {
-        padding: 0.65rem 1rem;
-        font-size: 0.75rem;
       }
 
       .external-nav-arrow {
@@ -788,11 +734,6 @@
         font-size: 0.75rem;
       }
 
-      .footer {
-        margin-top: 0.5rem;
-        padding-top: 0.5rem;
-      }
-
       .footer-btn {
         padding: 0.65rem 1rem;
         font-size: 0.75rem;
@@ -806,29 +747,20 @@
     
     <div class="header">
       <h1>INTUITY</h1>
-      <p class="tagline">Intuitive & Immersive</p>
+      <p class="tagline">Matching Game</p>
       
-      <div class="character-info">
-        <div class="character-display">
-          <span class="character-emoji" id="displayEmoji">👧</span>
-          <span class="character-name" id="displayName">Sarah</span>
-        </div>
+      <div class="character-info" id="characterInfo">
+        <div style="color: rgba(232, 232, 232, 0.3); font-size: 0.85rem;">Loading...</div>
       </div>
 
-      <!-- Category Pills (Desktop only) -->
       <div class="category-pills" id="categoryPills">
         <!-- Pills inserted by JavaScript -->
       </div>
     </div>
 
-    <div class="progress-bar">
-      <div class="progress-fill" id="progressFill" style="width: 0%"></div>
-    </div>
-
-    <!-- Navigation header with card dots and mode toggle -->
     <div class="nav-header">
       <div class="card-dots-container" id="cardDotsContainer">
-        <!-- Card navigation dots inserted by JavaScript -->
+        <!-- Card navigation dots (4) -->
       </div>
       <div class="mode-toggle-container">
         <span class="mode-toggle-label">Full</span>
@@ -837,39 +769,39 @@
       </div>
     </div>
 
-    <!-- Match progress dots (5 smaller dots for current card) -->
-    <div class="match-progress-dots" id="matchProgressDots">
-      <!-- Match dots inserted by JavaScript -->
+    <div class="match-nav-dots-container" id="matchNavDotsContainer">
+      <!-- Match navigation dots (20) -->
     </div>
 
     <div class="score-display">
-      Score: <span class="score-number" id="scoreDisplay">0/5</span>
+      Score: <span class="score-number" id="scoreDisplay">0/20</span>
     </div>
 
-    <!-- Content container that switches between modes -->
+    <div class="progress-bar">
+      <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+    </div>
+
     <div class="content-container" id="contentContainer">
-      <!-- Content inserted by JavaScript based on mode -->
+      <div style="display: flex; justify-content: center; align-items: center; height: 100%; color: rgba(232, 232, 232, 0.5); font-size: 0.9rem;">
+        <div style="text-align: center;">
+          <div style="font-size: 2rem; margin-bottom: 0.5rem;">⏳</div>
+          <div>Loading matching game...</div>
+        </div>
+      </div>
     </div>
 
-    <!-- External navigation for single mode -->
     <div class="external-nav" id="externalNav">
       <button class="external-nav-arrow" id="prevCardBtn" onclick="prevCard()">← Previous Card</button>
       <button class="external-nav-arrow" id="nextCardBtn" onclick="nextCard()">Next Card →</button>
     </div>
 
-    <div class="controls">
-      <button class="btn" onclick="checkMatches()">✓ Check Answers</button>
-      <button class="btn primary" id="nextCardBtnInline" onclick="nextCard()" disabled>Next Card →</button>
-    </div>
-
-    <div class="footer" id="footer" style="display: none;">
+    <div class="footer" id="footer">
       <button class="footer-btn" onclick="retryGame()">🔄 Repeat</button>
       <button class="footer-btn quiz" onclick="goToQuiz()">🎯 Take Quiz →</button>
       <button class="footer-btn primary" onclick="goHome()">🏠 Home</button>
     </div>
   </div>
 
-  <!-- Load Progress Tracker -->
   <script src="../assets/js/progress-tracker.js"></script>
 
   <script>
@@ -883,15 +815,13 @@
     let currentMode = 'full'; // 'full' or 'single'
     
     let currentCardIndex = 0;
-    let cardScores = [0, 0, 0, 0];
-    let userMatches = [[], [], [], []];
+    let userMatches = {}; // Store all matches by index
     let cardVerbs = [];
     let selectedVerb = null;
     let selectedObject = null;
-    let allCardsChecked = [false, false, false, false];
 
     // ============================================
-    // LOAD SELECTION + FETCH GRAMMAR DATA
+    // LOAD DATA
     // ============================================
     
     async function loadData() {
@@ -946,8 +876,13 @@
           verbs: verbs
         };
 
-        document.getElementById('displayEmoji').textContent = characterData.emoji;
-        document.getElementById('displayName').textContent = characterData.name;
+        // Update character display
+        document.getElementById('characterInfo').innerHTML = `
+          <div class="character-display">
+            <span class="character-emoji">${characterData.emoji}</span>
+            <span class="character-name">${characterData.name}</span>
+          </div>
+        `;
        
         renderCategoryPills();
 
@@ -1039,6 +974,19 @@
     }
 
     // ============================================
+    // PREPARE CARD DATA
+    // ============================================
+    
+    function prepareCardData() {
+      cardVerbs = [
+        characterData.verbs.slice(0, 5),
+        characterData.verbs.slice(5, 10),
+        characterData.verbs.slice(10, 15),
+        characterData.verbs.slice(15, 20)
+      ];
+    }
+
+    // ============================================
     // MODE TOGGLE
     // ============================================
 
@@ -1058,7 +1006,7 @@
     }
 
     // ============================================
-    // RENDER CARD NAVIGATION DOTS
+    // RENDER NAVIGATION DOTS
     // ============================================
 
     function renderCardDots() {
@@ -1073,7 +1021,8 @@
           dot.classList.add('current');
         }
         
-        if (allCardsChecked[i]) {
+        const cardComplete = isCardComplete(i);
+        if (cardComplete) {
           dot.classList.add('completed');
         }
         
@@ -1082,35 +1031,41 @@
       }
     }
 
-    function renderMatchProgressDots() {
-      const container = document.getElementById('matchProgressDots');
+    function renderMatchNavDots() {
+      const container = document.getElementById('matchNavDotsContainer');
+      
+      if (currentMode === 'single') {
+        container.classList.add('hidden-single');
+      } else {
+        container.classList.remove('hidden-single');
+      }
+      
       container.innerHTML = '';
       
-      const matchesCount = userMatches[currentCardIndex].length;
-      
-      for (let i = 0; i < 5; i++) {
+      for (let i = 0; i < 20; i++) {
         const dot = document.createElement('div');
-        dot.className = 'match-dot';
+        dot.className = 'match-nav-dot';
         
-        if (i < matchesCount) {
+        if (userMatches[i]) {
           dot.classList.add('completed');
         }
         
+        dot.addEventListener('click', () => jumpToMatch(i));
         container.appendChild(dot);
       }
     }
 
-    // ============================================
-    // PREPARE CARD DATA
-    // ============================================
-    
-    function prepareCardData() {
-      cardVerbs = [
-        characterData.verbs.slice(0, 5),
-        characterData.verbs.slice(5, 10),
-        characterData.verbs.slice(10, 15),
-        characterData.verbs.slice(15, 20)
-      ];
+    function jumpToMatch(matchIndex) {
+      const cardIdx = Math.floor(matchIndex / 5);
+      goToCard(cardIdx);
+    }
+
+    function isCardComplete(cardIndex) {
+      const startIdx = cardIndex * 5;
+      for (let i = 0; i < 5; i++) {
+        if (!userMatches[startIdx + i]) return false;
+      }
+      return true;
     }
 
     // ============================================
@@ -1156,24 +1111,37 @@
       card.className = 'matching-card';
       
       const verbs = cardVerbs[cardIndex];
+      const startIdx = cardIndex * 5;
       
-      const shuffledObjects = verbs.map(v => ({
+      const shuffledObjects = verbs.map((v, i) => ({
         object: v.object,
         emoji: v.emoji,
-        correctVerb: v.verb
+        correctVerb: v.verb,
+        matchIdx: startIdx + i
       })).sort(() => Math.random() - 0.5);
 
-      const verbsHTML = verbs.map((v, i) => `
-        <div class="match-item" data-type="verb" data-value="${v.verb}" data-card="${cardIndex}" data-index="${i}">
-          ${v.verb}
-        </div>
-      `).join('');
+      const verbsHTML = verbs.map((v, i) => {
+        const matchIdx = startIdx + i;
+        const isMatched = userMatches[matchIdx];
+        const classes = `match-item ${isMatched ? 'correct' : ''}`;
+        
+        return `
+          <div class="${classes}" data-type="verb" data-value="${v.verb}" data-match-idx="${matchIdx}">
+            ${v.verb}
+          </div>
+        `;
+      }).join('');
 
-      const objectsHTML = shuffledObjects.map((obj, i) => `
-        <div class="match-item" data-type="object" data-value="${obj.object}" data-correct="${obj.correctVerb}" data-card="${cardIndex}" data-index="${i}">
-          ${obj.object} <span class="emoji">${obj.emoji}</span>
-        </div>
-      `).join('');
+      const objectsHTML = shuffledObjects.map((obj) => {
+        const isMatched = userMatches[obj.matchIdx];
+        const classes = `match-item ${isMatched ? 'correct' : ''}`;
+        
+        return `
+          <div class="${classes}" data-type="object" data-value="${obj.object}" data-correct="${obj.correctVerb}" data-match-idx="${obj.matchIdx}">
+            ${obj.object} <span class="emoji">${obj.emoji}</span>
+          </div>
+        `;
+      }).join('');
 
       card.innerHTML = `
         <div class="card-title">Match ${cardIndex + 1}/4: Verbs & Objects</div>
@@ -1198,36 +1166,48 @@
 
     function handleItemClick(e) {
       const item = e.currentTarget;
-      const cardIndex = parseInt(item.dataset.card);
+      const matchIdx = parseInt(item.dataset.matchIdx);
+      const cardIdx = Math.floor(matchIdx / 5);
       
-      if (currentMode === 'single' && cardIndex !== currentCardIndex) return;
+      if (currentMode === 'single' && cardIdx !== currentCardIndex) return;
       if (item.classList.contains('correct')) return;
       
       const type = item.dataset.type;
       
       if (type === 'verb') {
-        document.querySelectorAll(`.match-item[data-type="verb"][data-card="${cardIndex}"]`).forEach(v => {
-          v.classList.remove('selected');
+        document.querySelectorAll(`.match-item[data-type="verb"]`).forEach(v => {
+          const vIdx = parseInt(v.dataset.matchIdx);
+          const vCard = Math.floor(vIdx / 5);
+          if (vCard === cardIdx) {
+            v.classList.remove('selected');
+          }
         });
         item.classList.add('selected');
-        selectedVerb = item.dataset.value;
+        selectedVerb = { value: item.dataset.value, matchIdx };
       } else {
-        document.querySelectorAll(`.match-item[data-type="object"][data-card="${cardIndex}"]`).forEach(o => {
-          o.classList.remove('selected');
+        document.querySelectorAll(`.match-item[data-type="object"]`).forEach(o => {
+          const oIdx = parseInt(o.dataset.matchIdx);
+          const oCard = Math.floor(oIdx / 5);
+          if (oCard === cardIdx) {
+            o.classList.remove('selected');
+          }
         });
         item.classList.add('selected');
-        selectedObject = { value: item.dataset.value, correct: item.dataset.correct };
+        selectedObject = { value: item.dataset.value, correct: item.dataset.correct, matchIdx };
       }
       
       if (selectedVerb && selectedObject) {
-        attemptMatch(cardIndex);
+        const sameCard = Math.floor(selectedVerb.matchIdx / 5) === Math.floor(selectedObject.matchIdx / 5);
+        if (sameCard) {
+          attemptMatch();
+        }
       }
     }
 
-    function attemptMatch(cardIndex) {
-      if (selectedVerb === selectedObject.correct) {
-        const verbItems = document.querySelectorAll(`.match-item[data-type="verb"][data-value="${selectedVerb}"][data-card="${cardIndex}"]`);
-        const objItems = document.querySelectorAll(`.match-item[data-type="object"][data-value="${selectedObject.value}"][data-card="${cardIndex}"]`);
+    function attemptMatch() {
+      if (selectedVerb.value === selectedObject.correct) {
+        const verbItems = document.querySelectorAll(`.match-item[data-type="verb"][data-match-idx="${selectedVerb.matchIdx}"]`);
+        const objItems = document.querySelectorAll(`.match-item[data-type="object"][data-match-idx="${selectedObject.matchIdx}"]`);
         
         verbItems.forEach(v => {
           v.classList.remove('selected');
@@ -1239,27 +1219,21 @@
           o.classList.add('correct');
         });
         
-        userMatches[cardIndex].push({ verb: selectedVerb, object: selectedObject.value });
+        userMatches[selectedVerb.matchIdx] = true;
+        userMatches[selectedObject.matchIdx] = true;
         
         if (navigator.vibrate) navigator.vibrate(50);
         showCelebration('✨');
         
-        renderMatchProgressDots();
-        
-        if (userMatches[cardIndex].length === 5) {
-          cardScores[cardIndex] = 5;
-          allCardsChecked[cardIndex] = true;
-          showCelebration('🎉');
-          document.getElementById('nextCardBtnInline').disabled = false;
-          
-          renderCardDots();
-          updateProgress();
-          checkAllComplete();
-        }
+        renderMatchNavDots();
+        renderCardDots();
+        updateScore();
+        updateProgress();
+        checkAllComplete();
         
       } else {
-        const verbItems = document.querySelectorAll(`.match-item[data-type="verb"][data-value="${selectedVerb}"][data-card="${cardIndex}"]`);
-        const objItems = document.querySelectorAll(`.match-item[data-type="object"][data-value="${selectedObject.value}"][data-card="${cardIndex}"]`);
+        const verbItems = document.querySelectorAll(`.match-item[data-type="verb"][data-match-idx="${selectedVerb.matchIdx}"]`);
+        const objItems = document.querySelectorAll(`.match-item[data-type="object"][data-match-idx="${selectedObject.matchIdx}"]`);
         
         verbItems.forEach(v => {
           v.classList.add('wrong');
@@ -1283,14 +1257,6 @@
     }
 
     // ============================================
-    // CHECK MATCHES BUTTON
-    // ============================================
-    
-    function checkMatches() {
-      alert('💡 Tip: Click a verb, then click its matching object!');
-    }
-
-    // ============================================
     // NAVIGATION
     // ============================================
     
@@ -1299,9 +1265,8 @@
         currentCardIndex++;
         renderContent();
         renderCardDots();
+        renderMatchNavDots();
         updateScore();
-        renderMatchProgressDots();
-        document.getElementById('nextCardBtnInline').disabled = true;
         updateExternalNav();
         
         if (currentMode === 'full') {
@@ -1315,8 +1280,8 @@
         currentCardIndex--;
         renderContent();
         renderCardDots();
+        renderMatchNavDots();
         updateScore();
-        renderMatchProgressDots();
         updateExternalNav();
         
         if (currentMode === 'full') {
@@ -1329,8 +1294,8 @@
       currentCardIndex = index;
       renderContent();
       renderCardDots();
+      renderMatchNavDots();
       updateScore();
-      renderMatchProgressDots();
       updateExternalNav();
       
       if (currentMode === 'full') {
@@ -1361,14 +1326,18 @@
       }
     }
 
+    // ============================================
+    // SCORE & PROGRESS
+    // ============================================
+
     function updateScore() {
-      const score = cardScores[currentCardIndex];
-      document.getElementById('scoreDisplay').textContent = `${score}/5`;
+      const totalMatches = Object.keys(userMatches).length;
+      document.getElementById('scoreDisplay').textContent = `${totalMatches}/20`;
     }
 
     function updateProgress() {
-      const totalScore = cardScores.reduce((a, b) => a + b, 0);
-      const percentage = Math.round((totalScore / 20) * 100);
+      const totalMatches = Object.keys(userMatches).length;
+      const percentage = Math.round((totalMatches / 20) * 100);
       document.getElementById('progressFill').style.width = percentage + '%';
     }
 
@@ -1384,19 +1353,17 @@
     }
 
     function checkAllComplete() {
-      const allComplete = cardScores.every(score => score === 5);
+      const totalMatches = Object.keys(userMatches).length;
       
-      if (allComplete) {
-        const totalScore = 20;
+      if (totalMatches === 20) {
         ProgressTracker.saveMatchingScore(
           selectionData.characterKey, 
           selectionData.category, 
-          totalScore
+          20
         );
 
-        document.querySelector('.controls').style.display = 'none';
         document.getElementById('externalNav').style.display = 'none';
-        document.getElementById('footer').style.display = 'flex';
+        document.getElementById('footer').classList.add('active');
         showCelebration('🏆');
 
         console.log('✅ Matching complete: 20/20 saved');
@@ -1440,6 +1407,7 @@
     async function initialize() {
       console.log('🎮 Initializing Matching Game...');
       
+      // Load the full data
       const loaded = await loadData();
       
       if (!loaded) return;
@@ -1447,7 +1415,7 @@
       prepareCardData();
       renderContent();
       renderCardDots();
-      renderMatchProgressDots();
+      renderMatchNavDots();
       updateScore();
       updateExternalNav();
       
