@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>INTUITY - Present Simple</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -18,437 +18,257 @@
       background: #000000;
       font-family: 'Inter', sans-serif;
       -webkit-font-smoothing: antialiased;
-      overflow-x: hidden;
-      position: relative;
+      padding: 1rem;
     }
 
     body::before {
       content: '';
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
-      background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' /%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+      background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' /%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23noise)' opacity='0.02'/%3E%3C/svg%3E");
       pointer-events: none;
       z-index: 1;
     }
 
     .container {
       background: #1a1a1a;
-      width: 95%;
-      max-width: 900px;
-      min-height: 90vh;
-      border-radius: 24px;
-      padding: 2.5rem 2rem;
-      box-shadow: 
-        12px 12px 24px #000000,
-        -12px -12px 24px #2a2a2a;
+      width: 100%;
+      max-width: 420px;
+      height: calc(100vh - 2rem);
+      max-height: 800px;
+      border-radius: 2rem;
+      padding: 1.5rem;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
       position: relative;
       z-index: 2;
       display: flex;
       flex-direction: column;
+      border: 1px solid rgba(201, 169, 97, 0.2);
     }
 
+    /* Header - Compact */
     .header {
       text-align: center;
-      margin-bottom: 2rem;
+      margin-bottom: 1rem;
+      flex-shrink: 0;
     }
 
     .header h1 {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 3rem;
+      font-size: 1.75rem;
       color: #C9A961;
-      margin-bottom: 0.5rem;
+      margin-bottom: 0.25rem;
       font-weight: 700;
       letter-spacing: -0.02em;
-      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
     }
 
     .subtitle {
-      font-size: 1rem;
-      color: rgba(232, 232, 232, 0.9);
-      margin-bottom: 0.5rem;
-      font-weight: 500;
-      letter-spacing: 0.03em;
-    }
-
-    .author {
-      font-size: 0.85rem;
-      color: rgba(201, 169, 97, 0.7);
-      font-weight: 400;
-      letter-spacing: 0.02em;
-      margin-bottom: 1rem;
-    }
-
-    .welcome-message {
-      text-align: center;
-      font-size: 1.25rem;
-      color: rgba(232, 232, 232, 0.85);
-      margin-bottom: 2.5rem;
-      font-weight: 500;
-      line-height: 1.6;
-    }
-
-    .characters-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 1.5rem;
-      margin-bottom: 2rem;
-    }
-
-    .character-card {
-      background: #1a1a1a;
-      border-radius: 20px;
-      padding: 2rem 1.5rem;
-      cursor: pointer;
-      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-      box-shadow: 
-        8px 8px 16px #000000,
-        -8px -8px 16px #2a2a2a;
-      border: 3px solid transparent;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .character-card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(201, 169, 97, 0.15), transparent);
-      transition: left 0.6s;
-    }
-
-    .character-card:hover::before {
-      left: 100%;
-    }
-
-    .character-card:hover {
-      transform: translateY(-8px) scale(1.02);
-      border-color: rgba(201, 169, 97, 0.5);
-      box-shadow: 
-        12px 12px 24px #000000,
-        -12px -12px 24px #2a2a2a,
-        0 0 30px rgba(201, 169, 97, 0.2);
-    }
-
-    .character-card.completed {
-      border-color: #4ade80;
-    }
-
-    .character-emoji {
-      font-size: 4.5rem;
-      text-align: center;
-      margin-bottom: 1rem;
-      filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.5));
-      animation: float 3s ease-in-out infinite;
-    }
-
-    @keyframes float {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-8px); }
-    }
-
-    .character-name {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: #C9A961;
-      text-align: center;
-      margin-bottom: 0.75rem;
-      text-transform: uppercase;
+      font-size: 0.75rem;
+      color: rgba(232, 232, 232, 0.6);
       letter-spacing: 0.05em;
     }
 
-    .character-description {
-      font-size: 0.95rem;
-      color: rgba(232, 232, 232, 0.8);
-      text-align: center;
+    /* Progress Bar - Compact */
+    .progress-section {
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 1rem;
+      padding: 0.75rem 1rem;
       margin-bottom: 1rem;
-      line-height: 1.5;
-      font-style: italic;
+      flex-shrink: 0;
     }
 
-    .character-tagline {
-      font-size: 0.9rem;
-      color: rgba(201, 169, 97, 0.9);
-      text-align: center;
-      margin-bottom: 1.25rem;
-      font-weight: 500;
-      min-height: 2.5rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .character-progress {
-      display: flex;
-      justify-content: center;
-      gap: 0.5rem;
-      margin-bottom: 1rem;
-    }
-
-    .progress-dot {
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      background: rgba(201, 169, 97, 0.2);
-      border: 2px solid rgba(201, 169, 97, 0.4);
-      transition: all 0.3s;
-      position: relative;
-    }
-
-    .progress-dot.completed {
-      background: #4ade80;
-      border-color: #4ade80;
-      box-shadow: 0 0 8px rgba(74, 222, 128, 0.6);
-    }
-
-    .progress-dot.completed::after {
-      content: '🏆';
-      position: absolute;
-      top: -20px;
-      left: 50%;
-      transform: translateX(-50%);
-      font-size: 0.8rem;
-      animation: trophyFloat 2s ease-in-out infinite;
-    }
-
-    @keyframes trophyFloat {
-      0%, 100% { transform: translateX(-50%) translateY(0); }
-      50% { transform: translateX(-50%) translateY(-3px); }
-    }
-
-    .start-button {
-      background: rgba(201, 169, 97, 0.2);
-      border: 2px solid #C9A961;
-      border-radius: 12px;
-      padding: 0.875rem 1.5rem;
-      color: #C9A961;
-      font-size: 0.95rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      box-shadow: 
-        4px 4px 8px #000000,
-        -4px -4px 8px #2a2a2a;
-      font-family: 'Inter', sans-serif;
-      width: 100%;
-    }
-
-    .start-button:hover {
-      background: rgba(201, 169, 97, 0.3);
-      transform: translateY(-2px);
-      box-shadow: 
-        6px 6px 12px #000000,
-        -6px -6px 12px #2a2a2a;
-    }
-
-    .character-card.completed .start-button {
-      background: rgba(74, 222, 128, 0.2);
-      border-color: #4ade80;
-      color: #4ade80;
-    }
-
-    .check-icon {
-      position: absolute;
-      top: 1rem;
-      right: 1rem;
-      font-size: 1.5rem;
-      color: #4ade80;
-      animation: checkPop 0.5s ease;
-    }
-
-    @keyframes checkPop {
-      0% { transform: scale(0); }
-      50% { transform: scale(1.2); }
-      100% { transform: scale(1); }
-    }
-
-    .overall-progress {
-      text-align: center;
-      margin-top: 2rem;
-      padding-top: 2rem;
-      border-top: 2px solid rgba(201, 169, 97, 0.2);
-    }
-
-    .overall-progress-title {
-      font-size: 1rem;
-      color: rgba(232, 232, 232, 0.7);
-      margin-bottom: 1rem;
-      font-weight: 600;
+    .progress-label {
+      font-size: 0.7rem;
+      color: rgba(232, 232, 232, 0.5);
       text-transform: uppercase;
       letter-spacing: 0.1em;
+      margin-bottom: 0.5rem;
+      text-align: center;
     }
 
-    .overall-progress-bar {
+    .progress-bar {
       width: 100%;
-      max-width: 500px;
-      height: 12px;
-      background: rgba(0, 0, 0, 0.3);
+      height: 8px;
+      background: rgba(0, 0, 0, 0.4);
       border-radius: 10px;
       overflow: hidden;
-      box-shadow: inset 2px 2px 4px rgba(0, 0, 0, 0.5);
-      margin: 0 auto 0.75rem;
+      margin-bottom: 0.5rem;
     }
 
-    .overall-progress-fill {
+    .progress-fill {
       height: 100%;
       background: linear-gradient(90deg, #C9A961, #e8d9a8);
       border-radius: 10px;
-      transition: width 0.8s ease;
-      box-shadow: 0 0 10px rgba(201, 169, 97, 0.5);
+      transition: width 0.6s ease;
+      box-shadow: 0 0 8px rgba(201, 169, 97, 0.4);
     }
 
-    .overall-progress-text {
-      font-size: 1.25rem;
+    .progress-text {
+      font-size: 0.8rem;
       color: #C9A961;
-      font-weight: 700;
-      font-family: 'Space Grotesk', sans-serif;
-    }
-
-    /* Category Selection Modal */
-    .modal-overlay {
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0, 0, 0, 0.9);
-      backdrop-filter: blur(8px);
-      z-index: 998;
-      opacity: 0;
-      visibility: hidden;
-      transition: all 0.3s ease;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .modal-overlay.show {
-      opacity: 1;
-      visibility: visible;
-    }
-
-    .category-modal {
-      background: #1a1a1a;
-      border-radius: 24px;
-      padding: 2rem 1.5rem;
-      max-width: 500px;
-      width: 92%;
-      max-height: 80vh;
-      overflow-y: auto;
-      box-shadow: 
-        16px 16px 32px #000000,
-        -16px -16px 32px #2a2a2a;
-      transform: scale(0.9);
-      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-      position: relative;
-    }
-
-    .modal-overlay.show .category-modal {
-      transform: scale(1);
-    }
-
-    .modal-header {
+      font-weight: 600;
       text-align: center;
-      margin-bottom: 1.5rem;
     }
 
-    .modal-character {
-      font-size: 3rem;
-      margin-bottom: 0.5rem;
+    /* Characters Grid - Horizontal Scroll */
+    .characters-section {
+      flex-shrink: 0;
+      margin-bottom: 1rem;
     }
 
-    .modal-title {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 1.5rem;
-      color: #C9A961;
-      font-weight: 700;
-      margin-bottom: 0.5rem;
-    }
-
-    .modal-subtitle {
-      font-size: 0.9rem;
+    .section-title {
+      font-size: 0.8rem;
       color: rgba(232, 232, 232, 0.7);
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+      padding-left: 0.25rem;
     }
 
-    .close-modal {
-      position: absolute;
-      top: 1rem;
-      right: 1rem;
-      background: #1a1a1a;
-      border: none;
-      border-radius: 50%;
-      width: 2.5rem;
-      height: 2.5rem;
-      color: #C9A961;
-      font-size: 1.5rem;
-      cursor: pointer;
-      transition: all 0.3s;
-      box-shadow: 
-        6px 6px 12px #000000,
-        -6px -6px 12px #2a2a2a;
+    .characters-scroll {
       display: flex;
-      align-items: center;
-      justify-content: center;
+      gap: 0.75rem;
+      overflow-x: auto;
+      padding-bottom: 0.5rem;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(201, 169, 97, 0.3) transparent;
     }
 
-    .close-modal:hover {
-      transform: scale(1.1) rotate(90deg);
+    .characters-scroll::-webkit-scrollbar {
+      height: 4px;
     }
 
-    .category-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 1rem;
+    .characters-scroll::-webkit-scrollbar-track {
+      background: transparent;
     }
 
-    .category-tile {
-      background: #1a1a1a;
-      border-radius: 16px;
-      padding: 1.5rem 1rem;
+    .characters-scroll::-webkit-scrollbar-thumb {
+      background: rgba(201, 169, 97, 0.3);
+      border-radius: 10px;
+    }
+
+    .character-card {
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 1rem;
+      padding: 1rem;
+      min-width: 120px;
       cursor: pointer;
       transition: all 0.3s;
-      box-shadow: 
-        6px 6px 12px #000000,
-        -6px -6px 12px #2a2a2a;
       border: 2px solid transparent;
       text-align: center;
       position: relative;
     }
 
-    .category-tile:hover {
+    .character-card:hover {
       transform: translateY(-4px);
       border-color: rgba(201, 169, 97, 0.5);
-      box-shadow: 
-        8px 8px 16px #000000,
-        -8px -8px 16px #2a2a2a;
+      background: rgba(201, 169, 97, 0.1);
     }
 
-    .category-tile.completed {
-      border-color: #4ade80;
+    .character-card.selected {
+      border-color: #C9A961;
+      background: rgba(201, 169, 97, 0.15);
     }
 
-    .category-icon {
+    .character-emoji {
       font-size: 2.5rem;
       margin-bottom: 0.5rem;
     }
 
-    .category-name {
+    .character-name {
       font-size: 0.85rem;
+      color: #C9A961;
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+
+    .character-trophies {
+      font-size: 0.7rem;
+      color: rgba(232, 232, 232, 0.5);
+    }
+
+    .trophy-badge {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+      font-size: 1rem;
+    }
+
+    /* Categories Grid - Compact */
+    .categories-section {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+
+    .categories-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.75rem;
+      overflow-y: auto;
+      padding-right: 0.25rem;
+    }
+
+    .categories-grid::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    .categories-grid::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .categories-grid::-webkit-scrollbar-thumb {
+      background: rgba(201, 169, 97, 0.3);
+      border-radius: 10px;
+    }
+
+    .category-card {
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 1rem;
+      padding: 1rem;
+      cursor: pointer;
+      transition: all 0.3s;
+      border: 2px solid transparent;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 120px;
+      position: relative;
+    }
+
+    .category-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(201, 169, 97, 0.5);
+      background: rgba(201, 169, 97, 0.1);
+    }
+
+    .category-card.completed {
+      border-color: #4ade80;
+      background: rgba(74, 222, 128, 0.05);
+    }
+
+    .category-icon {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .category-name {
+      font-size: 0.8rem;
       color: rgba(232, 232, 232, 0.9);
       font-weight: 600;
-      margin-bottom: 0.5rem;
-      line-height: 1.3;
+      text-align: center;
+      margin-bottom: 0.25rem;
+      line-height: 1.2;
     }
 
     .category-status {
-      font-size: 0.75rem;
+      font-size: 0.65rem;
       color: rgba(201, 169, 97, 0.7);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.25rem;
+      text-align: center;
+    }
+
+    .category-card.completed .category-status {
+      color: #4ade80;
     }
 
     .category-trophy {
@@ -456,237 +276,387 @@
       top: 0.5rem;
       right: 0.5rem;
       font-size: 1.2rem;
-      animation: trophySpin 3s ease-in-out infinite;
     }
 
-    @keyframes trophySpin {
-      0%, 100% { transform: rotate(0deg); }
-      25% { transform: rotate(-10deg); }
-      75% { transform: rotate(10deg); }
+    /* Start Button - Fixed Bottom */
+    .start-section {
+      margin-top: 1rem;
+      flex-shrink: 0;
     }
 
-    @media (max-width: 768px) {
+    .start-button {
+      width: 100%;
+      background: rgba(201, 169, 97, 0.2);
+      border: 2px solid #C9A961;
+      border-radius: 1rem;
+      padding: 1rem;
+      color: #C9A961;
+      font-size: 0.9rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .start-button:hover:not(:disabled) {
+      background: rgba(201, 169, 97, 0.3);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(201, 169, 97, 0.3);
+    }
+
+    .start-button:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    .start-button.ready {
+      background: rgba(201, 169, 97, 0.25);
+      border-color: #C9A961;
+      box-shadow: 0 4px 16px rgba(201, 169, 97, 0.2);
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.02); }
+    }
+
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      color: rgba(232, 232, 232, 0.5);
+      font-size: 0.85rem;
+      padding: 2rem 1rem;
+    }
+
+    .empty-state-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      opacity: 0.5;
+    }
+
+    @media (max-width: 480px) {
       .container {
-        width: 98%;
-        padding: 1.5rem 1rem;
+        max-width: 100%;
+        height: 100vh;
+        border-radius: 0;
+        padding: 1rem;
       }
 
       .header h1 {
-        font-size: 2rem;
+        font-size: 1.5rem;
       }
 
-      .welcome-message {
-        font-size: 1rem;
-      }
-
-      .characters-grid {
-        grid-template-columns: 1fr;
-        gap: 1.25rem;
+      .character-card {
+        min-width: 100px;
       }
 
       .character-emoji {
-        font-size: 3.5rem;
+        font-size: 2rem;
       }
 
-      .character-name {
-        font-size: 1.25rem;
+      .category-card {
+        min-height: 100px;
       }
 
-      .category-grid {
-        grid-template-columns: 1fr;
+      .category-icon {
+        font-size: 1.75rem;
+      }
+    }
+
+    @media (min-width: 768px) {
+      .container {
+        max-width: 480px;
+      }
+
+      .categories-grid {
+        grid-template-columns: repeat(2, 1fr);
       }
     }
   </style>
 </head>
 <body>
   <div class="container">
+    <!-- Header -->
     <div class="header">
       <h1>INTUITY</h1>
-      <p class="subtitle">Intuitive & immersive</p>
-      <p class="author">Majid Nashtai</p>
+      <p class="subtitle">Present Simple Practice</p>
     </div>
 
-    <div class="welcome-message">
-      Present Simple!<br>
-      Pick a character to start your learning journey
-    </div>
-
-    <div class="characters-grid" id="charactersGrid">
-      <!-- Characters will be inserted here by JavaScript -->
-    </div>
-
-    <div class="overall-progress">
-      <div class="overall-progress-title">Your Overall Progress</div>
-      <div class="overall-progress-bar">
-        <div class="overall-progress-fill" id="overallProgressFill" style="width: 0%"></div>
+    <!-- Overall Progress -->
+    <div class="progress-section">
+      <div class="progress-label">Overall Progress</div>
+      <div class="progress-bar">
+        <div class="progress-fill" id="overallProgressFill" style="width: 0%"></div>
       </div>
-      <div class="overall-progress-text" id="overallProgressText">0 / 16 Trophies</div>
+      <div class="progress-text" id="overallProgressText">0 / 16 Trophies</div>
+    </div>
+
+    <!-- Characters -->
+    <div class="characters-section">
+      <div class="section-title">Select Character</div>
+      <div class="characters-scroll" id="charactersScroll">
+        <!-- Characters inserted by JS -->
+      </div>
+    </div>
+
+    <!-- Categories -->
+    <div class="categories-section">
+      <div class="section-title">Choose Category</div>
+      <div class="categories-grid" id="categoriesGrid">
+        <div class="empty-state">
+          <div class="empty-state-icon">👆</div>
+          Select a character above to see available categories
+        </div>
+      </div>
+    </div>
+
+    <!-- Start Button -->
+    <div class="start-section">
+      <button class="start-button" id="startButton" disabled>
+        Select Character & Category
+      </button>
     </div>
   </div>
-
-  <!-- Category Selection Modal -->
-  <div class="modal-overlay" id="modalOverlay">
-    <div class="category-modal">
-      <button class="close-modal" onclick="closeModal()">×</button>
-      <div class="modal-header">
-        <div class="modal-character" id="modalEmoji">👧</div>
-        <div class="modal-title" id="modalName">Sarah</div>
-        <div class="modal-subtitle">Choose a category to practice</div>
-      </div>
-      <div class="category-grid" id="categoryGrid">
-        <!-- Categories will be inserted here -->
-      </div>
-    </div>
-  </div>
-
-  <!-- Load Progress Tracker -->
-  <script src="assets/js/progress-tracker.js"></script>
 
   <script>
     // ============================================
-    // CHARACTER DATA
+    // PROGRESS TRACKER (Built-in)
     // ============================================
     
-    const characters = [
-      { 
-        key: 'sarah', 
-        name: 'Sarah', 
-        emoji: '👧', 
-        description: 'The Morning Person',
-        tagline: '"I love starting my day with coffee and learning!"'
+    const ProgressTracker = {
+      CATEGORIES: {
+        'habitual': { name: 'Habitual Actions', icon: '🔄' },
+        'routine': { name: 'Daily Routines', icon: '📅' },
+        'frequency': { name: 'Frequency Adverbs', icon: '⏰' },
+        'conjunctions': { name: 'Time Conjunctions', icon: '🔗' }
       },
-      { 
-        key: 'tom', 
-        name: 'Tom', 
-        emoji: '🧑', 
-        description: 'The Athlete',
-        tagline: '"Sports and schedules keep me going!"'
+
+      init() {
+        if (!localStorage.getItem('intuity_progress')) {
+          localStorage.setItem('intuity_progress', JSON.stringify({}));
+        }
       },
-      { 
-        key: 'emma', 
-        name: 'Emma', 
-        emoji: '👩', 
-        description: 'The Creative',
-        tagline: '"Art and expression are my daily routine!"'
+
+      getProgress() {
+        try {
+          return JSON.parse(localStorage.getItem('intuity_progress') || '{}');
+        } catch (e) {
+          return {};
+        }
       },
-      { 
-        key: 'alex', 
-        name: 'Alex', 
-        emoji: '🧒', 
-        description: 'The Gamer',
-        tagline: '"Level up your skills with me!"'
-      }
+
+      saveProgress(data) {
+        localStorage.setItem('intuity_progress', JSON.stringify(data));
+      },
+
+      getCategoryProgress(characterKey, categoryKey) {
+        const progress = this.getProgress();
+        const key = `${characterKey}_${categoryKey}`;
+        return progress[key] || { matchingScore: 0, quizScore: 0, trophy: false };
+      },
+
+      saveMatchingScore(characterKey, categoryKey, score) {
+        const progress = this.getProgress();
+        const key = `${characterKey}_${categoryKey}`;
+        
+        if (!progress[key]) {
+          progress[key] = { matchingScore: 0, quizScore: 0, trophy: false };
+        }
+        
+        progress[key].matchingScore = Math.max(progress[key].matchingScore, score);
+        
+        if (progress[key].matchingScore === 20 && progress[key].quizScore === 20) {
+          progress[key].trophy = true;
+        }
+        
+        this.saveProgress(progress);
+      },
+
+      saveQuizScore(characterKey, categoryKey, score) {
+        const progress = this.getProgress();
+        const key = `${characterKey}_${categoryKey}`;
+        
+        if (!progress[key]) {
+          progress[key] = { matchingScore: 0, quizScore: 0, trophy: false };
+        }
+        
+        progress[key].quizScore = Math.max(progress[key].quizScore, score);
+        
+        if (progress[key].matchingScore === 20 && progress[key].quizScore === 20) {
+          progress[key].trophy = true;
+        }
+        
+        this.saveProgress(progress);
+      },
+
+      getCharacterProgress(characterKey) {
+        const categories = Object.keys(this.CATEGORIES).map(catKey => {
+          const catProgress = this.getCategoryProgress(characterKey, catKey);
+          return {
+            key: catKey,
+            name: this.CATEGORIES[catKey].name,
+            icon: this.CATEGORIES[catKey].icon,
+            matchingScore: catProgress.matchingScore,
+            quizScore: catProgress.quizScore,
+            trophy: catProgress.trophy
+      { key: 'sarah', name: 'Sarah', emoji: '👧' },
+      { key: 'tom', name: 'Tom', emoji: '🧑' },
+      { key: 'emma', name: 'Emma', emoji: '👩' },
+      { key: 'alex', name: 'Alex', emoji: '🧒' }
     ];
 
     let selectedCharacter = null;
+    let selectedCategory = null;
 
     // ============================================
     // RENDER CHARACTERS
     // ============================================
     
     function renderCharacters() {
-      const grid = document.getElementById('charactersGrid');
-      grid.innerHTML = '';
+      const scroll = document.getElementById('charactersScroll');
+      scroll.innerHTML = '';
 
       characters.forEach(char => {
         const progress = ProgressTracker.getCharacterProgress(char.key);
-        const completed = progress.completed;
+        const trophyCount = progress.trophies;
+        const isComplete = progress.completed;
 
         const card = document.createElement('div');
         card.className = 'character-card';
-        if (completed) card.classList.add('completed');
-
-        // Create progress dots
-        const progressDotsHTML = progress.categories.map(cat => {
-          return `<div class="progress-dot ${cat.trophy ? 'completed' : ''}"></div>`;
-        }).join('');
+        if (selectedCharacter === char.key) card.classList.add('selected');
 
         card.innerHTML = `
-          ${completed ? '<div class="check-icon">✅</div>' : ''}
+          ${isComplete ? '<div class="trophy-badge">✅</div>' : ''}
           <div class="character-emoji">${char.emoji}</div>
           <div class="character-name">${char.name}</div>
-          <div class="character-description">${char.description}</div>
-          <div class="character-tagline">${char.tagline}</div>
-          <div class="character-progress">
-            ${progressDotsHTML}
-          </div>
-          <button class="start-button">
-            ${completed ? '✨ Practice Again' : '🚀 Start Learning'}
-          </button>
+          <div class="character-trophies">${trophyCount}/4 🏆</div>
         `;
 
-        card.addEventListener('click', () => openCategoryModal(char));
-        grid.appendChild(card);
+        card.addEventListener('click', () => selectCharacter(char.key));
+        scroll.appendChild(card);
       });
 
       updateOverallProgress();
     }
 
     // ============================================
-    // CATEGORY MODAL
+    // SELECT CHARACTER
     // ============================================
     
-    function openCategoryModal(character) {
-      selectedCharacter = character;
+    function selectCharacter(characterKey) {
+      selectedCharacter = characterKey;
+      selectedCategory = null;
       
-      document.getElementById('modalEmoji').textContent = character.emoji;
-      document.getElementById('modalName').textContent = character.name;
+      renderCharacters();
+      renderCategories();
+      updateStartButton();
+    }
 
-      const progress = ProgressTracker.getCharacterProgress(character.key);
-      const categoryGrid = document.getElementById('categoryGrid');
-      categoryGrid.innerHTML = '';
+    // ============================================
+    // RENDER CATEGORIES
+    // ============================================
+    
+    function renderCategories() {
+      const grid = document.getElementById('categoriesGrid');
+      
+      if (!selectedCharacter) {
+        grid.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-state-icon">👆</div>
+            Select a character above to see available categories
+          </div>
+        `;
+        return;
+      }
+
+      const progress = ProgressTracker.getCharacterProgress(selectedCharacter);
+      grid.innerHTML = '';
 
       progress.categories.forEach(cat => {
-        const tile = document.createElement('div');
-        tile.className = 'category-tile';
-        if (cat.trophy) tile.classList.add('completed');
+        const card = document.createElement('div');
+        card.className = 'category-card';
+        if (cat.trophy) card.classList.add('completed');
+        if (selectedCategory === cat.key) {
+          card.style.borderColor = '#C9A961';
+          card.style.background = 'rgba(201, 169, 97, 0.15)';
+        }
 
         const statusText = cat.trophy 
-          ? '🏆 Trophy Earned' 
+          ? '🏆 Trophy' 
           : cat.matchingScore > 0 || cat.quizScore > 0
             ? 'In Progress'
-            : 'Ready to Start';
+            : 'Start';
 
-        tile.innerHTML = `
+        card.innerHTML = `
           ${cat.trophy ? '<div class="category-trophy">🏆</div>' : ''}
           <div class="category-icon">${cat.icon}</div>
           <div class="category-name">${cat.name}</div>
           <div class="category-status">${statusText}</div>
         `;
 
-        tile.addEventListener('click', () => startCategory(character.key, cat.key));
-        categoryGrid.appendChild(tile);
+        card.addEventListener('click', () => selectCategory(cat.key));
+        grid.appendChild(card);
       });
-
-      document.getElementById('modalOverlay').classList.add('show');
-    }
-
-    function closeModal() {
-      document.getElementById('modalOverlay').classList.remove('show');
     }
 
     // ============================================
-    // START CATEGORY
+    // SELECT CATEGORY
     // ============================================
     
-    function startCategory(characterKey, categoryKey) {
-      const character = characters.find(c => c.key === characterKey);
-      const categoryInfo = ProgressTracker.CATEGORIES[categoryKey];
+    function selectCategory(categoryKey) {
+      selectedCategory = categoryKey;
+      renderCategories();
+      updateStartButton();
+    }
+
+    // ============================================
+    // UPDATE START BUTTON
+    // ============================================
+    
+    function updateStartButton() {
+      const button = document.getElementById('startButton');
+      
+      if (selectedCharacter && selectedCategory) {
+        button.disabled = false;
+        button.classList.add('ready');
+        button.textContent = '🚀 Start Practice';
+      } else if (selectedCharacter) {
+        button.disabled = true;
+        button.classList.remove('ready');
+        button.textContent = 'Select a Category';
+      } else {
+        button.disabled = true;
+        button.classList.remove('ready');
+        button.textContent = 'Select Character & Category';
+      }
+    }
+
+    // ============================================
+    // START PRACTICE
+    // ============================================
+    
+    document.getElementById('startButton').addEventListener('click', () => {
+      if (!selectedCharacter || !selectedCategory) return;
+
+      const character = characters.find(c => c.key === selectedCharacter);
+      const categoryInfo = ProgressTracker.CATEGORIES[selectedCategory];
 
       const selectionData = {
-        characterKey: characterKey,
+        characterKey: selectedCharacter,
         characterName: character.name,
         characterEmoji: character.emoji,
-        category: categoryKey,
+        category: selectedCategory,
         categoryTitle: categoryInfo.name,
         categoryIcon: categoryInfo.icon
       };
 
       sessionStorage.setItem('selectionData', JSON.stringify(selectionData));
-      
       console.log('🚀 Starting:', selectionData);
       window.location.href = 'pages/matching-game.html';
-    }
+    });
 
     // ============================================
     // OVERALL PROGRESS
@@ -702,25 +672,14 @@
     }
 
     // ============================================
-    // EVENT LISTENERS
-    // ============================================
-    
-    document.getElementById('modalOverlay').addEventListener('click', (e) => {
-      if (e.target.id === 'modalOverlay') closeModal();
-    });
-
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') closeModal();
-    });
-
-    // ============================================
     // INITIALIZE
     // ============================================
     
     function initialize() {
-      console.log('🎮 Initializing INTUITY Character Selection...');
+      console.log('🎮 Initializing INTUITY...');
       ProgressTracker.init();
       renderCharacters();
+      renderCategories();
       console.log('✅ Ready!');
     }
 
