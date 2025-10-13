@@ -1,0 +1,2007 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>INTUITY - Practice Quiz</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #000000;
+      font-family: 'Inter', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      overflow: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' /%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* Toast Notification System */
+    .toast-container {
+      position: fixed;
+      top: 1.5rem;
+      right: 1.5rem;
+      z-index: 10000;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      pointer-events: none;
+    }
+
+    .toast {
+      background: rgba(28, 28, 30, 0.98);
+      backdrop-filter: blur(40px) saturate(180%);
+      -webkit-backdrop-filter: blur(40px) saturate(180%);
+      border-radius: 0.875rem;
+      padding: 1rem 1.25rem;
+      min-width: 280px;
+      max-width: 400px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6), 0 2px 8px rgba(0, 0, 0, 0.2);
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      opacity: 0;
+      transform: translateX(100px);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      pointer-events: all;
+      border: 1px solid rgba(84, 84, 88, 0.3);
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .toast-icon {
+      font-size: 1.25rem;
+      flex-shrink: 0;
+      line-height: 1;
+    }
+
+    .toast-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .toast-title {
+      font-size: 0.875rem;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+    }
+
+    .toast-message {
+      font-size: 0.8125rem;
+      opacity: 0.85;
+      letter-spacing: -0.01em;
+      line-height: 1.4;
+    }
+
+    .toast-close {
+      background: none;
+      border: none;
+      color: inherit;
+      cursor: pointer;
+      font-size: 1.25rem;
+      padding: 0;
+      opacity: 0.5;
+      transition: opacity 0.2s;
+      flex-shrink: 0;
+      line-height: 1;
+    }
+
+    .toast-close:hover {
+      opacity: 1;
+    }
+
+    .toast.success {
+      border-color: rgba(132, 204, 22, 0.4);
+    }
+
+    .toast.success .toast-icon {
+      color: #84cc16;
+    }
+
+    .toast.success .toast-title {
+      color: #4ade80;
+    }
+
+    .toast.success .toast-message {
+      color: #e5e5e7;
+    }
+
+    .toast.info {
+      border-color: rgba(201, 169, 97, 0.4);
+    }
+
+    .toast.info .toast-icon {
+      color: #C9A961;
+    }
+
+    .toast.info .toast-title {
+      color: #C9A961;
+    }
+
+    .toast.info .toast-message {
+      color: #e5e5e7;
+    }
+
+    .toast.error {
+      border-color: rgba(239, 68, 68, 0.4);
+    }
+
+    .toast.error .toast-icon {
+      color: #ef4444;
+    }
+
+    .toast.error .toast-title {
+      color: #ef4444;
+    }
+
+    .toast.error .toast-message {
+      color: #e5e5e7;
+    }
+
+    .game-container {
+      background: #1a1a1a;
+      width: 95%;
+      max-width: 1000px;
+      height: 95vh;
+      max-height: 900px;
+      border-radius: 24px;
+      padding: 2rem;
+      box-shadow: 
+        12px 12px 24px #000000,
+        -12px -12px 24px #2a2a2a;
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .back-btn {
+      position: absolute;
+      top: 1.5rem;
+      left: 1.5rem;
+      background: rgba(201, 169, 97, 0.1);
+      border: 2px solid rgba(201, 169, 97, 0.3);
+      color: #C9A961;
+      padding: 0.6rem 1.2rem;
+      border-radius: 12px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      z-index: 10;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .back-btn:hover {
+      background: rgba(201, 169, 97, 0.2);
+      transform: translateX(-3px);
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 1rem;
+      flex-shrink: 0;
+    }
+
+    .header h1 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 2.5rem;
+      color: #C9A961;
+      margin-bottom: 0.25rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .tagline {
+      font-size: 0.9rem;
+      color: rgba(232, 232, 232, 0.7);
+      margin-bottom: 1rem;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+    }
+
+    .character-info {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .character-display {
+      background: rgba(201, 169, 97, 0.15);
+      border: 2px solid rgba(201, 169, 97, 0.3);
+      border-radius: 16px;
+      padding: 0.6rem 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .character-emoji {
+      font-size: 1.8rem;
+    }
+
+    .character-name {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #C9A961;
+      letter-spacing: 0.03em;
+    }
+
+    .category-pills {
+      display: flex;
+      justify-content: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      margin-bottom: 1rem;
+    }
+
+    .category-pill {
+      background: rgba(201, 169, 97, 0.1);
+      border: 2px solid rgba(201, 169, 97, 0.2);
+      border-radius: 12px;
+      padding: 0.5rem 1rem;
+      font-size: 0.8rem;
+      color: rgba(232, 232, 232, 0.7);
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .category-pill:hover {
+      background: rgba(201, 169, 97, 0.15);
+      border-color: rgba(201, 169, 97, 0.4);
+      transform: translateY(-2px);
+    }
+
+    .category-pill.active {
+      background: rgba(201, 169, 97, 0.25);
+      border-color: #C9A961;
+      color: #C9A961;
+    }
+
+    .category-pill.completed::after {
+      content: '🏆';
+      font-size: 1rem;
+    }
+
+    .exercise-nav-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.75rem;
+      padding: 0 0.5rem;
+      gap: 1rem;
+      flex-shrink: 0;
+    }
+
+    .exercise-dots-container {
+      display: flex;
+      gap: 0.75rem;
+      flex: 1;
+      justify-content: flex-start;
+    }
+
+    .exercise-dot {
+      width: 1rem;
+      height: 1rem;
+      border-radius: 50%;
+      background: rgba(99, 99, 102, 0.3);
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      border: 2px solid rgba(99, 99, 102, 0.2);
+      position: relative;
+    }
+
+    .exercise-dot:hover {
+      transform: scale(1.3);
+      background: rgba(142, 142, 147, 0.5);
+    }
+
+    .exercise-dot.current {
+      background: #C9A961;
+      box-shadow: 0 0 0 3px rgba(201, 169, 97, 0.4);
+      transform: scale(1.5);
+    }
+
+    .exercise-dot.completed {
+      background: linear-gradient(135deg, #84cc16 0%, #65a30d 100%);
+      box-shadow: 0 0 8px rgba(132, 204, 22, 0.4);
+    }
+
+    .exercise-dot.completed.current {
+      background: linear-gradient(135deg, #84cc16 0%, #65a30d 100%);
+      box-shadow: 0 0 0 3px rgba(201, 169, 97, 0.6);
+      transform: scale(1.5);
+    }
+
+    .mode-toggle-container {
+      display: flex;
+      align-items: center;
+      gap: 0.625rem;
+      font-size: 0.6875rem;
+      font-weight: 500;
+      color: #636366;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      flex-shrink: 0;
+    }
+
+    .mode-toggle-label {
+      opacity: 0.6;
+      transition: opacity 0.3s;
+    }
+
+    .mode-toggle-container:hover .mode-toggle-label {
+      opacity: 0.85;
+    }
+
+    .mode-toggle-switch {
+      position: relative;
+      width: 3rem;
+      height: 1.5rem;
+      background: rgba(99, 99, 102, 0.25);
+      border-radius: 0.75rem;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      border: 1px solid rgba(99, 99, 102, 0.2);
+    }
+
+    .mode-toggle-switch:hover {
+      background: rgba(99, 99, 102, 0.35);
+    }
+
+    .mode-toggle-switch::after {
+      content: '';
+      position: absolute;
+      top: 0.125rem;
+      left: 0.125rem;
+      width: 1.125rem;
+      height: 1.125rem;
+      background: #8e8e93;
+      border-radius: 50%;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    .mode-toggle-switch.active {
+      background: rgba(201, 169, 97, 0.25);
+      border-color: rgba(201, 169, 97, 0.3);
+    }
+
+    .mode-toggle-switch.active::after {
+      left: 1.625rem;
+      background: #C9A961;
+    }
+
+    .exercise-info {
+      text-align: center;
+      font-size: 0.75rem;
+      color: #636366;
+      margin-bottom: 0.5rem;
+      flex-shrink: 0;
+    }
+
+    .score-display {
+      text-align: center;
+      font-size: 0.9rem;
+      color: #C9A961;
+      font-weight: 700;
+      font-family: 'Space Grotesk', sans-serif;
+      margin-bottom: 0.75rem;
+      flex-shrink: 0;
+    }
+
+    .prize-banner {
+      background: linear-gradient(135deg, rgba(201, 169, 97, 0.2), rgba(201, 169, 97, 0.1));
+      border: 2px solid #C9A961;
+      border-radius: 12px;
+      padding: 0.75rem 1rem;
+      margin-bottom: 1rem;
+      text-align: center;
+      animation: pulse 2s ease-in-out infinite;
+      flex-shrink: 0;
+    }
+
+    .prize-banner.eligible {
+      background: linear-gradient(135deg, rgba(74, 222, 128, 0.2), rgba(74, 222, 128, 0.1));
+      border-color: #4ade80;
+    }
+
+    .prize-banner.ineligible {
+      background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(239, 68, 68, 0.1));
+      border-color: #ef4444;
+    }
+
+    .prize-text {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #C9A961;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .prize-banner.eligible .prize-text {
+      color: #4ade80;
+    }
+
+    .prize-banner.ineligible .prize-text {
+      color: #ef4444;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.02); }
+    }
+
+    .content-wrapper {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      position: relative;
+    }
+
+    .quiz-carousel {
+      position: relative;
+      width: 100%;
+      flex: 1;
+      overflow: hidden;
+      display: flex;
+      align-items: stretch;
+      justify-content: center;
+      min-height: 0;
+    }
+
+    .carousel-track {
+      position: relative;
+      width: 100%;
+      height: 100%;
+    }
+
+    .quiz-card-wrapper {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateX(100%);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      pointer-events: none;
+    }
+
+    .quiz-card-wrapper.active {
+      opacity: 1;
+      visibility: visible;
+      transform: translateX(0);
+      pointer-events: auto;
+      z-index: 2;
+    }
+
+    .quiz-card-wrapper.prev {
+      transform: translateX(-100%);
+      z-index: 1;
+    }
+
+    .quiz-card-wrapper.next {
+      transform: translateX(100%);
+      z-index: 1;
+    }
+
+    .button-nav-wrapper {
+      display: none;
+      flex: 1;
+      flex-direction: column;
+      min-height: 0;
+    }
+
+    .button-nav-wrapper.active {
+      display: flex;
+    }
+
+    .quiz-card {
+      background: #1a1a1a;
+      border-radius: 20px;
+      padding: 2rem 1.5rem;
+      box-shadow: 
+        12px 12px 24px #000000,
+        -12px -12px 24px #2a2a2a;
+      border: 2px solid rgba(201, 169, 97, 0.2);
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+
+    .quiz-card::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .quiz-card::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 10px;
+    }
+
+    .quiz-card::-webkit-scrollbar-thumb {
+      background: rgba(201, 169, 97, 0.3);
+      border-radius: 10px;
+    }
+
+    .quiz-card::-webkit-scrollbar-thumb:hover {
+      background: rgba(201, 169, 97, 0.5);
+    }
+
+    .card-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.4rem;
+      color: #C9A961;
+      text-align: center;
+      margin-bottom: 1.5rem;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .card-subtitle {
+      font-size: 0.9rem;
+      color: rgba(232, 232, 232, 0.7);
+      text-align: center;
+      margin-bottom: 1.5rem;
+      font-style: italic;
+      flex-shrink: 0;
+    }
+
+    /* INLINE CLOZE STYLING */
+    .cloze-text {
+      font-size: 1.05rem;
+      line-height: 2;
+      color: rgba(232, 232, 232, 0.9);
+      margin-bottom: 1.5rem;
+      flex: 1;
+      overflow-y: auto;
+    }
+
+    .cloze-text p {
+      margin-bottom: 1rem;
+    }
+
+    .cloze-blank {
+      display: inline;
+      border: none;
+      border-bottom: 2px solid rgba(201, 169, 97, 0.4);
+      background: transparent;
+      color: #C9A961;
+      font-weight: 500;
+      font-size: inherit;
+      font-family: inherit;
+      outline: none;
+      transition: all 0.3s;
+      text-align: left;
+      letter-spacing: inherit;
+      padding: 0 2px;
+      margin: 0 2px;
+      min-width: 80px;
+      vertical-align: baseline;
+    }
+
+    .cloze-blank:focus {
+      border-bottom-color: #C9A961;
+      border-bottom-width: 3px;
+      background: rgba(201, 169, 97, 0.08);
+    }
+
+    .cloze-blank.filled {
+      color: #38bdf8;
+      border-bottom-color: rgba(56, 189, 248, 0.5);
+    }
+
+    .cloze-blank.correct {
+      color: #84cc16;
+      border-bottom-color: rgba(132, 204, 22, 0.6);
+      font-weight: 600;
+    }
+
+    .cloze-blank.wrong {
+      color: #fb923c;
+      border-bottom-color: rgba(251, 146, 60, 0.6);
+      font-weight: 600;
+    }
+
+    .question-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+      flex: 1;
+      overflow-y: auto;
+      padding-right: 0.5rem;
+    }
+
+    .question-item {
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 12px;
+      padding: 1.25rem;
+      border: 2px solid rgba(201, 169, 97, 0.2);
+    }
+
+    .question-text {
+      font-size: 1rem;
+      color: rgba(232, 232, 232, 0.9);
+      margin-bottom: 1rem;
+      line-height: 1.6;
+    }
+
+    .question-options {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.75rem;
+    }
+
+    .option-btn {
+      background: rgba(201, 169, 97, 0.1);
+      border: 2px solid rgba(201, 169, 97, 0.3);
+      border-radius: 10px;
+      padding: 0.75rem 1rem;
+      color: rgba(232, 232, 232, 0.9);
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s;
+      text-align: center;
+    }
+
+    .option-btn:hover {
+      background: rgba(201, 169, 97, 0.2);
+      border-color: rgba(201, 169, 97, 0.5);
+      transform: translateY(-2px);
+    }
+
+    .option-btn.selected {
+      background: rgba(201, 169, 97, 0.3);
+      border-color: #C9A961;
+      color: #C9A961;
+    }
+
+    .option-btn.correct {
+      background: rgba(74, 222, 128, 0.2);
+      border-color: #4ade80;
+      color: #4ade80;
+    }
+
+    .option-btn.wrong {
+      background: rgba(239, 68, 68, 0.2);
+      border-color: #ef4444;
+      color: #ef4444;
+    }
+
+    .sentence-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      flex: 1;
+      overflow-y: auto;
+      padding-right: 0.5rem;
+    }
+
+    .sentence-item {
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 12px;
+      padding: 1rem 1.25rem;
+      border: 2px solid rgba(201, 169, 97, 0.2);
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .sentence-item:hover {
+      border-color: rgba(201, 169, 97, 0.4);
+      transform: translateX(5px);
+    }
+
+    .sentence-words {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      align-items: center;
+    }
+
+    .word {
+      font-size: 1rem;
+      color: rgba(232, 232, 232, 0.9);
+      padding: 0.3rem 0.6rem;
+      background: rgba(201, 169, 97, 0.1);
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.3s;
+      border: 2px solid transparent;
+    }
+
+    .word:hover {
+      background: rgba(201, 169, 97, 0.2);
+      border-color: rgba(201, 169, 97, 0.3);
+    }
+
+    .word.error {
+      background: rgba(239, 68, 68, 0.2);
+      border-color: #ef4444;
+      color: #ef4444;
+    }
+
+    .word.correct-word {
+      background: rgba(74, 222, 128, 0.2);
+      border-color: #4ade80;
+      color: #4ade80;
+    }
+
+    .ordering-container {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      flex: 1;
+      overflow-y: auto;
+      padding-right: 0.5rem;
+    }
+
+    .ordering-item {
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 12px;
+      padding: 1rem 1.25rem;
+      border: 2px solid rgba(201, 169, 97, 0.2);
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      cursor: move;
+      transition: all 0.3s;
+    }
+
+    .ordering-item:hover {
+      border-color: rgba(201, 169, 97, 0.4);
+      transform: translateX(5px);
+    }
+
+    .order-input {
+      width: 50px;
+      height: 50px;
+      background: rgba(201, 169, 97, 0.1);
+      border: 2px solid rgba(201, 169, 97, 0.3);
+      border-radius: 10px;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #C9A961;
+      text-align: center;
+      font-family: 'Space Grotesk', sans-serif;
+    }
+
+    .order-input:focus {
+      outline: none;
+      border-color: #C9A961;
+      background: rgba(201, 169, 97, 0.2);
+    }
+
+    .order-input.correct {
+      background: rgba(74, 222, 128, 0.2);
+      border-color: #4ade80;
+      color: #4ade80;
+    }
+
+    .order-input.wrong {
+      background: rgba(239, 68, 68, 0.2);
+      border-color: #ef4444;
+      color: #ef4444;
+    }
+
+    .sentence-text {
+      flex: 1;
+      font-size: 1rem;
+      color: rgba(232, 232, 232, 0.9);
+      line-height: 1.6;
+    }
+
+    .carousel-arrows {
+      position: absolute;
+      top: 50%;
+      left: 0;
+      right: 0;
+      transform: translateY(-50%);
+      display: flex;
+      justify-content: space-between;
+      pointer-events: none;
+      padding: 0 0.5rem;
+      z-index: 10;
+    }
+
+    .arrow {
+      background: rgba(201, 169, 97, 0.1);
+      border: 2px solid rgba(201, 169, 97, 0.3);
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #C9A961;
+      font-size: 1.5rem;
+      cursor: pointer;
+      transition: all 0.3s;
+      pointer-events: all;
+    }
+
+    .arrow:hover:not(.disabled) {
+      background: rgba(201, 169, 97, 0.2);
+      border-color: #C9A961;
+      transform: scale(1.1);
+    }
+
+    .arrow.disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+
+    .external-nav {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      gap: 1.5rem;
+      margin-top: 1rem;
+      flex-shrink: 0;
+    }
+
+    .external-nav.active {
+      display: flex;
+    }
+
+    .external-nav-arrow {
+      background: rgba(99, 99, 102, 0.25);
+      border: 1px solid rgba(99, 99, 102, 0.2);
+      color: #aeaeb2;
+      padding: 0.75rem 1.5rem;
+      border-radius: 0.75rem;
+      cursor: pointer;
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      letter-spacing: -0.01em;
+      min-width: 140px;
+    }
+
+    .external-nav-arrow:hover:not(:disabled) {
+      background: rgba(201, 169, 97, 0.25);
+      border-color: rgba(201, 169, 97, 0.3);
+      color: #C9A961;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(201, 169, 97, 0.2);
+    }
+
+    .external-nav-arrow:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+
+    .controls {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 1rem;
+      margin-top: 1rem;
+      flex-shrink: 0;
+    }
+
+    .btn {
+      background: rgba(201, 169, 97, 0.2);
+      border: 2px solid #C9A961;
+      border-radius: 12px;
+      padding: 0.85rem 1.75rem;
+      color: #C9A961;
+      font-size: 0.95rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .btn:hover {
+      background: rgba(201, 169, 97, 0.3);
+      transform: translateY(-2px);
+    }
+
+    .btn.success {
+      background: rgba(74, 222, 128, 0.2);
+      border-color: #4ade80;
+      color: #4ade80;
+    }
+
+    .btn:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+
+    @media (max-width: 768px) {
+      .toast-container {
+        top: 1rem;
+        right: 1rem;
+        left: 1rem;
+      }
+
+      .toast {
+        min-width: auto;
+      }
+
+      .game-container {
+        width: 100%;
+        height: 100vh;
+        max-height: 100vh;
+        border-radius: 0;
+        padding: 1rem 0.75rem;
+      }
+
+      .back-btn {
+        top: 1rem;
+        left: 1rem;
+        padding: 0.5rem 0.8rem;
+        font-size: 0.75rem;
+      }
+
+      .header h1 {
+        font-size: 1.8rem;
+      }
+
+      .tagline {
+        font-size: 0.75rem;
+      }
+
+      .character-display {
+        padding: 0.5rem 1rem;
+      }
+
+      .character-emoji {
+        font-size: 1.5rem;
+      }
+
+      .character-name {
+        font-size: 0.9rem;
+      }
+
+      .category-pills {
+        display: none;
+      }
+
+      .exercise-nav-container {
+        padding: 0 0.25rem;
+        gap: 0.75rem;
+      }
+
+      .exercise-dot {
+        width: 0.875rem;
+        height: 0.875rem;
+      }
+
+      .mode-toggle-label {
+        font-size: 0.625rem;
+      }
+
+      .mode-toggle-switch {
+        width: 2.5rem;
+        height: 1.25rem;
+      }
+
+      .mode-toggle-switch::after {
+        width: 0.95rem;
+        height: 0.95rem;
+      }
+
+      .mode-toggle-switch.active::after {
+        left: 1.35rem;
+      }
+
+      .card-title {
+        font-size: 1.1rem;
+      }
+
+      .card-subtitle {
+        font-size: 0.8rem;
+      }
+
+      .cloze-text {
+        font-size: 0.95rem;
+      }
+
+      .cloze-blank {
+        min-width: 60px;
+      }
+
+      .question-options {
+        grid-template-columns: 1fr;
+      }
+
+      .option-btn {
+        font-size: 0.85rem;
+        padding: 0.65rem 0.85rem;
+      }
+
+      .word {
+        font-size: 0.9rem;
+        padding: 0.25rem 0.5rem;
+      }
+
+      .order-input {
+        width: 40px;
+        height: 40px;
+        font-size: 1rem;
+      }
+
+      .sentence-text {
+        font-size: 0.9rem;
+      }
+
+      .arrow {
+        width: 40px;
+        height: 40px;
+        font-size: 1.2rem;
+      }
+
+      .btn {
+        padding: 0.7rem 1.2rem;
+        font-size: 0.8rem;
+      }
+
+      .external-nav-arrow {
+        padding: 0.65rem 1.25rem;
+        font-size: 0.8rem;
+        min-width: 120px;
+      }
+
+      .quiz-card-wrapper:not(.active) {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Toast Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <div class="game-container">
+    <a href="javascript:history.back()" class="back-btn">
+      ← Back
+    </a>
+
+    <div class="header">
+      <h1>INTUITY</h1>
+      <p class="tagline">Practice Quiz</p>
+      
+      <div class="character-info">
+        <div class="character-display">
+          <span class="character-emoji" id="displayEmoji">👧</span>
+          <span class="character-name" id="displayName">Sarah</span>
+        </div>
+      </div>
+
+      <div class="category-pills" id="categoryPills">
+        <!-- Pills inserted by JavaScript -->
+      </div>
+    </div>
+
+    <div class="exercise-nav-container">
+      <div class="exercise-dots-container" id="exerciseDotsContainer">
+        <!-- Exercise navigation dots inserted by JavaScript -->
+      </div>
+      <div class="mode-toggle-container">
+        <span class="mode-toggle-label">Dots</span>
+        <div class="mode-toggle-switch" id="modeToggleSwitch" onclick="toggleMode()"></div>
+        <span class="mode-toggle-label">Arrows</span>
+      </div>
+    </div>
+
+    <div class="exercise-info" id="exerciseInfo">Exercise 1 of 4</div>
+
+    <div class="score-display" id="scoreDisplay">Score: 0 / 20</div>
+
+    <div id="prizeBanner"></div>
+
+    <div class="content-wrapper">
+      <div class="quiz-carousel" id="quizCarousel">
+        <div class="carousel-arrows">
+          <div class="arrow" id="prevArrowCarousel" onclick="previousCard()">‹</div>
+          <div class="arrow" id="nextArrowCarousel" onclick="nextCard()">›</div>
+        </div>
+        
+        <div class="carousel-track" id="carouselTrack">
+          <!-- Cards will be inserted here by JavaScript -->
+        </div>
+      </div>
+
+      <div class="button-nav-wrapper" id="buttonNavWrapper">
+        <div class="quiz-card" id="buttonNavCard">
+          <!-- Current card content inserted by JavaScript -->
+        </div>
+      </div>
+    </div>
+
+    <div class="external-nav" id="externalNav">
+      <button class="external-nav-arrow" id="prevExerciseBtn" onclick="previousCard()">← Previous Exercise</button>
+      <button class="external-nav-arrow" id="nextExerciseBtn" onclick="nextCard()">Next Exercise →</button>
+    </div>
+
+    <div class="controls">
+      <button class="btn" id="checkBtn" onclick="checkAnswers()">Check Answers</button>
+    </div>
+  </div>
+
+  <script src="../assets/js/progress-tracker.js"></script>
+
+  <script>
+    // ============================================
+    // TOAST NOTIFICATION SYSTEM
+    // ============================================
+    
+    function showToast(message, type = 'info', duration = 4000) {
+      const container = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      toast.className = `toast ${type}`;
+      
+      const icons = {
+        success: '✓',
+        info: 'ℹ',
+        error: '✕'
+      };
+      
+      const titles = {
+        success: 'Success',
+        info: 'Info',
+        error: 'Error'
+      };
+      
+      toast.innerHTML = `
+        <div class="toast-icon">${icons[type]}</div>
+        <div class="toast-content">
+          <div class="toast-title">${titles[type]}</div>
+          <div class="toast-message">${message}</div>
+        </div>
+        <button class="toast-close" onclick="this.parentElement.remove()">×</button>
+      `;
+      
+      container.appendChild(toast);
+      
+      setTimeout(() => toast.classList.add('show'), 10);
+      
+      setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 400);
+      }, duration);
+    }
+
+    // ============================================
+    // GLOBAL VARIABLES
+    // ============================================
+    
+    let selectionData = null;
+    let quizData = null;
+    let currentMode = 'dots';
+    let currentCard = 0;
+    let totalScore = 0;
+    let cardScores = [0, 0, 0, 0];
+    let cardCompleted = [false, false, false, false];
+    
+    let clozeAnswers = [];
+    let userClozeAnswers = [];
+    
+    let mcAnswers = [];
+    let userMCAnswers = [];
+    
+    let mistakeData = [];
+    let userMistakeAnswers = [];
+    
+    let orderingData = [];
+    let userOrderingAnswers = [];
+
+    // ============================================
+    // INITIALIZATION
+    // ============================================
+    
+    async function initialize() {
+      console.log('🎮 Initializing Quiz Interface...');
+      
+      const selectionJSON = sessionStorage.getItem('selectionData');
+      if (!selectionJSON) {
+        console.error('❌ No selection data found');
+        showToast('Please select a character and category first!', 'error');
+        setTimeout(() => window.location.href = '../index.html', 2000);
+        return;
+      }
+      
+      selectionData = JSON.parse(selectionJSON);
+      console.log('📥 Selection loaded:', selectionData);
+      
+      document.getElementById('displayEmoji').textContent = selectionData.characterEmoji;
+      document.getElementById('displayName').textContent = selectionData.characterName;
+      
+      renderCategoryPills();
+      checkPrizeEligibility();
+      
+      await loadQuizData();
+      
+      renderAllExercises();
+      updateNavigation();
+      updateExerciseInfo();
+      
+      console.log('✅ Quiz interface ready!');
+    }
+
+    // ============================================
+    // LOAD QUIZ DATA FROM JSON
+    // ============================================
+    
+    async function loadQuizData() {
+      try {
+        console.log('📥 Fetching character-data.json...');
+        const response = await fetch('../data/character-data.json');
+        const allData = await response.json();
+        console.log('✅ Quiz data loaded');
+        
+        const charKey = selectionData.characterKey;
+        
+        const categoryMapping = {
+          'habitual': 'daily_habits',
+          'routine': 'daily_habits',
+          'frequency': 'daily_habits',
+          'conjunctions': 'daily_habits'
+        };
+        
+        const mappedCategory = categoryMapping[selectionData.category] || 'daily_habits';
+        console.log(`📊 Mapped category: ${selectionData.category} → ${mappedCategory}`);
+        
+        quizData = allData[charKey].categories[mappedCategory];
+        
+        if (!quizData) {
+          console.error('❌ No quiz data found for this combination');
+          showToast('Quiz content not available yet for this category!', 'error');
+          setTimeout(() => window.location.href = '../index.html', 2000);
+          return;
+        }
+        
+        replacePronounsInQuizData();
+        
+        console.log('✅ Quiz data ready:', quizData);
+        
+      } catch (error) {
+        console.error('❌ Error loading quiz data:', error);
+        showToast('Error loading quiz content. Please try again.', 'error');
+      }
+    }
+
+    // ============================================
+    // PRONOUN REPLACEMENT
+    // ============================================
+    
+    function replacePronounsInQuizData() {
+      const charKey = selectionData.characterKey;
+      const charName = selectionData.characterName;
+      
+      const pronounMaps = {
+        'sarah': { from: 'Sarah', to: 'Sarah', he: 'she', him: 'her', his: 'her', He: 'She', Him: 'Her', His: 'Her' },
+        'emma': { from: 'Sarah', to: 'Emma', he: 'she', him: 'her', his: 'her', He: 'She', Him: 'Her', His: 'Her' },
+        'tom': { from: 'Sarah', to: 'Tom', he: 'he', him: 'him', his: 'his', He: 'He', Him: 'Him', His: 'His' },
+        'alex': { from: 'Sarah', to: 'Alex', he: 'he', him: 'him', his: 'his', He: 'He', Him: 'Him', His: 'His' }
+      };
+      
+      const map = pronounMaps[charKey];
+      if (!map || charKey === 'sarah') return;
+      
+      function replaceText(text) {
+        if (typeof text !== 'string') return text;
+        
+        return text
+          .replace(/\bSarah\b/g, map.to)
+          .replace(/\bshe\b/g, map.he)
+          .replace(/\bher\b/g, map.him)
+          .replace(/\bhers\b/g, map.his)
+          .replace(/\bShe\b/g, map.He)
+          .replace(/\bHer\b/g, map.Him);
+      }
+      
+      if (quizData.clozeTemplates) {
+        quizData.clozeTemplates.forEach(template => {
+          template.text = replaceText(template.text);
+        });
+      }
+      
+      if (quizData.multipleChoiceQuestions) {
+        quizData.multipleChoiceQuestions.forEach(q => {
+          q.text = replaceText(q.text);
+        });
+      }
+      
+      if (quizData.mistakeSentences) {
+        quizData.mistakeSentences.forEach(s => {
+          s.sentence = s.sentence.map(word => replaceText(word));
+        });
+      }
+      
+      if (quizData.orderingSentences && quizData.orderingSentences[0]) {
+        quizData.orderingSentences[0].forEach(s => {
+          s.text = replaceText(s.text);
+        });
+      }
+      
+      console.log(`✅ Pronouns replaced for ${charName}`);
+    }
+
+    // ============================================
+    // CATEGORY PILLS
+    // ============================================
+    
+    function renderCategoryPills() {
+      const pillsContainer = document.getElementById('categoryPills');
+      const categories = ProgressTracker.CATEGORIES;
+      const charKey = selectionData.characterKey;
+      
+      pillsContainer.innerHTML = '';
+      
+      Object.keys(categories).forEach(catKey => {
+        const cat = categories[catKey];
+        const progress = ProgressTracker.getCategoryProgress(charKey, catKey);
+        
+        const pill = document.createElement('div');
+        pill.className = 'category-pill';
+        if (catKey === selectionData.category) pill.classList.add('active');
+        if (progress.trophy) pill.classList.add('completed');
+        
+        pill.innerHTML = `${cat.icon} ${cat.name}`;
+        pill.addEventListener('click', () => switchCategory(catKey));
+        
+        pillsContainer.appendChild(pill);
+      });
+    }
+
+    function switchCategory(newCategory) {
+      if (newCategory === selectionData.category) return;
+      
+      selectionData.category = newCategory;
+      selectionData.categoryTitle = ProgressTracker.CATEGORIES[newCategory].name;
+      selectionData.categoryIcon = ProgressTracker.CATEGORIES[newCategory].icon;
+      
+      sessionStorage.setItem('selectionData', JSON.stringify(selectionData));
+      location.reload();
+    }
+
+    // ============================================
+    // PRIZE ELIGIBILITY
+    // ============================================
+    
+    function checkPrizeEligibility() {
+      const charKey = selectionData.characterKey;
+      const category = selectionData.category;
+      const progress = ProgressTracker.getCategoryProgress(charKey, category);
+      
+      const bannerContainer = document.getElementById('prizeBanner');
+      
+      if (progress.matchingScore === 20) {
+        bannerContainer.innerHTML = `
+          <div class="prize-banner eligible">
+            <div class="prize-text">
+              🏆 Matching completed! Get 20/20 on this quiz to earn your trophy!
+            </div>
+          </div>
+        `;
+      } else {
+        bannerContainer.innerHTML = `
+          <div class="prize-banner ineligible">
+            <div class="prize-text">
+              ⚠️ Complete the matching game with 20/20 first to be prize-eligible!
+            </div>
+          </div>
+        `;
+      }
+    }
+
+    // ============================================
+    // MODE TOGGLE
+    // ============================================
+
+    function toggleMode() {
+      const toggleSwitch = document.getElementById('modeToggleSwitch');
+      const quizCarousel = document.getElementById('quizCarousel');
+      const buttonNavWrapper = document.getElementById('buttonNavWrapper');
+      const externalNav = document.getElementById('externalNav');
+      
+      if (currentMode === 'dots') {
+        currentMode = 'arrows';
+        toggleSwitch.classList.add('active');
+        quizCarousel.style.display = 'none';
+        buttonNavWrapper.classList.add('active');
+        externalNav.classList.add('active');
+        
+        renderButtonNavCard();
+      } else {
+        currentMode = 'dots';
+        toggleSwitch.classList.remove('active');
+        quizCarousel.style.display = 'flex';
+        buttonNavWrapper.classList.remove('active');
+        externalNav.classList.remove('active');
+      }
+      
+      updateNavigation();
+    }
+
+    function renderButtonNavCard() {
+      const card = document.getElementById('buttonNavCard');
+      
+      if (currentCard === 0) {
+        card.innerHTML = renderClozeExerciseHTML();
+      } else if (currentCard === 1) {
+        card.innerHTML = renderMultipleChoiceHTML();
+      } else if (currentCard === 2) {
+        card.innerHTML = renderMistakeSentencesHTML();
+      } else if (currentCard === 3) {
+        card.innerHTML = renderOrderingSentencesHTML();
+      }
+      
+      attachExerciseListeners();
+    }
+
+    // ============================================
+    // RENDER EXERCISE NAVIGATION DOTS
+    // ============================================
+
+    function renderExerciseDots() {
+      const container = document.getElementById('exerciseDotsContainer');
+      container.innerHTML = '';
+      
+      const exerciseTitles = ['Fill Blanks', 'Multiple Choice', 'Spot Mistake', 'Put in Order'];
+      
+      for (let i = 0; i < 4; i++) {
+        const dot = document.createElement('div');
+        dot.className = 'exercise-dot';
+        dot.title = exerciseTitles[i];
+        
+        if (i === currentCard) {
+          dot.classList.add('current');
+        }
+        
+        if (cardCompleted[i]) {
+          dot.classList.add('completed');
+        }
+        
+        dot.addEventListener('click', () => goToCard(i));
+        container.appendChild(dot);
+      }
+    }
+
+    // ============================================
+    // RENDER ALL EXERCISES (CAROUSEL MODE)
+    // ============================================
+    
+    function renderAllExercises() {
+      const track = document.getElementById('carouselTrack');
+      track.innerHTML = '';
+
+      const card1 = document.createElement('div');
+      card1.className = 'quiz-card-wrapper active';
+      card1.innerHTML = `
+        <div class="quiz-card">
+          ${renderClozeExerciseHTML()}
+        </div>
+      `;
+      track.appendChild(card1);
+
+      const card2 = document.createElement('div');
+      card2.className = 'quiz-card-wrapper';
+      card2.innerHTML = `
+        <div class="quiz-card">
+          ${renderMultipleChoiceHTML()}
+        </div>
+      `;
+      track.appendChild(card2);
+
+      const card3 = document.createElement('div');
+      card3.className = 'quiz-card-wrapper';
+      card3.innerHTML = `
+        <div class="quiz-card">
+          ${renderMistakeSentencesHTML()}
+        </div>
+      `;
+      track.appendChild(card3);
+
+      const card4 = document.createElement('div');
+      card4.className = 'quiz-card-wrapper';
+      card4.innerHTML = `
+        <div class="quiz-card">
+          ${renderOrderingSentencesHTML()}
+        </div>
+      `;
+      track.appendChild(card4);
+
+      attachExerciseListeners();
+      renderExerciseDots();
+    }
+
+    function renderClozeExerciseHTML() {
+      const template = quizData.clozeTemplates[0];
+      clozeAnswers = template.answers;
+      userClozeAnswers = new Array(clozeAnswers.length).fill('');
+      
+      let text = template.text;
+      const paragraphs = text.split('\n\n');
+      
+      let blankIndex = 0;
+      let html = '<h2 class="card-title">📝 Exercise 1/4: Fill in the Blanks</h2>';
+      html += '<p class="card-subtitle">Type directly into each blank space</p>';
+      html += '<div class="cloze-text">';
+      
+      paragraphs.forEach(para => {
+        let processedPara = para;
+        const blankPattern = /(\w)_{3,}/g;
+        processedPara = processedPara.replace(blankPattern, (match, firstLetter) => {
+          const value = userClozeAnswers[blankIndex] || '';
+          const blankHTML = `<input type="text" class="cloze-blank${value ? ' filled' : ''}" data-index="${blankIndex}" value="${value}" placeholder="${firstLetter}___">`;
+          blankIndex++;
+          return blankHTML;
+        });
+        html += `<p>${processedPara}</p>`;
+      });
+      
+      html += '</div>';
+      return html;
+    }
+
+    function renderMultipleChoiceHTML() {
+      const questions = quizData.multipleChoiceQuestions.slice(0, 5);
+      mcAnswers = questions.map(q => q.correct);
+      userMCAnswers = new Array(5).fill('');
+      
+      let html = '<h2 class="card-title">✅ Exercise 2/4: Multiple Choice</h2>';
+      html += '<p class="card-subtitle">Choose the correct verb form for each sentence</p>';
+      html += '<div class="question-list">';
+      
+      questions.forEach((q, qIndex) => {
+        html += `
+          <div class="question-item">
+            <div class="question-text">${qIndex + 1}. ${q.text}</div>
+            <div class="question-options">
+              ${q.options.map((opt, optIndex) => `
+                <button class="option-btn" data-q="${qIndex}" data-opt="${opt}">${opt}</button>
+              `).join('')}
+            </div>
+          </div>
+        `;
+      });
+      
+      html += '</div>';
+      return html;
+    }
+
+    function renderMistakeSentencesHTML() {
+      const sentences = quizData.mistakeSentences.slice(0, 5);
+      mistakeData = sentences;
+      userMistakeAnswers = new Array(5).fill(-1);
+      
+      let html = '<h2 class="card-title">🔍 Exercise 3/4: Spot the Mistake</h2>';
+      html += '<p class="card-subtitle">Click on the word that is incorrect in each sentence</p>';
+      html += '<div class="sentence-list">';
+      
+      sentences.forEach((s, sIndex) => {
+        html += `
+          <div class="sentence-item">
+            <div class="sentence-words">
+              ${s.sentence.map((word, wIndex) => `
+                <span class="word" data-s="${sIndex}" data-w="${wIndex}">${word}</span>
+              `).join('')}
+            </div>
+          </div>
+        `;
+      });
+      
+      html += '</div>';
+      return html;
+    }
+
+    function renderOrderingSentencesHTML() {
+      const sentences = quizData.orderingSentences[0];
+      orderingData = sentences;
+      userOrderingAnswers = new Array(7).fill('');
+      
+      const shuffled = [...sentences].sort(() => Math.random() - 0.5);
+      
+      let html = '<h2 class="card-title">🔢 Exercise 4/4: Put Sentences in Order</h2>';
+      html += '<p class="card-subtitle">Number the sentences from 1-7 to create a logical story</p>';
+      html += '<div class="ordering-container">';
+      
+      shuffled.forEach((s, index) => {
+        html += `
+          <div class="ordering-item">
+            <input type="number" class="order-input" min="1" max="7" data-idx="${index}" data-correct="${s.order}">
+            <div class="sentence-text">${s.text}</div>
+          </div>
+        `;
+      });
+      
+      html += '</div>';
+      return html;
+    }
+
+    // ============================================
+    // ATTACH EVENT LISTENERS
+    // ============================================
+
+    function attachExerciseListeners() {
+      // Cloze blank inputs
+      document.querySelectorAll('.cloze-blank').forEach(input => {
+        input.addEventListener('input', function() {
+          const index = parseInt(this.dataset.index);
+          userClozeAnswers[index] = this.value.trim();
+          
+          if (this.value.trim()) {
+            this.classList.add('filled');
+          } else {
+            this.classList.remove('filled');
+          }
+        });
+      });
+
+      // Multiple choice buttons
+      document.querySelectorAll('.option-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          const qIdx = parseInt(this.dataset.q);
+          const opt = this.dataset.opt;
+          selectMCOption(qIdx, opt);
+        });
+      });
+
+      // Mistake word selection
+      document.querySelectorAll('.word').forEach(word => {
+        word.addEventListener('click', function() {
+          const sIdx = parseInt(this.dataset.s);
+          const wIdx = parseInt(this.dataset.w);
+          selectMistakeWord(sIdx, wIdx);
+        });
+      });
+
+      // Ordering inputs
+      document.querySelectorAll('.order-input').forEach(input => {
+        input.addEventListener('change', function() {
+          const idx = parseInt(this.dataset.idx);
+          updateOrderAnswer(idx, this.value);
+        });
+      });
+    }
+
+    // ============================================
+    // EXERCISE INTERACTIONS
+    // ============================================
+
+    function selectMCOption(questionIndex, option) {
+      if (cardCompleted[1]) return;
+      
+      userMCAnswers[questionIndex] = option;
+      
+      const questionItem = document.querySelectorAll('.question-item')[questionIndex];
+      const buttons = questionItem.querySelectorAll('.option-btn');
+      
+      buttons.forEach(btn => {
+        btn.classList.remove('selected');
+        if (btn.dataset.opt === option) {
+          btn.classList.add('selected');
+        }
+      });
+    }
+
+    function selectMistakeWord(sentenceIndex, wordIndex) {
+      if (cardCompleted[2]) return;
+      
+      userMistakeAnswers[sentenceIndex] = wordIndex;
+      
+      const sentenceItem = document.querySelectorAll('.sentence-item')[sentenceIndex];
+      const words = sentenceItem.querySelectorAll('.word');
+      
+      words.forEach((word, idx) => {
+        word.classList.remove('error');
+        if (idx === wordIndex) {
+          word.classList.add('error');
+        }
+      });
+    }
+
+    function updateOrderAnswer(index, value) {
+      userOrderingAnswers[index] = parseInt(value) || 0;
+    }
+
+    // ============================================
+    // CHECK ANSWERS
+    // ============================================
+    
+    function checkAnswers() {
+      if (currentCard === 0) checkClozeAnswers();
+      else if (currentCard === 1) checkMCAnswers();
+      else if (currentCard === 2) checkMistakeAnswers();
+      else if (currentCard === 3) checkOrderingAnswers();
+    }
+
+    function checkClozeAnswers() {
+      let score = 0;
+      
+      const blanks = document.querySelectorAll('.cloze-blank');
+      clozeAnswers.forEach((correct, index) => {
+        const userAnswer = userClozeAnswers[index].toLowerCase();
+        const correctAnswer = correct.toLowerCase();
+        const blank = blanks[index];
+        
+        blank.classList.remove('filled', 'wrong', 'correct');
+        
+        if (userAnswer === correctAnswer) {
+          score++;
+          blank.classList.add('correct');
+        } else {
+          blank.classList.add('wrong');
+        }
+      });
+      
+      cardScores[0] = score;
+      cardCompleted[0] = true;
+      updateScore();
+      renderExerciseDots();
+      
+      showToast(`Cloze Exercise: ${score} / ${clozeAnswers.length} correct!`, score === clozeAnswers.length ? 'success' : 'info');
+    }
+
+    function checkMCAnswers() {
+      let score = 0;
+      
+      document.querySelectorAll('.question-item').forEach((item, qIndex) => {
+        const buttons = item.querySelectorAll('.option-btn');
+        const userAnswer = userMCAnswers[qIndex];
+        const correctAnswer = mcAnswers[qIndex];
+        
+        buttons.forEach(btn => {
+          btn.classList.remove('selected', 'correct', 'wrong');
+          const btnText = btn.dataset.opt;
+          
+          if (btnText === correctAnswer) {
+            btn.classList.add('correct');
+          }
+          
+          if (btnText === userAnswer && userAnswer !== correctAnswer) {
+            btn.classList.add('wrong');
+          }
+        });
+        
+        if (userAnswer === correctAnswer) {
+          score++;
+        }
+      });
+      
+      cardScores[1] = score;
+      cardCompleted[1] = true;
+      updateScore();
+      renderExerciseDots();
+      
+      showToast(`Multiple Choice: ${score} / 5 correct!`, score === 5 ? 'success' : 'info');
+    }
+
+    function checkMistakeAnswers() {
+      let score = 0;
+      
+      document.querySelectorAll('.sentence-item').forEach((item, sIndex) => {
+        const words = item.querySelectorAll('.word');
+        const userAnswer = userMistakeAnswers[sIndex];
+        const correctAnswer = mistakeData[sIndex].errorIndex;
+        
+        words.forEach((word, wIndex) => {
+          word.classList.remove('error', 'correct-word');
+          
+          if (wIndex === correctAnswer) {
+            word.classList.add('correct-word');
+          }
+        });
+        
+        if (userAnswer === correctAnswer) {
+          score++;
+        }
+      });
+      
+      cardScores[2] = score;
+      cardCompleted[2] = true;
+      updateScore();
+      renderExerciseDots();
+      
+      showToast(`Spot the Mistake: ${score} / 5 correct!`, score === 5 ? 'success' : 'info');
+    }
+
+    function checkOrderingAnswers() {
+      let score = 0;
+      
+      document.querySelectorAll('.order-input').forEach((input, index) => {
+        const userAnswer = parseInt(input.value) || 0;
+        const correctAnswer = parseInt(input.dataset.correct);
+        
+        input.classList.remove('correct', 'wrong');
+        
+        if (userAnswer === correctAnswer) {
+          score++;
+          input.classList.add('correct');
+        } else {
+          input.classList.add('wrong');
+        }
+      });
+      
+      cardScores[3] = score;
+      cardCompleted[3] = true;
+      updateScore();
+      renderExerciseDots();
+      
+      showToast(`Sentence Ordering: ${score} / 7 correct!`, score === 7 ? 'success' : 'info');
+      
+      if (cardCompleted.every(c => c)) {
+        saveQuizScore();
+      }
+    }
+
+    // ============================================
+    // SCORE MANAGEMENT
+    // ============================================
+    
+    function updateScore() {
+      totalScore = cardScores.reduce((a, b) => a + b, 0);
+      document.getElementById('scoreDisplay').textContent = `Score: ${totalScore} / 20`;
+      
+      const checkBtn = document.getElementById('checkBtn');
+      if (cardCompleted[currentCard]) {
+        checkBtn.textContent = 'Checked ✓';
+        checkBtn.classList.add('success');
+      } else {
+        checkBtn.textContent = 'Check Answers';
+        checkBtn.classList.remove('success');
+      }
+    }
+
+    function saveQuizScore() {
+      const charKey = selectionData.characterKey;
+      const category = selectionData.category;
+      
+      ProgressTracker.saveQuizScore(charKey, category, totalScore);
+      
+      const progress = ProgressTracker.getCategoryProgress(charKey, category);
+      
+      if (progress.trophy) {
+        setTimeout(() => {
+          showToast('🏆 CONGRATULATIONS! You earned a trophy! You completed both games with 20/20!', 'success', 6000);
+          setTimeout(() => {
+            window.location.href = '../index.html';
+          }, 3000);
+        }, 500);
+      } else if (totalScore === 20 && progress.matchingScore < 20) {
+        showToast('🎉 Perfect score! But you need 20/20 on the matching game too for the trophy.', 'info', 5000);
+      } else if (totalScore < 20) {
+        showToast(`Quiz completed: ${totalScore}/20. Keep practicing to improve your score!`, 'info', 4000);
+      }
+    }
+
+    // ============================================
+    // NAVIGATION
+    // ============================================
+    
+    function nextCard() {
+      if (currentCard < 3) {
+        currentCard++;
+        updateCarouselPosition();
+        updateScore();
+        updateExerciseInfo();
+        
+        if (currentMode === 'arrows') {
+          renderButtonNavCard();
+        }
+      }
+    }
+
+    function previousCard() {
+      if (currentCard > 0) {
+        currentCard--;
+        updateCarouselPosition();
+        updateScore();
+        updateExerciseInfo();
+        
+        if (currentMode === 'arrows') {
+          renderButtonNavCard();
+        }
+      }
+    }
+
+    function goToCard(index) {
+      currentCard = index;
+      updateCarouselPosition();
+      updateScore();
+      updateExerciseInfo();
+      
+      if (currentMode === 'arrows') {
+        renderButtonNavCard();
+      }
+    }
+
+    function updateCarouselPosition() {
+      const wrappers = document.querySelectorAll('.quiz-card-wrapper');
+      
+      wrappers.forEach((wrapper, i) => {
+        wrapper.classList.remove('active', 'prev', 'next');
+        
+        if (i === currentCard) {
+          wrapper.classList.add('active');
+        } else if (i < currentCard) {
+          wrapper.classList.add('prev');
+        } else {
+          wrapper.classList.add('next');
+        }
+      });
+      
+      updateNavigation();
+    }
+
+    function updateNavigation() {
+      document.getElementById('prevArrowCarousel').classList.toggle('disabled', currentCard === 0);
+      document.getElementById('nextArrowCarousel').classList.toggle('disabled', currentCard === 3);
+      document.getElementById('prevExerciseBtn').disabled = currentCard === 0;
+      document.getElementById('nextExerciseBtn').disabled = currentCard === 3;
+      
+      renderExerciseDots();
+    }
+
+    function updateExerciseInfo() {
+      const titles = ['Fill in the Blanks', 'Multiple Choice', 'Spot the Mistake', 'Put in Order'];
+      document.getElementById('exerciseInfo').textContent = `Exercise ${currentCard + 1} of 4: ${titles[currentCard]}`;
+    }
+
+    // ============================================
+    // KEYBOARD NAVIGATION
+    // ============================================
+    
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' && currentCard < 3) nextCard();
+      else if (e.key === 'ArrowLeft' && currentCard > 0) previousCard();
+    });
+
+    // ============================================
+    // INITIALIZE ON PAGE LOAD
+    // ============================================
+    
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initialize);
+    } else {
+      initialize();
+    }
+  </script>
+</body>
+</html>
