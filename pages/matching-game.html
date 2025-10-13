@@ -1,4 +1,4 @@
-f<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -207,19 +207,146 @@ f<!DOCTYPE html>
       box-shadow: 0 0 10px rgba(201, 169, 97, 0.5);
     }
 
+    /* NEW: Top-level card navigation with dots and toggle */
+    .card-nav-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.75rem;
+      padding: 0 0.5rem;
+      gap: 1rem;
+      flex-shrink: 0;
+    }
+
+    .card-dots-container {
+      display: flex;
+      gap: 0.75rem;
+      flex: 1;
+      justify-content: flex-start;
+    }
+
+    .card-dot {
+      width: 1rem;
+      height: 1rem;
+      border-radius: 50%;
+      background: rgba(99, 99, 102, 0.3);
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      border: 2px solid rgba(99, 99, 102, 0.2);
+      position: relative;
+    }
+
+    .card-dot:hover {
+      transform: scale(1.3);
+      background: rgba(142, 142, 147, 0.5);
+    }
+
+    .card-dot.current {
+      background: #C9A961;
+      box-shadow: 0 0 0 3px rgba(201, 169, 97, 0.4);
+      transform: scale(1.5);
+    }
+
+    .card-dot.completed {
+      background: linear-gradient(135deg, #84cc16 0%, #65a30d 100%);
+      box-shadow: 0 0 8px rgba(132, 204, 22, 0.4);
+    }
+
+    .card-dot.completed.current {
+      background: linear-gradient(135deg, #84cc16 0%, #65a30d 100%);
+      box-shadow: 0 0 0 3px rgba(201, 169, 97, 0.6);
+      transform: scale(1.5);
+    }
+
+    /* Mode Toggle - Same position as multiple-choice */
+    .mode-toggle-container {
+      display: flex;
+      align-items: center;
+      gap: 0.625rem;
+      font-size: 0.6875rem;
+      font-weight: 500;
+      color: #636366;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      flex-shrink: 0;
+    }
+
+    .mode-toggle-label {
+      opacity: 0.6;
+      transition: opacity 0.3s;
+    }
+
+    .mode-toggle-container:hover .mode-toggle-label {
+      opacity: 0.85;
+    }
+
+    .mode-toggle-switch {
+      position: relative;
+      width: 3rem;
+      height: 1.5rem;
+      background: rgba(99, 99, 102, 0.25);
+      border-radius: 0.75rem;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      border: 1px solid rgba(99, 99, 102, 0.2);
+    }
+
+    .mode-toggle-switch:hover {
+      background: rgba(99, 99, 102, 0.35);
+    }
+
+    .mode-toggle-switch::after {
+      content: '';
+      position: absolute;
+      top: 0.125rem;
+      left: 0.125rem;
+      width: 1.125rem;
+      height: 1.125rem;
+      background: #8e8e93;
+      border-radius: 50%;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    .mode-toggle-switch.active {
+      background: rgba(201, 169, 97, 0.25);
+      border-color: rgba(201, 169, 97, 0.3);
+    }
+
+    .mode-toggle-switch.active::after {
+      left: 1.625rem;
+      background: #C9A961;
+    }
+
+    /* Match progress dots - smaller, inside content */
+    .match-progress-dots {
+      display: flex;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+      flex-shrink: 0;
+    }
+
+    .match-dot {
+      width: 0.75rem;
+      height: 0.75rem;
+      border-radius: 50%;
+      background: rgba(99, 99, 102, 0.3);
+      transition: all 0.3s;
+      border: 2px solid rgba(99, 99, 102, 0.2);
+    }
+
+    .match-dot.completed {
+      background: linear-gradient(135deg, #84cc16 0%, #65a30d 100%);
+      box-shadow: 0 0 8px rgba(132, 204, 22, 0.4);
+    }
+
     .score-display {
       text-align: center;
       margin-bottom: 0.75rem;
-      font-size: 0.95rem;
+      font-size: 0.85rem;
       color: #e8e8e8;
       font-weight: 600;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 1rem;
-      flex-wrap: wrap;
-      padding: 0 1rem;
-      position: relative;
       flex-shrink: 0;
     }
 
@@ -229,26 +356,24 @@ f<!DOCTYPE html>
       font-family: 'Space Grotesk', sans-serif;
     }
 
-    .score-dots {
+    .card-info {
+      text-align: center;
+      font-size: 0.75rem;
+      color: #636366;
+      margin-bottom: 0.5rem;
+      flex-shrink: 0;
+    }
+
+    /* Content wrapper for both modes */
+    .content-wrapper {
+      flex: 1;
       display: flex;
-      gap: 0.4rem;
-      position: absolute;
-      left: 50%;
-      transform: translateX(-50%);
+      flex-direction: column;
+      min-height: 0;
+      position: relative;
     }
 
-    .score-left {
-      flex: 1;
-      text-align: left;
-      font-size: 0.85rem;
-    }
-
-    .score-right {
-      flex: 1;
-      text-align: right;
-      font-size: 0.85rem;
-    }
-
+    /* CAROUSEL MODE */
     .carousel-wrapper {
       flex: 1;
       display: flex;
@@ -258,8 +383,6 @@ f<!DOCTYPE html>
       overflow: visible;
       margin: 0 -1.5rem;
       padding: 0 1.5rem;
-      touch-action: pan-y;
-      pointer-events: none;
       min-height: 0;
     }
 
@@ -268,7 +391,6 @@ f<!DOCTYPE html>
       gap: 2rem;
       transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
       will-change: transform;
-      pointer-events: none;
       width: 100%;
       height: 100%;
     }
@@ -290,13 +412,24 @@ f<!DOCTYPE html>
       pointer-events: all;
     }
 
+    /* BUTTON NAV MODE */
+    .button-nav-wrapper {
+      display: none;
+      flex: 1;
+      flex-direction: column;
+      min-height: 0;
+    }
+
+    .button-nav-wrapper.active {
+      display: flex;
+    }
+
     .matching-card {
       width: 100%;
       max-width: 800px;
       display: flex;
       flex-direction: column;
       gap: 1rem;
-      pointer-events: all;
       height: 100%;
     }
 
@@ -406,50 +539,7 @@ f<!DOCTYPE html>
       50% { transform: scale(1.05); }
     }
 
-    .controls {
-      display: flex;
-      gap: 0.75rem;
-      justify-content: center;
-      flex-wrap: wrap;
-      margin-top: 0.75rem;
-      flex-shrink: 0;
-    }
-
-    .btn {
-      background: #1a1a1a;
-      border: none;
-      border-radius: 12px;
-      padding: 0.75rem 1.5rem;
-      color: #e8e8e8;
-      font-size: 0.8rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.03em;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      box-shadow: 
-        4px 4px 8px #000000,
-        -4px -4px 8px #2a2a2a;
-      font-family: 'Inter', sans-serif;
-    }
-
-    .btn:hover:not(:disabled) {
-      transform: translateY(-2px);
-      box-shadow: 
-        6px 6px 12px #000000,
-        -6px -6px 12px #2a2a2a;
-    }
-
-    .btn.primary {
-      background: rgba(201, 169, 97, 0.2);
-      color: #C9A961;
-    }
-
-    .btn:disabled {
-      opacity: 0.4;
-      cursor: not-allowed;
-    }
-
+    /* Navigation arrows for carousel mode */
     .nav-arrows {
       position: absolute;
       top: 50%;
@@ -494,35 +584,89 @@ f<!DOCTYPE html>
       cursor: not-allowed;
     }
 
-    .nav-dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background: rgba(201, 169, 97, 0.3);
+    /* External navigation for button mode */
+    .external-nav {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      gap: 1.5rem;
+      margin-top: 1rem;
+      flex-shrink: 0;
+    }
+
+    .external-nav.active {
+      display: flex;
+    }
+
+    .external-nav-arrow {
+      background: rgba(99, 99, 102, 0.25);
+      border: 1px solid rgba(99, 99, 102, 0.2);
+      color: #aeaeb2;
+      padding: 0.75rem 1.5rem;
+      border-radius: 0.75rem;
       cursor: pointer;
-      transition: all 0.3s;
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      letter-spacing: -0.01em;
+      min-width: 140px;
+    }
+
+    .external-nav-arrow:hover:not(:disabled) {
+      background: rgba(201, 169, 97, 0.25);
+      border-color: rgba(201, 169, 97, 0.3);
+      color: #C9A961;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(201, 169, 97, 0.2);
+    }
+
+    .external-nav-arrow:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+
+    .controls {
+      display: flex;
+      gap: 0.75rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 0.75rem;
+      flex-shrink: 0;
+    }
+
+    .btn {
+      background: #1a1a1a;
+      border: none;
+      border-radius: 12px;
+      padding: 0.75rem 1.5rem;
+      color: #e8e8e8;
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      cursor: pointer;
+      transition: all 0.3s ease;
       box-shadow: 
-        2px 2px 4px #000000,
-        -2px -2px 4px #2a2a2a;
-      position: relative;
+        4px 4px 8px #000000,
+        -4px -4px 8px #2a2a2a;
+      font-family: 'Inter', sans-serif;
     }
 
-    .nav-dot:hover {
-      background: rgba(201, 169, 97, 0.6);
-      transform: scale(1.2);
-    }
-
-    .nav-dot.active {
-      background: #C9A961;
-      transform: scale(1.3);
+    .btn:hover:not(:disabled) {
+      transform: translateY(-2px);
       box-shadow: 
-        0 0 10px rgba(201, 169, 97, 0.5),
-        2px 2px 4px #000000,
-        -2px -2px 4px #2a2a2a;
+        6px 6px 12px #000000,
+        -6px -6px 12px #2a2a2a;
     }
 
-    .nav-dot.completed {
-      background: #4ade80;
+    .btn.primary {
+      background: rgba(201, 169, 97, 0.2);
+      color: #C9A961;
+    }
+
+    .btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
     }
 
     .celebration {
@@ -597,24 +741,26 @@ f<!DOCTYPE html>
         min-height: 100vh;
         border-radius: 16px;
       }
-.carousel-wrapper {
-  flex: 1 1 auto;
-  min-height: 0;
-  overflow: hidden;
-}
 
-.matching-card {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-}
+      .carousel-wrapper {
+        flex: 1 1 auto;
+        min-height: 0;
+        overflow: hidden;
+      }
 
-.matching-area {
-  flex: 1 1 auto;
-  min-height: 0;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
-}
+      .matching-card {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .matching-area {
+        flex: 1 1 auto;
+        min-height: 0;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+
       .header {
         margin-bottom: 0.5rem;
       }
@@ -651,6 +797,34 @@ f<!DOCTYPE html>
         display: none;
       }
 
+      .card-nav-container {
+        padding: 0 0.25rem;
+        gap: 0.75rem;
+      }
+
+      .card-dot {
+        width: 0.875rem;
+        height: 0.875rem;
+      }
+
+      .mode-toggle-label {
+        font-size: 0.625rem;
+      }
+
+      .mode-toggle-switch {
+        width: 2.5rem;
+        height: 1.25rem;
+      }
+
+      .mode-toggle-switch::after {
+        width: 0.95rem;
+        height: 0.95rem;
+      }
+
+      .mode-toggle-switch.active::after {
+        left: 1.35rem;
+      }
+
       .progress-bar {
         height: 4px;
         margin-bottom: 0.5rem;
@@ -659,12 +833,16 @@ f<!DOCTYPE html>
       .score-display {
         margin-bottom: 0.5rem;
         font-size: 0.8rem;
-        padding: 0 0.5rem;
       }
 
-      .score-dots .nav-dot {
-        width: 8px;
-        height: 8px;
+      .match-progress-dots {
+        gap: 0.4rem;
+        margin-bottom: 0.75rem;
+      }
+
+      .match-dot {
+        width: 0.625rem;
+        height: 0.625rem;
       }
 
       .matching-area {
@@ -698,6 +876,12 @@ f<!DOCTYPE html>
         font-size: 1.2rem;
       }
 
+      .external-nav-arrow {
+        padding: 0.65rem 1.25rem;
+        font-size: 0.8rem;
+        min-width: 120px;
+      }
+
       .back-btn {
         top: 1rem;
         left: 1rem;
@@ -714,30 +898,6 @@ f<!DOCTYPE html>
         padding: 0.65rem 1rem;
         font-size: 0.75rem;
       }
-    }
-
-    /* Landscape phone hint */
-    @media (max-width: 768px) and (orientation: portrait) {
-      .landscape-hint {
-        position: fixed;
-        bottom: 1rem;
-        left: 50%;
-        transform: translateX(-50%);
-        background: rgba(201, 169, 97, 0.9);
-        color: #000;
-        padding: 0.5rem 1rem;
-        border-radius: 20px;
-        font-size: 0.75rem;
-        font-weight: 600;
-        z-index: 100;
-        animation: fadeIn 0.5s ease;
-        display: none;
-      }
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateX(-50%) translateY(10px); }
-      to { opacity: 1; transform: translateX(-50%) translateY(0); }
     }
   </style>
 </head>
@@ -766,26 +926,60 @@ f<!DOCTYPE html>
       <div class="progress-fill" id="progressFill" style="width: 0%"></div>
     </div>
 
-    <div class="score-display">
-      <div class="score-left">Card <span id="cardNumber">1</span>/4</div>
-      <div class="score-dots" id="scoreDots"></div>
-      <div class="score-right">Score: <span class="score-number" id="scoreDisplay">0/5</span></div>
+    <!-- NEW: Top navigation with card dots and mode toggle -->
+    <div class="card-nav-container">
+      <div class="card-dots-container" id="cardDotsContainer">
+        <!-- Card navigation dots inserted by JavaScript -->
+      </div>
+      <div class="mode-toggle-container">
+        <span class="mode-toggle-label">Dots</span>
+        <div class="mode-toggle-switch" id="modeToggleSwitch" onclick="toggleMode()"></div>
+        <span class="mode-toggle-label">Arrows</span>
+      </div>
     </div>
 
-    <div class="carousel-wrapper">
-      <div class="nav-arrows">
-        <button class="arrow" id="prevArrow" onclick="prevCard()">‹</button>
-        <button class="arrow" id="nextArrow" onclick="nextCard()">›</button>
+    <div class="card-info" id="cardInfo">Card 1 of 4</div>
+
+    <!-- Match progress dots (5 smaller dots for current card) -->
+    <div class="match-progress-dots" id="matchProgressDots">
+      <!-- Match dots inserted by JavaScript -->
+    </div>
+
+    <div class="score-display">
+      Score: <span class="score-number" id="scoreDisplay">0/5</span>
+    </div>
+
+    <!-- Content wrapper that switches between modes -->
+    <div class="content-wrapper">
+      <!-- CAROUSEL MODE (Dots mode) -->
+      <div class="carousel-wrapper" id="carouselWrapper">
+        <div class="nav-arrows">
+          <button class="arrow" id="prevArrow" onclick="prevCard()">‹</button>
+          <button class="arrow" id="nextArrow" onclick="nextCard()">›</button>
+        </div>
+        
+        <div class="carousel-track" id="carouselTrack">
+          <!-- Cards will be inserted here by JavaScript -->
+        </div>
       </div>
-      
-      <div class="carousel-track" id="carouselTrack">
-        <!-- Cards will be inserted here by JavaScript -->
+
+      <!-- BUTTON NAV MODE (Arrows mode) -->
+      <div class="button-nav-wrapper" id="buttonNavWrapper">
+        <div class="matching-card" id="buttonNavCard">
+          <!-- Current card content inserted by JavaScript -->
+        </div>
       </div>
+    </div>
+
+    <!-- External navigation for button mode -->
+    <div class="external-nav" id="externalNav">
+      <button class="external-nav-arrow" id="prevCardBtn" onclick="prevCard()">← Previous Card</button>
+      <button class="external-nav-arrow" id="nextCardBtn" onclick="nextCard()">Next Card →</button>
     </div>
 
     <div class="controls">
       <button class="btn" onclick="checkMatches()">✓ Check Answers</button>
-      <button class="btn primary" id="nextCardBtn" onclick="nextCard()" disabled>Next Card →</button>
+      <button class="btn primary" id="nextCardBtnInline" onclick="nextCard()" disabled>Next Card →</button>
     </div>
 
     <div class="footer" id="footer" style="display: none;">
@@ -800,13 +994,26 @@ f<!DOCTYPE html>
 
   <script>
     // ============================================
-    // LOAD SELECTION + FETCH GRAMMAR DATA
+    // GLOBAL STATE
     // ============================================
     
     let selectionData = null;
     let grammarData = null;
     let characterData = null;
+    let currentMode = 'dots'; // 'dots' or 'arrows'
+    
+    let currentCardIndex = 0;
+    let cardScores = [0, 0, 0, 0];
+    let userMatches = [[], [], [], []];
+    let cardVerbs = [];
+    let selectedVerb = null;
+    let selectedObject = null;
+    let allCardsChecked = [false, false, false, false];
 
+    // ============================================
+    // LOAD SELECTION + FETCH GRAMMAR DATA
+    // ============================================
+    
     async function loadData() {
       try {
         const stored = sessionStorage.getItem('selectionData');
@@ -952,16 +1159,112 @@ f<!DOCTYPE html>
     }
 
     // ============================================
-    // GAME STATE
+    // MODE TOGGLE
     // ============================================
-    
-    let currentCardIndex = 0;
-    let cardScores = [0, 0, 0, 0];
-    let userMatches = [[], [], [], []];
-    let cardVerbs = [];
-    let selectedVerb = null;
-    let selectedObject = null;
-    let allCardsChecked = [false, false, false, false];
+
+    function toggleMode() {
+      const toggleSwitch = document.getElementById('modeToggleSwitch');
+      const carouselWrapper = document.getElementById('carouselWrapper');
+      const buttonNavWrapper = document.getElementById('buttonNavWrapper');
+      const externalNav = document.getElementById('externalNav');
+      const navArrows = document.querySelector('.nav-arrows');
+      
+      if (currentMode === 'dots') {
+        // Switch to arrows mode
+        currentMode = 'arrows';
+        toggleSwitch.classList.add('active');
+        carouselWrapper.style.display = 'none';
+        buttonNavWrapper.classList.add('active');
+        externalNav.classList.add('active');
+        
+        renderButtonNavCard();
+      } else {
+        // Switch to dots mode
+        currentMode = 'dots';
+        toggleSwitch.classList.remove('active');
+        carouselWrapper.style.display = 'flex';
+        buttonNavWrapper.classList.remove('active');
+        externalNav.classList.remove('active');
+      }
+      
+      updateNavigation();
+    }
+
+    function renderButtonNavCard() {
+      const card = document.getElementById('buttonNavCard');
+      const verbs = cardVerbs[currentCardIndex];
+      
+      const shuffledObjects = verbs.map(v => ({
+        object: v.object,
+        emoji: v.emoji,
+        correctVerb: v.verb
+      })).sort(() => Math.random() - 0.5);
+
+      const verbsHTML = verbs.map((v, i) => `
+        <div class="match-item" data-type="verb" data-value="${v.verb}" data-card="${currentCardIndex}" data-index="${i}">
+          ${v.verb}
+        </div>
+      `).join('');
+
+      const objectsHTML = shuffledObjects.map((obj, i) => `
+        <div class="match-item" data-type="object" data-value="${obj.object}" data-correct="${obj.correctVerb}" data-card="${currentCardIndex}" data-index="${i}">
+          ${obj.object} <span class="emoji">${obj.emoji}</span>
+        </div>
+      `).join('');
+
+      card.innerHTML = `
+        <div class="card-title">Match ${currentCardIndex + 1}/4: Verbs & Objects</div>
+        <div class="matching-area">
+          <div class="column">${verbsHTML}</div>
+          <div class="column">${objectsHTML}</div>
+        </div>
+      `;
+      
+      attachMatchingListeners();
+    }
+
+    // ============================================
+    // RENDER CARD NAVIGATION DOTS
+    // ============================================
+
+    function renderCardDots() {
+      const container = document.getElementById('cardDotsContainer');
+      container.innerHTML = '';
+      
+      for (let i = 0; i < 4; i++) {
+        const dot = document.createElement('div');
+        dot.className = 'card-dot';
+        
+        if (i === currentCardIndex) {
+          dot.classList.add('current');
+        }
+        
+        if (allCardsChecked[i]) {
+          dot.classList.add('completed');
+        }
+        
+        dot.addEventListener('click', () => goToCard(i));
+        container.appendChild(dot);
+      }
+    }
+
+    function renderMatchProgressDots() {
+      const container = document.getElementById('matchProgressDots');
+      container.innerHTML = '';
+      
+      const matchesCount = userMatches[currentCardIndex].length;
+      
+      for (let i = 0; i < 5; i++) {
+        const dot = document.createElement('div');
+        dot.className = 'match-dot';
+        
+        if (i < matchesCount) {
+          dot.classList.add('completed');
+        }
+        
+        container.appendChild(dot);
+      }
+    }
 
     // ============================================
     // RENDER ALL CARDS
@@ -1016,7 +1319,8 @@ f<!DOCTYPE html>
       }
 
       attachMatchingListeners();
-      renderNavigation();
+      renderCardDots();
+      renderMatchProgressDots();
       updateCarouselPosition();
     }
 
@@ -1078,17 +1382,15 @@ f<!DOCTYPE html>
         if (navigator.vibrate) navigator.vibrate(50);
         showCelebration('✨');
         
+        renderMatchProgressDots();
+        
         if (userMatches[cardIndex].length === 5) {
           cardScores[cardIndex] = 5;
           allCardsChecked[cardIndex] = true;
           showCelebration('🎉');
-          document.getElementById('nextCardBtn').disabled = false;
+          document.getElementById('nextCardBtnInline').disabled = false;
           
-          const dots = document.querySelectorAll('.nav-dot');
-          if (dots[cardIndex]) {
-            dots[cardIndex].classList.add('completed');
-          }
-          
+          renderCardDots();
           updateProgress();
           checkAllComplete();
         }
@@ -1135,7 +1437,13 @@ f<!DOCTYPE html>
         currentCardIndex++;
         updateCarouselPosition();
         updateScore();
-        document.getElementById('nextCardBtn').disabled = true;
+        updateCardInfo();
+        renderMatchProgressDots();
+        document.getElementById('nextCardBtnInline').disabled = true;
+        
+        if (currentMode === 'arrows') {
+          renderButtonNavCard();
+        }
       }
     }
 
@@ -1144,6 +1452,24 @@ f<!DOCTYPE html>
         currentCardIndex--;
         updateCarouselPosition();
         updateScore();
+        updateCardInfo();
+        renderMatchProgressDots();
+        
+        if (currentMode === 'arrows') {
+          renderButtonNavCard();
+        }
+      }
+    }
+
+    function goToCard(index) {
+      currentCardIndex = index;
+      updateCarouselPosition();
+      updateScore();
+      updateCardInfo();
+      renderMatchProgressDots();
+      
+      if (currentMode === 'arrows') {
+        renderButtonNavCard();
       }
     }
 
@@ -1156,33 +1482,20 @@ f<!DOCTYPE html>
         card.classList.toggle('active', index === currentCardIndex);
       });
       
-      document.getElementById('cardNumber').textContent = currentCardIndex + 1;
+      updateNavigation();
+    }
+
+    function updateNavigation() {
       document.getElementById('prevArrow').disabled = currentCardIndex === 0;
       document.getElementById('nextArrow').disabled = currentCardIndex === 3;
+      document.getElementById('prevCardBtn').disabled = currentCardIndex === 0;
+      document.getElementById('nextCardBtn').disabled = currentCardIndex === 3;
       
-      const dots = document.querySelectorAll('.nav-dot');
-      dots.forEach((dot, i) => {
-        dot.classList.toggle('active', i === currentCardIndex);
-      });
+      renderCardDots();
     }
 
-    function renderNavigation() {
-      const nav = document.getElementById('scoreDots');
-      nav.innerHTML = '';
-      
-      for (let i = 0; i < 4; i++) {
-        const dot = document.createElement('div');
-        dot.className = 'nav-dot';
-        if (i === currentCardIndex) dot.classList.add('active');
-        dot.addEventListener('click', () => goToCard(i));
-        nav.appendChild(dot);
-      }
-    }
-
-    function goToCard(index) {
-      currentCardIndex = index;
-      updateCarouselPosition();
-      updateScore();
+    function updateCardInfo() {
+      document.getElementById('cardInfo').textContent = `Card ${currentCardIndex + 1} of 4`;
     }
 
     function updateScore() {
@@ -1219,6 +1532,7 @@ f<!DOCTYPE html>
         );
 
         document.querySelector('.controls').style.display = 'none';
+        document.getElementById('externalNav').style.display = 'none';
         document.getElementById('footer').style.display = 'flex';
         showCelebration('🏆');
 
@@ -1248,35 +1562,9 @@ f<!DOCTYPE html>
     }
 
     // ============================================
-    // TOUCH NAVIGATION
+    // KEYBOARD NAVIGATION
     // ============================================
     
-    let startX = 0, startY = 0, isDragging = false;
-    const carouselTrack = document.getElementById('carouselTrack');
-
-    carouselTrack.addEventListener('touchstart', (e) => {
-      startX = e.touches[0].clientX;
-      startY = e.touches[0].clientY;
-      isDragging = true;
-    }, { passive: true });
-
-    carouselTrack.addEventListener('touchmove', (e) => {
-      if (!isDragging) return;
-      const diffX = Math.abs(startX - e.touches[0].clientX);
-      const diffY = Math.abs(startY - e.touches[0].clientY);
-      isDragging = diffX > diffY && diffX > 10;
-    }, { passive: true });
-
-    carouselTrack.addEventListener('touchend', (e) => {
-      if (!isDragging) return;
-      const diffX = startX - e.changedTouches[0].clientX;
-      if (Math.abs(diffX) > 50) {
-        if (diffX > 0 && currentCardIndex < 3) nextCard();
-        else if (diffX < 0 && currentCardIndex > 0) prevCard();
-      }
-      isDragging = false;
-    }, { passive: true });
-
     document.addEventListener('keydown', (e) => {
       if (e.key === 'ArrowRight' && currentCardIndex < 3) nextCard();
       else if (e.key === 'ArrowLeft' && currentCardIndex > 0) prevCard();
@@ -1295,6 +1583,7 @@ f<!DOCTYPE html>
 
       renderAllCards();
       updateScore();
+      updateCardInfo();
       
       console.log('✅ Matching Game Ready!');
     }
