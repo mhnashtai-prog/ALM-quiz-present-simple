@@ -1129,7 +1129,6 @@
       <button class="btn" id="checkBtn" onclick="checkAnswers()">Check Answers</button>
     </div>
   </div>
-
   <script src="../assets/js/progress-tracker.js"></script>
 
   <script>
@@ -1221,7 +1220,12 @@
       renderCategoryPills();
       checkPrizeEligibility();
       
-      await loadQuizData();
+      const dataLoaded = await loadQuizData();
+      
+      if (!dataLoaded) {
+        console.error('❌ Quiz data failed to load - stopping initialization');
+        return;
+      }
       
       renderContent();
       renderExerciseDots();
@@ -1238,8 +1242,13 @@
       try {
         console.log('📥 Fetching character-data.json...');
         const response = await fetch('../data/character-data.json');
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
         const allData = await response.json();
-        console.log('✅ Quiz data loaded');
+        console.log('✅ Quiz data loaded successfully');
         
         const charKey = selectionData.characterKey;
         
@@ -1253,22 +1262,68 @@
         const mappedCategory = categoryMapping[selectionData.category] || 'daily_habits';
         console.log(`📊 Mapped category: ${selectionData.category} → ${mappedCategory}`);
         
+        if (!allData[charKey]) {
+          throw new Error(`Character '${charKey}' not found in data`);
+        }
+        
+        if (!allData[charKey].categories) {
+          throw new Error(`No categories found for character '${charKey}'`);
+        }
+        
+        if (!allData[charKey].categories[mappedCategory]) {
+          throw new Error(`Category '${mappedCategory}' not found for character '${charKey}'`);
+        }
+        
         quizData = allData[charKey].categories[mappedCategory];
         
-        if (!quizData) {
-          console.error('❌ No quiz data found for this combination');
-          showToast('Quiz content not available yet for this category!', 'error');
-          setTimeout(() => window.location.href = '../index.html', 2000);
-          return;
+        if (!quizData.clozeTemplates || quizData.clozeTemplates.length === 0) {
+          throw new Error('No cloze templates found');
         }
+        if (!quizData.multipleChoiceQuestions || quizData.multipleChoiceQuestions.length === 0) {
+          throw new Error('No multiple choice questions found');
+        }
+        if (!quizData.mistakeSentences || quizData.mistakeSentences.length === 0) {
+          throw new Error('No mistake sentences found');
+        }
+        if (!quizData.orderingSentences || quizData.orderingSentences.length === 0) {
+          throw new Error('No ordering sentences found');
+        }
+        
+        console.log('✅ All quiz data validated:', {
+          clozeTemplates: quizData.clozeTemplates.length,
+          multipleChoice: quizData.multipleChoiceQuestions.length,
+          mistakes: quizData.mistakeSentences.length,
+          ordering: quizData.orderingSentences.length
+        });
         
         replacePronounsInQuizData();
         
-        console.log('✅ Quiz data ready:', quizData);
+        return true;
         
       } catch (error) {
         console.error('❌ Error loading quiz data:', error);
-        showToast('Error loading quiz content. Please try again.', 'error');
+        showToast('Error loading quiz content: ' + error.message, 'error');
+        
+        const container = document.getElementById('contentContainer');
+        container.innerHTML = `
+          <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; gap: 1rem;">
+            <div style="font-size: 3rem;">⚠️</div>
+            <div style="color: #ef4444; font-size: 1.1rem; font-weight: 600;">Failed to Load Quiz</div>
+            <div style="color: rgba(232, 232, 232, 0.7); font-size: 0.9rem; text-align: center; max-width: 400px;">${error.message}</div>
+            <button onclick="window.location.href='../index.html'" style="
+              background: rgba(201, 169, 97, 0.2);
+              border: 2px solid #C9A961;
+              color: #C9A961;
+              padding: 0.75rem 1.5rem;
+              border-radius: 10px;
+              font-weight: 600;
+              cursor: pointer;
+              margin-top: 1rem;
+            ">← Back to Home</button>
+          </div>
+        `;
+        
+        return false;
       }
     }
 
@@ -1372,7 +1427,6 @@
     // ============================================
     
     function checkPrizeEligibility() {
-      // Prize banner removed - no warnings displayed
       const bannerContainer = document.getElementById('prizeBanner');
       bannerContainer.innerHTML = '';
     }
