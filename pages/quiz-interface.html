@@ -34,6 +34,133 @@
       z-index: 1;
     }
 
+    /* Toast Notification System */
+    .toast-container {
+      position: fixed;
+      top: 1.5rem;
+      right: 1.5rem;
+      z-index: 10000;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      pointer-events: none;
+    }
+
+    .toast {
+      background: rgba(28, 28, 30, 0.98);
+      backdrop-filter: blur(40px) saturate(180%);
+      -webkit-backdrop-filter: blur(40px) saturate(180%);
+      border-radius: 0.875rem;
+      padding: 1rem 1.25rem;
+      min-width: 280px;
+      max-width: 400px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6), 0 2px 8px rgba(0, 0, 0, 0.2);
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      opacity: 0;
+      transform: translateX(100px);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      pointer-events: all;
+      border: 1px solid rgba(84, 84, 88, 0.3);
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .toast-icon {
+      font-size: 1.25rem;
+      flex-shrink: 0;
+      line-height: 1;
+    }
+
+    .toast-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .toast-title {
+      font-size: 0.875rem;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+    }
+
+    .toast-message {
+      font-size: 0.8125rem;
+      opacity: 0.85;
+      letter-spacing: -0.01em;
+      line-height: 1.4;
+    }
+
+    .toast-close {
+      background: none;
+      border: none;
+      color: inherit;
+      cursor: pointer;
+      font-size: 1.25rem;
+      padding: 0;
+      opacity: 0.5;
+      transition: opacity 0.2s;
+      flex-shrink: 0;
+      line-height: 1;
+    }
+
+    .toast-close:hover {
+      opacity: 1;
+    }
+
+    .toast.success {
+      border-color: rgba(132, 204, 22, 0.4);
+    }
+
+    .toast.success .toast-icon {
+      color: #84cc16;
+    }
+
+    .toast.success .toast-title {
+      color: #4ade80;
+    }
+
+    .toast.success .toast-message {
+      color: #e5e5e7;
+    }
+
+    .toast.info {
+      border-color: rgba(201, 169, 97, 0.4);
+    }
+
+    .toast.info .toast-icon {
+      color: #C9A961;
+    }
+
+    .toast.info .toast-title {
+      color: #C9A961;
+    }
+
+    .toast.info .toast-message {
+      color: #e5e5e7;
+    }
+
+    .toast.error {
+      border-color: rgba(239, 68, 68, 0.4);
+    }
+
+    .toast.error .toast-icon {
+      color: #ef4444;
+    }
+
+    .toast.error .toast-title {
+      color: #ef4444;
+    }
+
+    .toast.error .toast-message {
+      color: #e5e5e7;
+    }
+
     .game-container {
       background: #1a1a1a;
       width: 95%;
@@ -169,7 +296,6 @@
       font-size: 1rem;
     }
 
-    /* NEW: Top-level exercise navigation with dots and toggle */
     .exercise-nav-container {
       display: flex;
       justify-content: space-between;
@@ -220,7 +346,6 @@
       transform: scale(1.5);
     }
 
-    /* Mode Toggle - Same position as matching game */
     .mode-toggle-container {
       display: flex;
       align-items: center;
@@ -342,7 +467,6 @@
       50% { transform: scale(1.02); }
     }
 
-    /* Content wrapper for both modes */
     .content-wrapper {
       flex: 1;
       display: flex;
@@ -351,7 +475,6 @@
       position: relative;
     }
 
-    /* CAROUSEL MODE */
     .quiz-carousel {
       position: relative;
       width: 100%;
@@ -400,7 +523,6 @@
       z-index: 1;
     }
 
-    /* BUTTON NAV MODE */
     .button-nav-wrapper {
       display: none;
       flex: 1;
@@ -465,9 +587,10 @@
       flex-shrink: 0;
     }
 
+    /* INLINE CLOZE STYLING */
     .cloze-text {
       font-size: 1.05rem;
-      line-height: 1.8;
+      line-height: 2;
       color: rgba(232, 232, 232, 0.9);
       margin-bottom: 1.5rem;
       flex: 1;
@@ -479,35 +602,45 @@
     }
 
     .cloze-blank {
-      display: inline-block;
-      min-width: 80px;
-      padding: 0.2rem 0.5rem;
-      margin: 0 0.25rem;
-      background: rgba(201, 169, 97, 0.1);
-      border: 2px solid rgba(201, 169, 97, 0.3);
-      border-radius: 6px;
-      font-weight: 600;
+      display: inline;
+      border: none;
+      border-bottom: 2px solid rgba(201, 169, 97, 0.4);
+      background: transparent;
       color: #C9A961;
-      text-align: center;
-      cursor: pointer;
+      font-weight: 500;
+      font-size: inherit;
+      font-family: inherit;
+      outline: none;
       transition: all 0.3s;
+      text-align: left;
+      letter-spacing: inherit;
+      padding: 0 2px;
+      margin: 0 2px;
+      min-width: 80px;
+      vertical-align: baseline;
     }
 
-    .cloze-blank:hover {
-      background: rgba(201, 169, 97, 0.2);
-      border-color: rgba(201, 169, 97, 0.5);
+    .cloze-blank:focus {
+      border-bottom-color: #C9A961;
+      border-bottom-width: 3px;
+      background: rgba(201, 169, 97, 0.08);
     }
 
     .cloze-blank.filled {
-      background: rgba(74, 222, 128, 0.2);
-      border-color: rgba(74, 222, 128, 0.5);
-      color: #4ade80;
+      color: #38bdf8;
+      border-bottom-color: rgba(56, 189, 248, 0.5);
+    }
+
+    .cloze-blank.correct {
+      color: #84cc16;
+      border-bottom-color: rgba(132, 204, 22, 0.6);
+      font-weight: 600;
     }
 
     .cloze-blank.wrong {
-      background: rgba(239, 68, 68, 0.2);
-      border-color: rgba(239, 68, 68, 0.5);
-      color: #ef4444;
+      color: #fb923c;
+      border-bottom-color: rgba(251, 146, 60, 0.6);
+      font-weight: 600;
     }
 
     .question-list {
@@ -698,7 +831,6 @@
       line-height: 1.6;
     }
 
-    /* Navigation arrows for carousel mode */
     .carousel-arrows {
       position: absolute;
       top: 50%;
@@ -739,7 +871,6 @@
       cursor: not-allowed;
     }
 
-    /* External navigation for button mode */
     .external-nav {
       display: none;
       align-items: center;
@@ -821,6 +952,16 @@
     }
 
     @media (max-width: 768px) {
+      .toast-container {
+        top: 1rem;
+        right: 1rem;
+        left: 1rem;
+      }
+
+      .toast {
+        min-width: auto;
+      }
+
       .game-container {
         width: 100%;
         height: 100vh;
@@ -900,6 +1041,10 @@
         font-size: 0.95rem;
       }
 
+      .cloze-blank {
+        min-width: 60px;
+      }
+
       .question-options {
         grid-template-columns: 1fr;
       }
@@ -948,6 +1093,9 @@
   </style>
 </head>
 <body>
+  <!-- Toast Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
   <div class="game-container">
     <a href="javascript:history.back()" class="back-btn">
       ← Back
@@ -969,7 +1117,6 @@
       </div>
     </div>
 
-    <!-- NEW: Top navigation with exercise dots and mode toggle -->
     <div class="exercise-nav-container">
       <div class="exercise-dots-container" id="exerciseDotsContainer">
         <!-- Exercise navigation dots inserted by JavaScript -->
@@ -987,9 +1134,7 @@
 
     <div id="prizeBanner"></div>
 
-    <!-- Content wrapper that switches between modes -->
     <div class="content-wrapper">
-      <!-- CAROUSEL MODE (Dots mode) -->
       <div class="quiz-carousel" id="quizCarousel">
         <div class="carousel-arrows">
           <div class="arrow" id="prevArrowCarousel" onclick="previousCard()">‹</div>
@@ -1001,7 +1146,6 @@
         </div>
       </div>
 
-      <!-- BUTTON NAV MODE (Arrows mode) -->
       <div class="button-nav-wrapper" id="buttonNavWrapper">
         <div class="quiz-card" id="buttonNavCard">
           <!-- Current card content inserted by JavaScript -->
@@ -1009,7 +1153,6 @@
       </div>
     </div>
 
-    <!-- External navigation for button mode -->
     <div class="external-nav" id="externalNav">
       <button class="external-nav-arrow" id="prevExerciseBtn" onclick="previousCard()">← Previous Exercise</button>
       <button class="external-nav-arrow" id="nextExerciseBtn" onclick="nextCard()">Next Exercise →</button>
@@ -1020,35 +1163,70 @@
     </div>
   </div>
 
-  <!-- Load Progress Tracker -->
   <script src="../assets/js/progress-tracker.js"></script>
 
   <script>
+    // ============================================
+    // TOAST NOTIFICATION SYSTEM
+    // ============================================
+    
+    function showToast(message, type = 'info', duration = 4000) {
+      const container = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      toast.className = `toast ${type}`;
+      
+      const icons = {
+        success: '✓',
+        info: 'ℹ',
+        error: '✕'
+      };
+      
+      const titles = {
+        success: 'Success',
+        info: 'Info',
+        error: 'Error'
+      };
+      
+      toast.innerHTML = `
+        <div class="toast-icon">${icons[type]}</div>
+        <div class="toast-content">
+          <div class="toast-title">${titles[type]}</div>
+          <div class="toast-message">${message}</div>
+        </div>
+        <button class="toast-close" onclick="this.parentElement.remove()">×</button>
+      `;
+      
+      container.appendChild(toast);
+      
+      setTimeout(() => toast.classList.add('show'), 10);
+      
+      setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 400);
+      }, duration);
+    }
+
     // ============================================
     // GLOBAL VARIABLES
     // ============================================
     
     let selectionData = null;
     let quizData = null;
-    let currentMode = 'dots'; // 'dots' or 'arrows'
+    let currentMode = 'dots';
     let currentCard = 0;
     let totalScore = 0;
     let cardScores = [0, 0, 0, 0];
     let cardCompleted = [false, false, false, false];
     
-    // Cloze exercise
     let clozeAnswers = [];
     let userClozeAnswers = [];
     
-    // Multiple choice
     let mcAnswers = [];
     let userMCAnswers = [];
     
-    // Mistake sentences
     let mistakeData = [];
     let userMistakeAnswers = [];
     
-    // Ordering sentences
     let orderingData = [];
     let userOrderingAnswers = [];
 
@@ -1059,35 +1237,26 @@
     async function initialize() {
       console.log('🎮 Initializing Quiz Interface...');
       
-      // Load selection data
       const selectionJSON = sessionStorage.getItem('selectionData');
       if (!selectionJSON) {
         console.error('❌ No selection data found');
-        alert('Please select a character and category first!');
-        window.location.href = '../index.html';
+        showToast('Please select a character and category first!', 'error');
+        setTimeout(() => window.location.href = '../index.html', 2000);
         return;
       }
       
       selectionData = JSON.parse(selectionJSON);
       console.log('📥 Selection loaded:', selectionData);
       
-      // Update header with character info
       document.getElementById('displayEmoji').textContent = selectionData.characterEmoji;
       document.getElementById('displayName').textContent = selectionData.characterName;
       
-      // Render category pills
       renderCategoryPills();
-      
-      // Check prize eligibility
       checkPrizeEligibility();
       
-      // Load quiz data
       await loadQuizData();
       
-      // Render all exercises
       renderAllExercises();
-      
-      // Update navigation
       updateNavigation();
       updateExerciseInfo();
       
@@ -1107,7 +1276,6 @@
         
         const charKey = selectionData.characterKey;
         
-        // Category mapping (temporary until all categories have content)
         const categoryMapping = {
           'habitual': 'daily_habits',
           'routine': 'daily_habits',
@@ -1122,19 +1290,18 @@
         
         if (!quizData) {
           console.error('❌ No quiz data found for this combination');
-          alert('Quiz content not available yet for this category!');
-          window.location.href = '../index.html';
+          showToast('Quiz content not available yet for this category!', 'error');
+          setTimeout(() => window.location.href = '../index.html', 2000);
           return;
         }
         
-        // Replace pronouns based on character
         replacePronounsInQuizData();
         
         console.log('✅ Quiz data ready:', quizData);
         
       } catch (error) {
         console.error('❌ Error loading quiz data:', error);
-        alert('Error loading quiz content. Please try again.');
+        showToast('Error loading quiz content. Please try again.', 'error');
       }
     }
 
@@ -1146,7 +1313,6 @@
       const charKey = selectionData.characterKey;
       const charName = selectionData.characterName;
       
-      // Pronoun mappings
       const pronounMaps = {
         'sarah': { from: 'Sarah', to: 'Sarah', he: 'she', him: 'her', his: 'her', He: 'She', Him: 'Her', His: 'Her' },
         'emma': { from: 'Sarah', to: 'Emma', he: 'she', him: 'her', his: 'her', He: 'She', Him: 'Her', His: 'Her' },
@@ -1169,7 +1335,6 @@
           .replace(/\bHer\b/g, map.Him);
       }
       
-      // Replace in all quiz data
       if (quizData.clozeTemplates) {
         quizData.clozeTemplates.forEach(template => {
           template.text = replaceText(template.text);
@@ -1276,7 +1441,6 @@
       const externalNav = document.getElementById('externalNav');
       
       if (currentMode === 'dots') {
-        // Switch to arrows mode
         currentMode = 'arrows';
         toggleSwitch.classList.add('active');
         quizCarousel.style.display = 'none';
@@ -1285,7 +1449,6 @@
         
         renderButtonNavCard();
       } else {
-        // Switch to dots mode
         currentMode = 'dots';
         toggleSwitch.classList.remove('active');
         quizCarousel.style.display = 'flex';
@@ -1348,7 +1511,6 @@
       const track = document.getElementById('carouselTrack');
       track.innerHTML = '';
 
-      // Card 1: Cloze Exercise
       const card1 = document.createElement('div');
       card1.className = 'quiz-card-wrapper active';
       card1.innerHTML = `
@@ -1358,7 +1520,6 @@
       `;
       track.appendChild(card1);
 
-      // Card 2: Multiple Choice
       const card2 = document.createElement('div');
       card2.className = 'quiz-card-wrapper';
       card2.innerHTML = `
@@ -1368,7 +1529,6 @@
       `;
       track.appendChild(card2);
 
-      // Card 3: Spot the Mistake
       const card3 = document.createElement('div');
       card3.className = 'quiz-card-wrapper';
       card3.innerHTML = `
@@ -1378,7 +1538,6 @@
       `;
       track.appendChild(card3);
 
-      // Card 4: Put in Order
       const card4 = document.createElement('div');
       card4.className = 'quiz-card-wrapper';
       card4.innerHTML = `
@@ -1402,14 +1561,15 @@
       
       let blankIndex = 0;
       let html = '<h2 class="card-title">📝 Exercise 1/4: Fill in the Blanks</h2>';
-      html += '<p class="card-subtitle">Click on each blank and type the correct verb form</p>';
+      html += '<p class="card-subtitle">Type directly into each blank space</p>';
       html += '<div class="cloze-text">';
       
       paragraphs.forEach(para => {
         let processedPara = para;
         const blankPattern = /(\w)_{3,}/g;
         processedPara = processedPara.replace(blankPattern, (match, firstLetter) => {
-          const blankHTML = `<span class="cloze-blank" data-index="${blankIndex}" onclick="fillBlank(${blankIndex})">${firstLetter}_____</span>`;
+          const value = userClozeAnswers[blankIndex] || '';
+          const blankHTML = `<input type="text" class="cloze-blank${value ? ' filled' : ''}" data-index="${blankIndex}" value="${value}" placeholder="${firstLetter}___">`;
           blankIndex++;
           return blankHTML;
         });
@@ -1500,6 +1660,20 @@
     // ============================================
 
     function attachExerciseListeners() {
+      // Cloze blank inputs
+      document.querySelectorAll('.cloze-blank').forEach(input => {
+        input.addEventListener('input', function() {
+          const index = parseInt(this.dataset.index);
+          userClozeAnswers[index] = this.value.trim();
+          
+          if (this.value.trim()) {
+            this.classList.add('filled');
+          } else {
+            this.classList.remove('filled');
+          }
+        });
+      });
+
       // Multiple choice buttons
       document.querySelectorAll('.option-btn').forEach(btn => {
         btn.addEventListener('click', function() {
@@ -1530,19 +1704,6 @@
     // ============================================
     // EXERCISE INTERACTIONS
     // ============================================
-    
-    function fillBlank(index) {
-      if (cardCompleted[0]) return;
-      
-      const answer = prompt(`Fill in the blank (starts with "${clozeAnswers[index][0]}"):`);
-      if (answer === null || answer === '') return;
-      
-      userClozeAnswers[index] = answer.trim().toLowerCase();
-      
-      const blank = document.querySelector(`.cloze-blank[data-index="${index}"]`);
-      blank.textContent = answer;
-      blank.classList.add('filled');
-    }
 
     function selectMCOption(questionIndex, option) {
       if (cardCompleted[1]) return;
@@ -1594,17 +1755,18 @@
     function checkClozeAnswers() {
       let score = 0;
       
+      const blanks = document.querySelectorAll('.cloze-blank');
       clozeAnswers.forEach((correct, index) => {
         const userAnswer = userClozeAnswers[index].toLowerCase();
         const correctAnswer = correct.toLowerCase();
-        const blank = document.querySelector(`.cloze-blank[data-index="${index}"]`);
+        const blank = blanks[index];
+        
+        blank.classList.remove('filled', 'wrong', 'correct');
         
         if (userAnswer === correctAnswer) {
           score++;
-          blank.classList.remove('wrong');
-          blank.classList.add('filled');
+          blank.classList.add('correct');
         } else {
-          blank.classList.remove('filled');
           blank.classList.add('wrong');
         }
       });
@@ -1614,7 +1776,7 @@
       updateScore();
       renderExerciseDots();
       
-      alert(`Cloze Exercise: ${score} / ${clozeAnswers.length} correct!`);
+      showToast(`Cloze Exercise: ${score} / ${clozeAnswers.length} correct!`, score === clozeAnswers.length ? 'success' : 'info');
     }
 
     function checkMCAnswers() {
@@ -1648,7 +1810,7 @@
       updateScore();
       renderExerciseDots();
       
-      alert(`Multiple Choice: ${score} / 5 correct!`);
+      showToast(`Multiple Choice: ${score} / 5 correct!`, score === 5 ? 'success' : 'info');
     }
 
     function checkMistakeAnswers() {
@@ -1677,7 +1839,7 @@
       updateScore();
       renderExerciseDots();
       
-      alert(`Spot the Mistake: ${score} / 5 correct!`);
+      showToast(`Spot the Mistake: ${score} / 5 correct!`, score === 5 ? 'success' : 'info');
     }
 
     function checkOrderingAnswers() {
@@ -1702,7 +1864,7 @@
       updateScore();
       renderExerciseDots();
       
-      alert(`Sentence Ordering: ${score} / 7 correct!`);
+      showToast(`Sentence Ordering: ${score} / 7 correct!`, score === 7 ? 'success' : 'info');
       
       if (cardCompleted.every(c => c)) {
         saveQuizScore();
@@ -1737,13 +1899,15 @@
       
       if (progress.trophy) {
         setTimeout(() => {
-          alert('🏆 CONGRATULATIONS! 🏆\n\nYou earned a trophy!\n\nYou completed both the matching game and quiz with 20/20!');
-          window.location.href = '../index.html';
+          showToast('🏆 CONGRATULATIONS! You earned a trophy! You completed both games with 20/20!', 'success', 6000);
+          setTimeout(() => {
+            window.location.href = '../index.html';
+          }, 3000);
         }, 500);
       } else if (totalScore === 20 && progress.matchingScore < 20) {
-        alert('🎉 Perfect score!\n\nBut you need 20/20 on the matching game too for the trophy.');
+        showToast('🎉 Perfect score! But you need 20/20 on the matching game too for the trophy.', 'info', 5000);
       } else if (totalScore < 20) {
-        alert(`Quiz completed: ${totalScore}/20\n\nKeep practicing to improve your score!`);
+        showToast(`Quiz completed: ${totalScore}/20. Keep practicing to improve your score!`, 'info', 4000);
       }
     }
 
