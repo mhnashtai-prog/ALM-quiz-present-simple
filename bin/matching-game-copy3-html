@@ -1,0 +1,1598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>INTUITY - Matching Game</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #000000;
+      font-family: 'Inter', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      overflow: hidden;
+      position: relative;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' /%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .game-container {
+      background: #1a1a1a;
+      width: 95%;
+      max-width: 1000px;
+      min-height: 88vh;
+      max-height: 95vh;
+      border-radius: 24px;
+      padding: 1.5rem;
+      box-shadow: 
+        12px 12px 24px #000000,
+        -12px -12px 24px #2a2a2a;
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 0.75rem;
+      flex-shrink: 0;
+    }
+
+    .back-btn {
+      position: absolute;
+      top: 1.5rem;
+      left: 1.5rem;
+      background: #1a1a1a;
+      border: none;
+      border-radius: 12px;
+      padding: 0.6rem 1rem;
+      color: #C9A961;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 
+        4px 4px 8px #000000,
+        -4px -4px 8px #2a2a2a;
+      transition: all 0.3s;
+      z-index: 10;
+    }
+
+    .back-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 
+        6px 6px 12px #000000,
+        -6px -6px 12px #2a2a2a;
+    }
+
+    .header h1 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.75rem;
+      color: #C9A961;
+      margin-bottom: 0.25rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .tagline {
+      font-size: 0.8rem;
+      color: rgba(232, 232, 232, 0.6);
+      margin-bottom: 0.75rem;
+      font-weight: 500;
+      font-style: italic;
+    }
+
+    .character-info {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .character-display {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(201, 169, 97, 0.1);
+      padding: 0.5rem 1rem;
+      border-radius: 12px;
+      border: 2px solid rgba(201, 169, 97, 0.3);
+    }
+
+    .character-emoji {
+      font-size: 1.5rem;
+    }
+
+    .character-name {
+      font-size: 1rem;
+      color: #C9A961;
+      font-weight: 600;
+      font-family: 'Space Grotesk', sans-serif;
+    }
+
+    .category-display {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(201, 169, 97, 0.15);
+      padding: 0.5rem 1rem;
+      border-radius: 12px;
+      font-size: 0.9rem;
+      color: rgba(232, 232, 232, 0.85);
+      font-weight: 500;
+    }
+
+    /* Category Pills - Desktop */
+    .category-pills {
+      display: flex;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-bottom: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .category-pill {
+      background: #1a1a1a;
+      border: 2px solid rgba(201, 169, 97, 0.3);
+      border-radius: 12px;
+      padding: 0.5rem 0.75rem;
+      font-size: 0.8rem;
+      color: rgba(232, 232, 232, 0.7);
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      box-shadow: 
+        3px 3px 6px #000000,
+        -3px -3px 6px #2a2a2a;
+    }
+
+    .category-pill:hover {
+      border-color: #C9A961;
+      color: #C9A961;
+      transform: translateY(-2px);
+    }
+
+    .category-pill.active {
+      background: rgba(201, 169, 97, 0.2);
+      border-color: #C9A961;
+      color: #C9A961;
+      font-weight: 600;
+    }
+
+    .category-pill.completed {
+      border-color: #4ade80;
+      color: #4ade80;
+    }
+
+    .category-pill.completed::after {
+      content: '✓';
+      font-size: 0.9rem;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 6px;
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: inset 2px 2px 4px rgba(0, 0, 0, 0.5);
+      margin-bottom: 0.75rem;
+      flex-shrink: 0;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #C9A961, #e8d9a8);
+      border-radius: 10px;
+      transition: width 0.5s ease;
+      box-shadow: 0 0 10px rgba(201, 169, 97, 0.5);
+    }
+
+    /* NEW: Top-level card navigation with dots and toggle */
+    .card-nav-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.75rem;
+      padding: 0 0.5rem;
+      gap: 1rem;
+      flex-shrink: 0;
+    }
+
+    .card-dots-container {
+      display: flex;
+      gap: 0.75rem;
+      flex: 1;
+      justify-content: flex-start;
+    }
+
+    .card-dot {
+      width: 1rem;
+      height: 1rem;
+      border-radius: 50%;
+      background: rgba(99, 99, 102, 0.3);
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      border: 2px solid rgba(99, 99, 102, 0.2);
+      position: relative;
+    }
+
+    .card-dot:hover {
+      transform: scale(1.3);
+      background: rgba(142, 142, 147, 0.5);
+    }
+
+    .card-dot.current {
+      background: #C9A961;
+      box-shadow: 0 0 0 3px rgba(201, 169, 97, 0.4);
+      transform: scale(1.5);
+    }
+
+    .card-dot.completed {
+      background: linear-gradient(135deg, #84cc16 0%, #65a30d 100%);
+      box-shadow: 0 0 8px rgba(132, 204, 22, 0.4);
+    }
+
+    .card-dot.completed.current {
+      background: linear-gradient(135deg, #84cc16 0%, #65a30d 100%);
+      box-shadow: 0 0 0 3px rgba(201, 169, 97, 0.6);
+      transform: scale(1.5);
+    }
+
+    /* Mode Toggle - Same position as multiple-choice */
+    .mode-toggle-container {
+      display: flex;
+      align-items: center;
+      gap: 0.625rem;
+      font-size: 0.6875rem;
+      font-weight: 500;
+      color: #636366;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      flex-shrink: 0;
+    }
+
+    .mode-toggle-label {
+      opacity: 0.6;
+      transition: opacity 0.3s;
+    }
+
+    .mode-toggle-container:hover .mode-toggle-label {
+      opacity: 0.85;
+    }
+
+    .mode-toggle-switch {
+      position: relative;
+      width: 3rem;
+      height: 1.5rem;
+      background: rgba(99, 99, 102, 0.25);
+      border-radius: 0.75rem;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      border: 1px solid rgba(99, 99, 102, 0.2);
+    }
+
+    .mode-toggle-switch:hover {
+      background: rgba(99, 99, 102, 0.35);
+    }
+
+    .mode-toggle-switch::after {
+      content: '';
+      position: absolute;
+      top: 0.125rem;
+      left: 0.125rem;
+      width: 1.125rem;
+      height: 1.125rem;
+      background: #8e8e93;
+      border-radius: 50%;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    .mode-toggle-switch.active {
+      background: rgba(201, 169, 97, 0.25);
+      border-color: rgba(201, 169, 97, 0.3);
+    }
+
+    .mode-toggle-switch.active::after {
+      left: 1.625rem;
+      background: #C9A961;
+    }
+
+    /* Match progress dots - smaller, inside content */
+    .match-progress-dots {
+      display: flex;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+      flex-shrink: 0;
+    }
+
+    .match-dot {
+      width: 0.75rem;
+      height: 0.75rem;
+      border-radius: 50%;
+      background: rgba(99, 99, 102, 0.3);
+      transition: all 0.3s;
+      border: 2px solid rgba(99, 99, 102, 0.2);
+    }
+
+    .match-dot.completed {
+      background: linear-gradient(135deg, #84cc16 0%, #65a30d 100%);
+      box-shadow: 0 0 8px rgba(132, 204, 22, 0.4);
+    }
+
+    .score-display {
+      text-align: center;
+      margin-bottom: 0.75rem;
+      font-size: 0.85rem;
+      color: #e8e8e8;
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+
+    .score-number {
+      color: #C9A961;
+      font-size: 1.1rem;
+      font-family: 'Space Grotesk', sans-serif;
+    }
+
+    .card-info {
+      text-align: center;
+      font-size: 0.75rem;
+      color: #636366;
+      margin-bottom: 0.5rem;
+      flex-shrink: 0;
+    }
+
+    /* Content wrapper for both modes */
+    .content-wrapper {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      position: relative;
+    }
+
+    /* CAROUSEL MODE */
+    .carousel-wrapper {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: visible;
+      margin: 0 -1.5rem;
+      padding: 0 1.5rem;
+      min-height: 0;
+    }
+
+    .carousel-track {
+      display: flex;
+      gap: 2rem;
+      transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+      will-change: transform;
+      width: 100%;
+      height: 100%;
+    }
+
+    .card-wrapper {
+      min-width: 100%;
+      display: flex;
+      justify-content: center;
+      padding: 0.5rem;
+      opacity: 0.4;
+      transform: scale(0.95);
+      transition: all 0.5s ease;
+      pointer-events: none;
+    }
+
+    .card-wrapper.active {
+      opacity: 1;
+      transform: scale(1);
+      pointer-events: all;
+    }
+
+    /* BUTTON NAV MODE */
+    .button-nav-wrapper {
+      display: none;
+      flex: 1;
+      flex-direction: column;
+      min-height: 0;
+    }
+
+    .button-nav-wrapper.active {
+      display: flex;
+    }
+
+    .matching-card {
+      width: 100%;
+      max-width: 800px;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      height: 100%;
+    }
+
+    .card-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.1rem;
+      color: #C9A961;
+      text-align: center;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      flex-shrink: 0;
+    }
+
+    .matching-area {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding: 0.25rem;
+      min-height: 0;
+    }
+
+    .matching-area::-webkit-scrollbar { width: 6px; }
+    .matching-area::-webkit-scrollbar-track { 
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 10px;
+    }
+    .matching-area::-webkit-scrollbar-thumb {
+      background: rgba(201, 169, 97, 0.4);
+      border-radius: 10px;
+    }
+
+    .column {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .match-item {
+      background: #1a1a1a;
+      border-radius: 12px;
+      padding: 0.85rem 1rem;
+      color: rgba(232, 232, 232, 0.9);
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s;
+      box-shadow: 
+        4px 4px 8px #000000,
+        -4px -4px 8px #2a2a2a;
+      user-select: none;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border: 2px solid transparent;
+      min-height: 48px;
+      line-height: 1.3;
+    }
+
+    .match-item:hover {
+      transform: translateY(-2px);
+      box-shadow: 
+        6px 6px 12px #000000,
+        -6px -6px 12px #2a2a2a;
+      border-color: rgba(201, 169, 97, 0.3);
+    }
+
+    .match-item.selected {
+      background: rgba(201, 169, 97, 0.2);
+      border: 2px solid #C9A961;
+      color: #C9A961;
+      font-weight: 600;
+    }
+
+    .match-item.correct {
+      background: rgba(74, 222, 128, 0.2);
+      border: 2px solid #4ade80;
+      color: #4ade80;
+      animation: correctPulse 0.5s ease;
+      cursor: default;
+    }
+
+    .match-item.wrong {
+      background: rgba(251, 146, 60, 0.2);
+      border: 2px solid #fb923c;
+      color: #fb923c;
+      animation: shake 0.5s ease;
+    }
+
+    .emoji {
+      font-size: 1rem;
+      margin-left: 0.4rem;
+      line-height: 1;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      75% { transform: translateX(5px); }
+    }
+
+    @keyframes correctPulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    /* Navigation arrows for carousel mode */
+    .nav-arrows {
+      position: absolute;
+      top: 50%;
+      left: 0;
+      right: 0;
+      transform: translateY(-50%);
+      display: flex;
+      justify-content: space-between;
+      pointer-events: none;
+      padding: 0 0.5rem;
+      z-index: 10;
+    }
+
+    .arrow {
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      background: #1a1a1a;
+      border: none;
+      box-shadow: 
+        4px 4px 8px #000000,
+        -4px -4px 8px #2a2a2a;
+      color: #C9A961;
+      font-size: 1.3rem;
+      cursor: pointer;
+      pointer-events: all;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .arrow:hover:not(:disabled) {
+      box-shadow: 
+        6px 6px 12px #000000,
+        -6px -6px 12px #2a2a2a;
+      transform: scale(1.05);
+    }
+
+    .arrow:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+
+    /* External navigation for button mode */
+    .external-nav {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      gap: 1.5rem;
+      margin-top: 1rem;
+      flex-shrink: 0;
+    }
+
+    .external-nav.active {
+      display: flex;
+    }
+
+    .external-nav-arrow {
+      background: rgba(99, 99, 102, 0.25);
+      border: 1px solid rgba(99, 99, 102, 0.2);
+      color: #aeaeb2;
+      padding: 0.75rem 1.5rem;
+      border-radius: 0.75rem;
+      cursor: pointer;
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      letter-spacing: -0.01em;
+      min-width: 140px;
+    }
+
+    .external-nav-arrow:hover:not(:disabled) {
+      background: rgba(201, 169, 97, 0.25);
+      border-color: rgba(201, 169, 97, 0.3);
+      color: #C9A961;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(201, 169, 97, 0.2);
+    }
+
+    .external-nav-arrow:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+
+    .controls {
+      display: flex;
+      gap: 0.75rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 0.75rem;
+      flex-shrink: 0;
+    }
+
+    .btn {
+      background: #1a1a1a;
+      border: none;
+      border-radius: 12px;
+      padding: 0.75rem 1.5rem;
+      color: #e8e8e8;
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 
+        4px 4px 8px #000000,
+        -4px -4px 8px #2a2a2a;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .btn:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 
+        6px 6px 12px #000000,
+        -6px -6px 12px #2a2a2a;
+    }
+
+    .btn.primary {
+      background: rgba(201, 169, 97, 0.2);
+      color: #C9A961;
+    }
+
+    .btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    .celebration {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 4rem;
+      opacity: 0;
+      pointer-events: none;
+      z-index: 1000;
+      animation: celebrate 1s ease;
+    }
+
+    @keyframes celebrate {
+      0% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
+      50% { opacity: 1; transform: translate(-50%, -50%) scale(1.2); }
+      100% { opacity: 0; transform: translate(-50%, -50%) scale(1); }
+    }
+
+    .footer {
+      display: flex;
+      gap: 0.75rem;
+      justify-content: center;
+      margin-top: 0.75rem;
+      padding-top: 0.75rem;
+      border-top: 2px solid rgba(201, 169, 97, 0.2);
+      flex-wrap: wrap;
+      flex-shrink: 0;
+    }
+
+    .footer-btn {
+      background: #1a1a1a;
+      border: none;
+      border-radius: 12px;
+      padding: 0.75rem 1.25rem;
+      color: #e8e8e8;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 
+        4px 4px 8px #000000,
+        -4px -4px 8px #2a2a2a;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .footer-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 
+        6px 6px 12px #000000,
+        -6px -6px 12px #2a2a2a;
+    }
+
+    .footer-btn.primary {
+      background: rgba(201, 169, 97, 0.2);
+      color: #C9A961;
+    }
+
+    .footer-btn.quiz {
+      background: rgba(74, 222, 128, 0.2);
+      border: 2px solid #4ade80;
+      color: #4ade80;
+      font-weight: 700;
+    }
+
+    /* Mobile Optimizations */
+    @media (max-width: 768px) {
+      .game-container {
+        padding: 1rem 0.75rem;
+        max-height: 100vh;
+        min-height: 100vh;
+        border-radius: 16px;
+      }
+
+      .carousel-wrapper {
+        flex: 1 1 auto;
+        min-height: 0;
+        overflow: hidden;
+      }
+
+      .matching-card {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .matching-area {
+        flex: 1 1 auto;
+        min-height: 0;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .header {
+        margin-bottom: 0.5rem;
+      }
+
+      .header h1 {
+        font-size: 1.3rem;
+        margin-bottom: 0.15rem;
+      }
+
+      .tagline {
+        display: none;
+      }
+
+      .character-info {
+        gap: 0.5rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .character-display,
+      .category-display {
+        padding: 0.4rem 0.75rem;
+        font-size: 0.8rem;
+      }
+
+      .character-emoji {
+        font-size: 1.2rem;
+      }
+
+      .character-name {
+        font-size: 0.85rem;
+      }
+
+      .category-pills {
+        display: none;
+      }
+
+      .card-nav-container {
+        padding: 0 0.25rem;
+        gap: 0.75rem;
+      }
+
+      .card-dot {
+        width: 0.875rem;
+        height: 0.875rem;
+      }
+
+      .mode-toggle-label {
+        font-size: 0.625rem;
+      }
+
+      .mode-toggle-switch {
+        width: 2.5rem;
+        height: 1.25rem;
+      }
+
+      .mode-toggle-switch::after {
+        width: 0.95rem;
+        height: 0.95rem;
+      }
+
+      .mode-toggle-switch.active::after {
+        left: 1.35rem;
+      }
+
+      .progress-bar {
+        height: 4px;
+        margin-bottom: 0.5rem;
+      }
+
+      .score-display {
+        margin-bottom: 0.5rem;
+        font-size: 0.8rem;
+      }
+
+      .match-progress-dots {
+        gap: 0.4rem;
+        margin-bottom: 0.75rem;
+      }
+
+      .match-dot {
+        width: 0.625rem;
+        height: 0.625rem;
+      }
+
+      .matching-area {
+        gap: 0.65rem;
+      }
+
+      .match-item {
+        padding: 0.7rem 0.85rem;
+        font-size: 0.85rem;
+        min-height: 44px;
+      }
+
+      .emoji {
+        font-size: 0.95rem;
+        margin-left: 0.35rem;
+      }
+
+      .controls {
+        gap: 0.5rem;
+        margin-top: 0.5rem;
+      }
+
+      .btn {
+        padding: 0.65rem 1rem;
+        font-size: 0.75rem;
+      }
+
+      .arrow {
+        width: 38px;
+        height: 38px;
+        font-size: 1.2rem;
+      }
+
+      .external-nav-arrow {
+        padding: 0.65rem 1.25rem;
+        font-size: 0.8rem;
+        min-width: 120px;
+      }
+
+      .back-btn {
+        top: 1rem;
+        left: 1rem;
+        padding: 0.5rem 0.8rem;
+        font-size: 0.75rem;
+      }
+
+      .footer {
+        margin-top: 0.5rem;
+        padding-top: 0.5rem;
+      }
+
+      .footer-btn {
+        padding: 0.65rem 1rem;
+        font-size: 0.75rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="game-container">
+    <button class="back-btn" onclick="goBack()">← Back</button>
+    
+    <div class="header">
+      <h1>INTUITY</h1>
+      <p class="tagline">Intuitive & Immersive</p>
+      
+      <div class="character-info">
+        <div class="character-display">
+          <span class="character-emoji" id="displayEmoji">👧</span>
+          <span class="character-name" id="displayName">Sarah</span>
+        </div>
+      </div>
+
+      <!-- Category Pills (Desktop only) -->
+      <div class="category-pills" id="categoryPills">
+        <!-- Pills inserted by JavaScript -->
+      </div>
+    </div>
+
+    <div class="progress-bar">
+      <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+    </div>
+
+    <!-- NEW: Top navigation with card dots and mode toggle -->
+    <div class="card-nav-container">
+      <div class="card-dots-container" id="cardDotsContainer">
+        <!-- Card navigation dots inserted by JavaScript -->
+      </div>
+      <div class="mode-toggle-container">
+        <span class="mode-toggle-label">Dots</span>
+        <div class="mode-toggle-switch" id="modeToggleSwitch" onclick="toggleMode()"></div>
+        <span class="mode-toggle-label">Arrows</span>
+      </div>
+    </div>
+
+    <div class="card-info" id="cardInfo">Card 1 of 4</div>
+
+    <!-- Match progress dots (5 smaller dots for current card) -->
+    <div class="match-progress-dots" id="matchProgressDots">
+      <!-- Match dots inserted by JavaScript -->
+    </div>
+
+    <div class="score-display">
+      Score: <span class="score-number" id="scoreDisplay">0/5</span>
+    </div>
+
+    <!-- Content wrapper that switches between modes -->
+    <div class="content-wrapper">
+      <!-- CAROUSEL MODE (Dots mode) -->
+      <div class="carousel-wrapper" id="carouselWrapper">
+        <div class="nav-arrows">
+          <button class="arrow" id="prevArrow" onclick="prevCard()">‹</button>
+          <button class="arrow" id="nextArrow" onclick="nextCard()">›</button>
+        </div>
+        
+        <div class="carousel-track" id="carouselTrack">
+          <!-- Cards will be inserted here by JavaScript -->
+        </div>
+      </div>
+
+      <!-- BUTTON NAV MODE (Arrows mode) -->
+      <div class="button-nav-wrapper" id="buttonNavWrapper">
+        <div class="matching-card" id="buttonNavCard">
+          <!-- Current card content inserted by JavaScript -->
+        </div>
+      </div>
+    </div>
+
+    <!-- External navigation for button mode -->
+    <div class="external-nav" id="externalNav">
+      <button class="external-nav-arrow" id="prevCardBtn" onclick="prevCard()">← Previous Card</button>
+      <button class="external-nav-arrow" id="nextCardBtn" onclick="nextCard()">Next Card →</button>
+    </div>
+
+    <div class="controls">
+      <button class="btn" onclick="checkMatches()">✓ Check Answers</button>
+      <button class="btn primary" id="nextCardBtnInline" onclick="nextCard()" disabled>Next Card →</button>
+    </div>
+
+    <div class="footer" id="footer" style="display: none;">
+      <button class="footer-btn" onclick="retryGame()">🔄 Repeat</button>
+      <button class="footer-btn quiz" onclick="goToQuiz()">🎯 Take Quiz →</button>
+      <button class="footer-btn primary" onclick="goHome()">🏠 Home</button>
+    </div>
+  </div>
+
+  <!-- Load Progress Tracker -->
+  <script src="../assets/js/progress-tracker.js"></script>
+
+  <script>
+    // ============================================
+    // GLOBAL STATE
+    // ============================================
+    
+    let selectionData = null;
+    let grammarData = null;
+    let characterData = null;
+    let currentMode = 'dots'; // 'dots' or 'arrows'
+    
+    let currentCardIndex = 0;
+    let cardScores = [0, 0, 0, 0];
+    let userMatches = [[], [], [], []];
+    let cardVerbs = [];
+    let selectedVerb = null;
+    let selectedObject = null;
+    let allCardsChecked = [false, false, false, false];
+
+    // ============================================
+    // LOAD SELECTION + FETCH GRAMMAR DATA
+    // ============================================
+    
+    async function loadData() {
+      try {
+        const stored = sessionStorage.getItem('selectionData');
+        
+        if (!stored) {
+          showError('No selection found. Please start from the home page.');
+          return false;
+        }
+
+        selectionData = JSON.parse(stored);
+        console.log('📥 Selection loaded:', selectionData);
+
+        console.log('📥 Fetching grammar-modes.json...');
+        const response = await fetch('../data/grammar-modes.json');
+        
+        if (!response.ok) {
+          throw new Error(`Failed to load grammar-modes.json: ${response.status}`);
+        }
+
+        grammarData = await response.json();
+        console.log('✅ Grammar data loaded');
+
+        const charKey = selectionData.characterKey;
+        const category = selectionData.category;
+
+        if (!grammarData[charKey]) {
+          throw new Error(`Character '${charKey}' not found`);
+        }
+
+        if (!grammarData[charKey].categories[category]) {
+          throw new Error(`Category '${category}' not found for ${charKey}`);
+        }
+
+        const categoryData = grammarData[charKey].categories[category];
+        
+        if (!categoryData.sets || !categoryData.sets[0] || !categoryData.sets[0].verbs) {
+          throw new Error(`No verbs found in ${category} for ${charKey}`);
+        }
+
+        const verbs = categoryData.sets[0].verbs.slice(0, 20);
+
+        if (verbs.length < 20) {
+          throw new Error(`Not enough verbs (found ${verbs.length}, need 20)`);
+        }
+
+        characterData = {
+          name: selectionData.characterName,
+          emoji: selectionData.characterEmoji,
+          category: selectionData.categoryTitle,
+          verbs: verbs
+        };
+
+        document.getElementById('displayEmoji').textContent = characterData.emoji;
+        document.getElementById('displayName').textContent = characterData.name;
+       
+        renderCategoryPills();
+
+        console.log('✅ Matching game ready with', characterData.verbs.length, 'verbs');
+        return true;
+
+      } catch (error) {
+        console.error('❌ Error loading data:', error);
+        showError(`Failed to load data: ${error.message}`);
+        return false;
+      }
+    }
+
+    function showError(message) {
+      document.body.innerHTML = `
+        <div style="
+          position: fixed;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          background: #1a1a1a;
+          padding: 2rem;
+          border-radius: 16px;
+          box-shadow: 16px 16px 32px #000000;
+          text-align: center;
+          max-width: 400px;
+          z-index: 10000;
+        ">
+          <h2 style="color: #fb923c; margin-bottom: 1rem; font-family: 'Space Grotesk', sans-serif;">⚠️ Error</h2>
+          <p style="color: rgba(232, 232, 232, 0.8); margin-bottom: 1.5rem; font-size: 0.9rem;">${message}</p>
+          <button onclick="window.location.href='../index.html'" style="
+            background: rgba(201, 169, 97, 0.2);
+            border: none;
+            border-radius: 12px;
+            padding: 0.875rem 1.5rem;
+            color: #C9A961;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 6px 6px 12px #000000;
+          ">🏠 Return to Home</button>
+        </div>
+      `;
+    }
+
+    // ============================================
+    // CATEGORY PILLS
+    // ============================================
+
+    function renderCategoryPills() {
+      const pillsContainer = document.getElementById('categoryPills');
+      const categories = ProgressTracker.CATEGORIES;
+      const charKey = selectionData.characterKey;
+      const currentCat = selectionData.category;
+
+      pillsContainer.innerHTML = '';
+
+      Object.keys(categories).forEach(catKey => {
+        const cat = categories[catKey];
+        const progress = ProgressTracker.getCategoryProgress(charKey, catKey);
+
+        const pill = document.createElement('div');
+        pill.className = 'category-pill';
+        if (catKey === currentCat) pill.classList.add('active');
+        if (progress.trophy) pill.classList.add('completed');
+
+        pill.innerHTML = `<span>${cat.icon}</span><span>${cat.name}</span>`;
+        
+        pill.addEventListener('click', () => switchCategory(catKey));
+        pillsContainer.appendChild(pill);
+      });
+    }
+
+    function switchCategory(newCategory) {
+      if (newCategory === selectionData.category) return;
+
+      const categoryInfo = ProgressTracker.CATEGORIES[newCategory];
+      
+      selectionData.category = newCategory;
+      selectionData.categoryTitle = categoryInfo.name;
+      selectionData.categoryIcon = categoryInfo.icon;
+
+      sessionStorage.setItem('selectionData', JSON.stringify(selectionData));
+      
+      showCelebration('🔄');
+      setTimeout(() => {
+        location.reload();
+      }, 500);
+    }
+
+    // ============================================
+    // MODE TOGGLE
+    // ============================================
+
+    function toggleMode() {
+      const toggleSwitch = document.getElementById('modeToggleSwitch');
+      const carouselWrapper = document.getElementById('carouselWrapper');
+      const buttonNavWrapper = document.getElementById('buttonNavWrapper');
+      const externalNav = document.getElementById('externalNav');
+      const navArrows = document.querySelector('.nav-arrows');
+      
+      if (currentMode === 'dots') {
+        // Switch to arrows mode
+        currentMode = 'arrows';
+        toggleSwitch.classList.add('active');
+        carouselWrapper.style.display = 'none';
+        buttonNavWrapper.classList.add('active');
+        externalNav.classList.add('active');
+        
+        renderButtonNavCard();
+      } else {
+        // Switch to dots mode
+        currentMode = 'dots';
+        toggleSwitch.classList.remove('active');
+        carouselWrapper.style.display = 'flex';
+        buttonNavWrapper.classList.remove('active');
+        externalNav.classList.remove('active');
+      }
+      
+      updateNavigation();
+    }
+
+    function renderButtonNavCard() {
+      const card = document.getElementById('buttonNavCard');
+      const verbs = cardVerbs[currentCardIndex];
+      
+      const shuffledObjects = verbs.map(v => ({
+        object: v.object,
+        emoji: v.emoji,
+        correctVerb: v.verb
+      })).sort(() => Math.random() - 0.5);
+
+      const verbsHTML = verbs.map((v, i) => `
+        <div class="match-item" data-type="verb" data-value="${v.verb}" data-card="${currentCardIndex}" data-index="${i}">
+          ${v.verb}
+        </div>
+      `).join('');
+
+      const objectsHTML = shuffledObjects.map((obj, i) => `
+        <div class="match-item" data-type="object" data-value="${obj.object}" data-correct="${obj.correctVerb}" data-card="${currentCardIndex}" data-index="${i}">
+          ${obj.object} <span class="emoji">${obj.emoji}</span>
+        </div>
+      `).join('');
+
+      card.innerHTML = `
+        <div class="card-title">Match ${currentCardIndex + 1}/4: Verbs & Objects</div>
+        <div class="matching-area">
+          <div class="column">${verbsHTML}</div>
+          <div class="column">${objectsHTML}</div>
+        </div>
+      `;
+      
+      attachMatchingListeners();
+    }
+
+    // ============================================
+    // RENDER CARD NAVIGATION DOTS
+    // ============================================
+
+    function renderCardDots() {
+      const container = document.getElementById('cardDotsContainer');
+      container.innerHTML = '';
+      
+      for (let i = 0; i < 4; i++) {
+        const dot = document.createElement('div');
+        dot.className = 'card-dot';
+        
+        if (i === currentCardIndex) {
+          dot.classList.add('current');
+        }
+        
+        if (allCardsChecked[i]) {
+          dot.classList.add('completed');
+        }
+        
+        dot.addEventListener('click', () => goToCard(i));
+        container.appendChild(dot);
+      }
+    }
+
+    function renderMatchProgressDots() {
+      const container = document.getElementById('matchProgressDots');
+      container.innerHTML = '';
+      
+      const matchesCount = userMatches[currentCardIndex].length;
+      
+      for (let i = 0; i < 5; i++) {
+        const dot = document.createElement('div');
+        dot.className = 'match-dot';
+        
+        if (i < matchesCount) {
+          dot.classList.add('completed');
+        }
+        
+        container.appendChild(dot);
+      }
+    }
+
+    // ============================================
+    // RENDER ALL CARDS
+    // ============================================
+    
+    function renderAllCards() {
+      cardVerbs = [
+        characterData.verbs.slice(0, 5),
+        characterData.verbs.slice(5, 10),
+        characterData.verbs.slice(10, 15),
+        characterData.verbs.slice(15, 20)
+      ];
+
+      const track = document.getElementById('carouselTrack');
+      track.innerHTML = '';
+
+      for (let cardIndex = 0; cardIndex < 4; cardIndex++) {
+        const cardWrapper = document.createElement('div');
+        cardWrapper.className = cardIndex === 0 ? 'card-wrapper active' : 'card-wrapper';
+        
+        const verbs = cardVerbs[cardIndex];
+        
+        const shuffledObjects = verbs.map(v => ({
+          object: v.object,
+          emoji: v.emoji,
+          correctVerb: v.verb
+        })).sort(() => Math.random() - 0.5);
+
+        const verbsHTML = verbs.map((v, i) => `
+          <div class="match-item" data-type="verb" data-value="${v.verb}" data-card="${cardIndex}" data-index="${i}">
+            ${v.verb}
+          </div>
+        `).join('');
+
+        const objectsHTML = shuffledObjects.map((obj, i) => `
+          <div class="match-item" data-type="object" data-value="${obj.object}" data-correct="${obj.correctVerb}" data-card="${cardIndex}" data-index="${i}">
+            ${obj.object} <span class="emoji">${obj.emoji}</span>
+          </div>
+        `).join('');
+
+        cardWrapper.innerHTML = `
+          <div class="matching-card">
+            <div class="card-title">Match ${cardIndex + 1}/4: Verbs & Objects</div>
+            <div class="matching-area">
+              <div class="column">${verbsHTML}</div>
+              <div class="column">${objectsHTML}</div>
+            </div>
+          </div>
+        `;
+        
+        track.appendChild(cardWrapper);
+      }
+
+      attachMatchingListeners();
+      renderCardDots();
+      renderMatchProgressDots();
+      updateCarouselPosition();
+    }
+
+    // ============================================
+    // MATCHING LOGIC
+    // ============================================
+    
+    function attachMatchingListeners() {
+      document.querySelectorAll('.match-item').forEach(item => {
+        item.addEventListener('click', handleItemClick);
+      });
+    }
+
+    function handleItemClick(e) {
+      const item = e.currentTarget;
+      const cardIndex = parseInt(item.dataset.card);
+      
+      if (cardIndex !== currentCardIndex) return;
+      if (item.classList.contains('correct')) return;
+      
+      const type = item.dataset.type;
+      
+      if (type === 'verb') {
+        document.querySelectorAll(`.match-item[data-type="verb"][data-card="${cardIndex}"]`).forEach(v => {
+          v.classList.remove('selected');
+        });
+        item.classList.add('selected');
+        selectedVerb = item.dataset.value;
+      } else {
+        document.querySelectorAll(`.match-item[data-type="object"][data-card="${cardIndex}"]`).forEach(o => {
+          o.classList.remove('selected');
+        });
+        item.classList.add('selected');
+        selectedObject = { value: item.dataset.value, correct: item.dataset.correct };
+      }
+      
+      if (selectedVerb && selectedObject) {
+        attemptMatch(cardIndex);
+      }
+    }
+
+    function attemptMatch(cardIndex) {
+      if (selectedVerb === selectedObject.correct) {
+        const verbItems = document.querySelectorAll(`.match-item[data-type="verb"][data-value="${selectedVerb}"][data-card="${cardIndex}"]`);
+        const objItems = document.querySelectorAll(`.match-item[data-type="object"][data-value="${selectedObject.value}"][data-card="${cardIndex}"]`);
+        
+        verbItems.forEach(v => {
+          v.classList.remove('selected');
+          v.classList.add('correct');
+        });
+        
+        objItems.forEach(o => {
+          o.classList.remove('selected');
+          o.classList.add('correct');
+        });
+        
+        userMatches[cardIndex].push({ verb: selectedVerb, object: selectedObject.value });
+        
+        if (navigator.vibrate) navigator.vibrate(50);
+        showCelebration('✨');
+        
+        renderMatchProgressDots();
+        
+        if (userMatches[cardIndex].length === 5) {
+          cardScores[cardIndex] = 5;
+          allCardsChecked[cardIndex] = true;
+          showCelebration('🎉');
+          document.getElementById('nextCardBtnInline').disabled = false;
+          
+          renderCardDots();
+          updateProgress();
+          checkAllComplete();
+        }
+        
+      } else {
+        const verbItems = document.querySelectorAll(`.match-item[data-type="verb"][data-value="${selectedVerb}"][data-card="${cardIndex}"]`);
+        const objItems = document.querySelectorAll(`.match-item[data-type="object"][data-value="${selectedObject.value}"][data-card="${cardIndex}"]`);
+        
+        verbItems.forEach(v => {
+          v.classList.add('wrong');
+          setTimeout(() => {
+            v.classList.remove('wrong', 'selected');
+          }, 500);
+        });
+        
+        objItems.forEach(o => {
+          o.classList.add('wrong');
+          setTimeout(() => {
+            o.classList.remove('wrong', 'selected');
+          }, 500);
+        });
+
+        if (navigator.vibrate) navigator.vibrate(200);
+      }
+      
+      selectedVerb = null;
+      selectedObject = null;
+    }
+
+    // ============================================
+    // CHECK MATCHES BUTTON
+    // ============================================
+    
+    function checkMatches() {
+      alert('💡 Tip: Click a verb, then click its matching object!');
+    }
+
+    // ============================================
+    // NAVIGATION
+    // ============================================
+    
+    function nextCard() {
+      if (currentCardIndex < 3) {
+        currentCardIndex++;
+        updateCarouselPosition();
+        updateScore();
+        updateCardInfo();
+        renderMatchProgressDots();
+        document.getElementById('nextCardBtnInline').disabled = true;
+        
+        if (currentMode === 'arrows') {
+          renderButtonNavCard();
+        }
+      }
+    }
+
+    function prevCard() {
+      if (currentCardIndex > 0) {
+        currentCardIndex--;
+        updateCarouselPosition();
+        updateScore();
+        updateCardInfo();
+        renderMatchProgressDots();
+        
+        if (currentMode === 'arrows') {
+          renderButtonNavCard();
+        }
+      }
+    }
+
+    function goToCard(index) {
+      currentCardIndex = index;
+      updateCarouselPosition();
+      updateScore();
+      updateCardInfo();
+      renderMatchProgressDots();
+      
+      if (currentMode === 'arrows') {
+        renderButtonNavCard();
+      }
+    }
+
+    function updateCarouselPosition() {
+      const track = document.getElementById('carouselTrack');
+      const offset = -currentCardIndex * 100;
+      track.style.transform = `translateX(${offset}%)`;
+      
+      document.querySelectorAll('.card-wrapper').forEach((card, index) => {
+        card.classList.toggle('active', index === currentCardIndex);
+      });
+      
+      updateNavigation();
+    }
+
+    function updateNavigation() {
+      document.getElementById('prevArrow').disabled = currentCardIndex === 0;
+      document.getElementById('nextArrow').disabled = currentCardIndex === 3;
+      document.getElementById('prevCardBtn').disabled = currentCardIndex === 0;
+      document.getElementById('nextCardBtn').disabled = currentCardIndex === 3;
+      
+      renderCardDots();
+    }
+
+    function updateCardInfo() {
+      document.getElementById('cardInfo').textContent = `Card ${currentCardIndex + 1} of 4`;
+    }
+
+    function updateScore() {
+      const score = cardScores[currentCardIndex];
+      document.getElementById('scoreDisplay').textContent = `${score}/5`;
+    }
+
+    function updateProgress() {
+      const totalScore = cardScores.reduce((a, b) => a + b, 0);
+      const percentage = Math.round((totalScore / 20) * 100);
+      document.getElementById('progressFill').style.width = percentage + '%';
+    }
+
+    function showCelebration(emoji) {
+      const celebration = document.createElement('div');
+      celebration.className = 'celebration';
+      celebration.textContent = emoji;
+      document.body.appendChild(celebration);
+      
+      setTimeout(() => {
+        document.body.removeChild(celebration);
+      }, 1000);
+    }
+
+    function checkAllComplete() {
+      const allComplete = cardScores.every(score => score === 5);
+      
+      if (allComplete) {
+        const totalScore = 20;
+        ProgressTracker.saveMatchingScore(
+          selectionData.characterKey, 
+          selectionData.category, 
+          totalScore
+        );
+
+        document.querySelector('.controls').style.display = 'none';
+        document.getElementById('externalNav').style.display = 'none';
+        document.getElementById('footer').style.display = 'flex';
+        showCelebration('🏆');
+
+        console.log('✅ Matching complete: 20/20 saved');
+      }
+    }
+
+    // ============================================
+    // FOOTER ACTIONS
+    // ============================================
+    
+    function retryGame() {
+      location.reload();
+    }
+
+    function goToQuiz() {
+      window.location.href = 'quiz-interface.html';
+    }
+
+    function goHome() {
+      sessionStorage.removeItem('selectionData');
+      window.location.href = '../index.html';
+    }
+
+    function goBack() {
+      window.history.back();
+    }
+
+    // ============================================
+    // KEYBOARD NAVIGATION
+    // ============================================
+    
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' && currentCardIndex < 3) nextCard();
+      else if (e.key === 'ArrowLeft' && currentCardIndex > 0) prevCard();
+    });
+
+    // ============================================
+    // INITIALIZE
+    // ============================================
+    
+    async function initialize() {
+      console.log('🎮 Initializing Matching Game...');
+      
+      const loaded = await loadData();
+      
+      if (!loaded) return;
+
+      renderAllCards();
+      updateScore();
+      updateCardInfo();
+      
+      console.log('✅ Matching Game Ready!');
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initialize);
+    } else {
+      initialize();
+    }
+  </script>
+</body>
+</html>
