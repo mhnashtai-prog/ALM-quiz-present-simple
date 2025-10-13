@@ -311,21 +311,6 @@
       50% { transform: scale(1.02); }
     }
 
-    /* Empty State */
-    .empty-state {
-      grid-column: 1 / -1;
-      text-align: center;
-      color: rgba(232, 232, 232, 0.5);
-      font-size: 0.8rem;
-      padding: 1.5rem 1rem;
-    }
-
-    .empty-state-icon {
-      font-size: 2.5rem;
-      margin-bottom: 0.75rem;
-      opacity: 0.5;
-    }
-
     /* Mobile Optimization */
     @media (max-width: 480px) {
       .container {
@@ -401,19 +386,14 @@
 
     <!-- Categories -->
     <div class="categories-section">
-      <div class="section-title">Choose Category</div>
       <div class="categories-grid" id="categoriesGrid">
-        <div class="empty-state">
-          <div class="empty-state-icon">👆</div>
-          Select a character above to see available categories
-        </div>
+        <!-- Categories inserted by JS -->
       </div>
     </div>
 
     <!-- Start Button -->
     <div class="start-section">
       <button class="start-button" id="startButton" disabled>
-        Select Character & Category
       </button>
     </div>
   </div>
@@ -509,7 +489,7 @@
       },
 
       getOverallProgress() {
-        const allCharacters = ['john', 'sarah', 'tom', 'emma'];
+        const allCharacters = ['alex', 'sarah', 'tom', 'emma'];
         let totalTrophies = 0;
         
         allCharacters.forEach(charKey => {
@@ -528,15 +508,15 @@
     // CHARACTERS DATA
     // ============================================
     
-  const characters = [
+    const characters = [
       { key: 'alex', name: 'Alex', emoji: '🧒' },
       { key: 'sarah', name: 'Sarah', emoji: '👧' },
       { key: 'tom', name: 'Tom', emoji: '🧑' },
       { key: 'emma', name: 'Emma', emoji: '👩' }
     ];
 
-     let selectedCharacter = 'alex'; // Auto-select first character
-     let selectedCategory = null;
+    let selectedCharacter = 'alex'; // Auto-select first character
+    let selectedCategory = null;
 
     // ============================================
     // RENDER CHARACTERS
@@ -588,17 +568,6 @@
     
     function renderCategories() {
       const grid = document.getElementById('categoriesGrid');
-      
-      if (!selectedCharacter) {
-        grid.innerHTML = `
-          <div class="empty-state">
-            <div class="empty-state-icon">👆</div>
-            Select a character above to see available categories
-          </div>
-        `;
-        return;
-      }
-
       const progress = ProgressTracker.getCharacterProgress(selectedCharacter);
       grid.innerHTML = '';
 
@@ -649,15 +618,9 @@
       if (selectedCharacter && selectedCategory) {
         button.disabled = false;
         button.classList.add('ready');
-        button.textContent = '🚀 Start Practice';
-      } else if (selectedCharacter) {
-        button.disabled = true;
-        button.classList.remove('ready');
-        button.textContent = 'Select a Category';
       } else {
         button.disabled = true;
         button.classList.remove('ready');
-        button.textContent = 'Select Character & Category';
       }
     }
 
@@ -706,7 +669,8 @@
       console.log('🎮 Initializing INTUITY...');
       ProgressTracker.init();
       renderCharacters();
-      renderCategories();
+      renderCategories(); // Now renders immediately with Alex selected
+      updateStartButton();
       console.log('✅ Ready!');
     }
 
