@@ -7,7 +7,11 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
   
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
     body {
       margin: 0;
@@ -19,7 +23,6 @@
       font-family: 'Inter', sans-serif;
       -webkit-font-smoothing: antialiased;
       overflow: hidden;
-      position: relative;
     }
 
     body::before {
@@ -35,10 +38,10 @@
       background: #1a1a1a;
       width: 95%;
       max-width: 1000px;
-      min-height: 88vh;
-      max-height: 95vh;
+      height: 95vh;
+      max-height: 900px;
       border-radius: 24px;
-      padding: 1.5rem;
+      padding: 2rem;
       box-shadow: 
         12px 12px 24px #000000,
         -12px -12px 24px #2a2a2a;
@@ -46,43 +49,43 @@
       z-index: 2;
       display: flex;
       flex-direction: column;
-    }
-
-    .header {
-      text-align: center;
-      margin-bottom: 0.75rem;
-      flex-shrink: 0;
+      overflow: hidden;
     }
 
     .back-btn {
       position: absolute;
       top: 1.5rem;
       left: 1.5rem;
-      background: #1a1a1a;
-      border: none;
-      border-radius: 12px;
-      padding: 0.6rem 1rem;
+      background: rgba(201, 169, 97, 0.1);
+      border: 2px solid rgba(201, 169, 97, 0.3);
       color: #C9A961;
-      font-size: 0.8rem;
+      padding: 0.6rem 1.2rem;
+      border-radius: 12px;
+      font-size: 0.85rem;
       font-weight: 600;
       cursor: pointer;
-      box-shadow: 
-        4px 4px 8px #000000,
-        -4px -4px 8px #2a2a2a;
       transition: all 0.3s;
       z-index: 10;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
     }
 
     .back-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 
-        6px 6px 12px #000000,
-        -6px -6px 12px #2a2a2a;
+      background: rgba(201, 169, 97, 0.2);
+      transform: translateX(-3px);
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 1.5rem;
+      flex-shrink: 0;
     }
 
     .header h1 {
       font-family: 'Space Grotesk', sans-serif;
-      font-size: 1.75rem;
+      font-size: 2.5rem;
       color: #C9A961;
       margin-bottom: 0.25rem;
       font-weight: 700;
@@ -90,824 +93,569 @@
     }
 
     .tagline {
-      font-size: 0.8rem;
-      color: rgba(232, 232, 232, 0.6);
-      margin-bottom: 0.75rem;
+      font-size: 0.9rem;
+      color: rgba(232, 232, 232, 0.7);
+      margin-bottom: 1rem;
       font-weight: 500;
-      font-style: italic;
+      letter-spacing: 0.05em;
     }
 
     .character-info {
       display: flex;
       justify-content: center;
       align-items: center;
-      gap: 0.75rem;
-      margin-bottom: 0.75rem;
-      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 1rem;
     }
 
     .character-display {
+      background: rgba(201, 169, 97, 0.15);
+      border: 2px solid rgba(201, 169, 97, 0.3);
+      border-radius: 16px;
+      padding: 0.6rem 1.2rem;
       display: flex;
       align-items: center;
-      gap: 0.5rem;
-      background: rgba(201, 169, 97, 0.1);
-      padding: 0.5rem 1rem;
-      border-radius: 12px;
-      border: 2px solid rgba(201, 169, 97, 0.3);
+      gap: 0.75rem;
     }
 
     .character-emoji {
-      font-size: 1.5rem;
+      font-size: 1.8rem;
     }
 
     .character-name {
       font-size: 1rem;
+      font-weight: 700;
       color: #C9A961;
-      font-weight: 600;
-      font-family: 'Space Grotesk', sans-serif;
+      letter-spacing: 0.03em;
     }
 
-    .category-display {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      background: rgba(201, 169, 97, 0.15);
-      padding: 0.5rem 1rem;
-      border-radius: 12px;
-      font-size: 0.9rem;
-      color: rgba(232, 232, 232, 0.85);
-      font-weight: 500;
-    }
-
-    /* Category Pills */
     .category-pills {
       display: flex;
       justify-content: center;
-      gap: 0.5rem;
-      margin-bottom: 0.75rem;
+      gap: 0.75rem;
       flex-wrap: wrap;
+      margin-bottom: 1rem;
     }
 
     .category-pill {
-      background: #1a1a1a;
-      border: 2px solid rgba(201, 169, 97, 0.3);
+      background: rgba(201, 169, 97, 0.1);
+      border: 2px solid rgba(201, 169, 97, 0.2);
       border-radius: 12px;
-      padding: 0.5rem 0.75rem;
+      padding: 0.5rem 1rem;
       font-size: 0.8rem;
       color: rgba(232, 232, 232, 0.7);
+      font-weight: 600;
       cursor: pointer;
       transition: all 0.3s;
       display: flex;
       align-items: center;
-      gap: 0.35rem;
-      box-shadow: 
-        3px 3px 6px #000000,
-        -3px -3px 6px #2a2a2a;
+      gap: 0.4rem;
     }
 
     .category-pill:hover {
-      border-color: #C9A961;
-      color: #C9A961;
+      background: rgba(201, 169, 97, 0.15);
+      border-color: rgba(201, 169, 97, 0.4);
       transform: translateY(-2px);
     }
 
     .category-pill.active {
-      background: rgba(201, 169, 97, 0.2);
+      background: rgba(201, 169, 97, 0.25);
       border-color: #C9A961;
       color: #C9A961;
-      font-weight: 600;
     }
 
     .category-pill.completed::after {
-      content: '✓';
-      font-size: 0.9rem;
+      content: '🏆';
+      font-size: 1rem;
     }
 
-    /* Prize Warning Banner */
-    .prize-warning {
-      background: rgba(251, 146, 60, 0.15);
-      border: 2px solid #fb923c;
-      border-radius: 12px;
-      padding: 0.75rem 1rem;
-      margin-bottom: 0.75rem;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
-      flex-shrink: 0;
-    }
-
-    .prize-warning.show {
+    .progress-info {
       display: flex;
-    }
-
-    .prize-warning-icon {
-      font-size: 1.2rem;
-    }
-
-    .prize-warning-text {
-      font-size: 0.85rem;
-      color: #fb923c;
-      font-weight: 600;
-      text-align: center;
-    }
-
-    .prize-eligible {
-      background: rgba(74, 222, 128, 0.15);
-      border: 2px solid #4ade80;
-      border-radius: 12px;
-      padding: 0.75rem 1rem;
-      margin-bottom: 0.75rem;
-      display: none;
-      align-items: center;
       justify-content: center;
-      gap: 0.5rem;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1rem;
       flex-shrink: 0;
-    }
-
-    .prize-eligible.show {
-      display: flex;
-    }
-
-    .prize-eligible-icon {
-      font-size: 1.2rem;
-    }
-
-    .prize-eligible-text {
-      font-size: 0.85rem;
-      color: #4ade80;
-      font-weight: 600;
-      text-align: center;
-    }
-
-    .progress-bar {
-      width: 100%;
-      height: 6px;
-      background: rgba(0, 0, 0, 0.3);
-      border-radius: 10px;
-      overflow: hidden;
-      box-shadow: inset 2px 2px 4px rgba(0, 0, 0, 0.5);
-      margin-bottom: 0.75rem;
-      flex-shrink: 0;
-    }
-
-    .progress-fill {
-      height: 100%;
-      background: linear-gradient(90deg, #C9A961, #e8d9a8);
-      border-radius: 10px;
-      transition: width 0.5s ease;
-      box-shadow: 0 0 10px rgba(201, 169, 97, 0.5);
     }
 
     .score-display {
-      text-align: center;
-      margin-bottom: 0.75rem;
-      font-size: 0.95rem;
-      color: #e8e8e8;
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 1rem;
-      flex-wrap: wrap;
-      padding: 0 1rem;
-      position: relative;
-      flex-shrink: 0;
-    }
-
-    .score-number {
+      font-size: 1rem;
       color: #C9A961;
-      font-size: 1.1rem;
+      font-weight: 700;
       font-family: 'Space Grotesk', sans-serif;
     }
 
     .score-dots {
       display: flex;
-      gap: 0.4rem;
-      position: absolute;
-      left: 50%;
-      transform: translateX(-50%);
-    }
-
-    .score-left {
-      flex: 1;
-      text-align: left;
-      font-size: 0.85rem;
-    }
-
-    .score-right {
-      flex: 1;
-      text-align: right;
-      font-size: 0.85rem;
-    }
-
-    .carousel-wrapper {
-      flex: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-      overflow: visible;
-      margin: 0 -1.5rem;
-      padding: 0 1.5rem;
-      touch-action: pan-y;
-      pointer-events: none;
-      min-height: 0;
-    }
-
-    .carousel-track {
-      display: flex;
-      gap: 2rem;
-      transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-      will-change: transform;
-      pointer-events: none;
-      width: 100%;
-      height: 100%;
-    }
-
-    .card-wrapper {
-      min-width: 100%;
-      display: flex;
-      justify-content: center;
-      padding: 0.5rem;
-      opacity: 0.4;
-      transform: scale(0.95);
-      transition: all 0.5s ease;
-      pointer-events: none;
-    }
-
-    .card-wrapper.active {
-      opacity: 1;
-      transform: scale(1);
-      pointer-events: all;
-    }
-
-    .exercise-card {
-      width: 100%;
-      max-width: 800px;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      pointer-events: all;
-    }
-
-    .card-title {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 1.1rem;
-      color: #C9A961;
-      margin-bottom: 0.5rem;
-      text-align: center;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      flex-shrink: 0;
-    }
-
-    .exercise-content {
-      flex: 1;
-      overflow-y: auto;
-      overflow-x: hidden;
-      padding: 1rem;
-      background: rgba(0, 0, 0, 0.2);
-      border-radius: 12px;
-      box-shadow: inset 2px 2px 6px rgba(0, 0, 0, 0.5);
-      -webkit-overflow-scrolling: touch;
-      scroll-behavior: smooth;
-      min-height: 0;
-    }
-
-    .exercise-content::-webkit-scrollbar { 
-      width: 8px; 
-    }
-    .exercise-content::-webkit-scrollbar-track { 
-      background: rgba(0, 0, 0, 0.3);
-      border-radius: 10px;
-      margin: 8px 0;
-    }
-    .exercise-content::-webkit-scrollbar-thumb {
-      background: rgba(201, 169, 97, 0.6);
-      border-radius: 10px;
-      transition: all 0.3s;
-    }
-    .exercise-content::-webkit-scrollbar-thumb:hover {
-      background: rgba(201, 169, 97, 0.8);
-    }
-
-    /* CARD 1: CLOZE TEXT */
-    .cloze-text {
-      font-size: 1.05rem;
-      line-height: 2;
-      color: rgba(232, 232, 232, 0.9);
-      text-align: justify;
-      font-weight: 400;
-    }
-
-    .cloze-text p {
-      margin-bottom: 1rem;
-    }
-
-    .blank-input {
-      display: inline-block;
-      min-width: 80px;
-      padding: 0.25rem 0.5rem;
-      background: rgba(201, 169, 97, 0.1);
-      border: none;
-      border-bottom: 2px solid rgba(201, 169, 97, 0.4);
-      color: #C9A961;
-      font-size: 1rem;
-      font-weight: 500;
-      font-family: 'Inter', sans-serif;
-      border-radius: 4px 4px 0 0;
-      transition: all 0.3s;
-      outline: none;
-    }
-
-    .blank-input:focus {
-      background: rgba(201, 169, 97, 0.2);
-      border-bottom-color: #C9A961;
-      box-shadow: 0 2px 8px rgba(201, 169, 97, 0.3);
-    }
-
-    .blank-input.correct {
-      background: rgba(74, 222, 128, 0.2);
-      border-bottom-color: #4ade80;
-      color: #4ade80;
-    }
-
-    .blank-input.wrong {
-      background: rgba(251, 146, 60, 0.2);
-      border-bottom-color: #fb923c;
-      color: #fb923c;
-      animation: shake 0.5s;
-    }
-
-    /* CARD 2: MULTIPLE CHOICE */
-    .mc-question {
-      background: #1a1a1a;
-      border-radius: 10px;
-      padding: 1rem;
-      margin-bottom: 0.75rem;
-      box-shadow: 
-        4px 4px 8px #000000,
-        -4px -4px 8px #2a2a2a;
-    }
-
-    .mc-question-text {
-      font-size: 0.95rem;
-      color: rgba(232, 232, 232, 0.9);
-      margin-bottom: 0.75rem;
-      font-weight: 400;
-    }
-
-    .mc-options {
-      display: flex;
-      flex-wrap: wrap;
       gap: 0.5rem;
-    }
-
-    .mc-option {
-      background: rgba(201, 169, 97, 0.1);
-      border: 2px solid rgba(201, 169, 97, 0.3);
-      border-radius: 8px;
-      padding: 0.5rem 1rem;
-      color: rgba(232, 232, 232, 0.8);
-      font-size: 0.9rem;
-      font-weight: 400;
-      cursor: pointer;
-      transition: all 0.3s;
-      flex: 0 0 auto;
-    }
-
-    .mc-option:hover {
-      border-color: #C9A961;
-      background: rgba(201, 169, 97, 0.15);
-    }
-
-    .mc-option.selected {
-      background: rgba(201, 169, 97, 0.25);
-      border-color: #C9A961;
-      color: #C9A961;
-      font-weight: 600;
-    }
-
-    .mc-option.correct {
-      background: rgba(74, 222, 128, 0.2);
-      border-color: #4ade80;
-      color: #4ade80;
-      animation: correctPulse 0.5s ease;
-    }
-
-    .mc-option.wrong {
-      background: rgba(251, 146, 60, 0.2);
-      border-color: #fb923c;
-      color: #fb923c;
-      animation: shake 0.5s ease;
-    }
-
-    /* CARD 3: SPOT THE MISTAKE */
-    .mistake-sentence {
-      background: #1a1a1a;
-      border-radius: 10px;
-      padding: 1rem;
-      margin-bottom: 0.75rem;
-      box-shadow: 
-        4px 4px 8px #000000,
-        -4px -4px 8px #2a2a2a;
-    }
-
-    .mistake-number {
-      font-size: 0.75rem;
-      color: rgba(201, 169, 97, 0.6);
-      margin-bottom: 0.5rem;
-      font-weight: 600;
-    }
-
-    .mistake-words {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.4rem;
-    }
-
-    .mistake-word {
-      background: rgba(201, 169, 97, 0.1);
-      border: 2px solid rgba(201, 169, 97, 0.3);
-      border-radius: 8px;
-      padding: 0.4rem 0.75rem;
-      color: rgba(232, 232, 232, 0.8);
-      font-size: 0.9rem;
-      cursor: pointer;
-      transition: all 0.3s;
-    }
-
-    .mistake-word:hover {
-      border-color: #C9A961;
-      background: rgba(201, 169, 97, 0.15);
-    }
-
-    .mistake-word.selected {
-      background: rgba(201, 169, 97, 0.25);
-      border-color: #C9A961;
-      color: #C9A961;
-      font-weight: 700;
-    }
-
-    .mistake-word.correct {
-      background: rgba(74, 222, 128, 0.2);
-      border-color: #4ade80;
-      color: #4ade80;
-      animation: correctPulse 0.5s ease;
-    }
-
-    .mistake-word.wrong {
-      background: rgba(251, 146, 60, 0.2);
-      border-color: #fb923c;
-      color: #fb923c;
-      animation: shake 0.5s ease;
-    }
-
-    /* CARD 4: SENTENCE ORDERING */
-    .ordering-instructions {
-      text-align: center;
-      color: rgba(232, 232, 232, 0.7);
-      font-size: 0.9rem;
-      margin-bottom: 1rem;
-      font-style: italic;
-    }
-
-    .ordering-sentence {
-      background: #1a1a1a;
-      border-radius: 10px;
-      padding: 1rem;
-      margin-bottom: 0.75rem;
-      box-shadow: 
-        4px 4px 8px #000000,
-        -4px -4px 8px #2a2a2a;
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      transition: all 0.3s;
-    }
-
-    .ordering-sentence:hover {
-      transform: translateX(4px);
-      box-shadow: 
-        6px 6px 12px #000000,
-        -6px -6px 12px #2a2a2a;
-    }
-
-    .ordering-number-input {
-      width: 40px;
-      height: 40px;
-      background: rgba(201, 169, 97, 0.1);
-      border: 2px solid rgba(201, 169, 97, 0.3);
-      border-radius: 8px;
-      color: #C9A961;
-      font-size: 1.1rem;
-      font-weight: 600;
-      text-align: center;
-      font-family: 'Space Grotesk', sans-serif;
-      outline: none;
-      transition: all 0.3s;
-    }
-
-    .ordering-number-input:focus {
-      border-color: #C9A961;
-      background: rgba(201, 169, 97, 0.2);
-      box-shadow: 0 0 10px rgba(201, 169, 97, 0.3);
-    }
-
-    .ordering-number-input.correct {
-      background: rgba(74, 222, 128, 0.2);
-      border-color: #4ade80;
-      color: #4ade80;
-    }
-
-    .ordering-number-input.wrong {
-      background: rgba(251, 146, 60, 0.2);
-      border-color: #fb923c;
-      color: #fb923c;
-      animation: shake 0.5s;
-    }
-
-    .ordering-text {
-      flex: 1;
-      color: rgba(232, 232, 232, 0.9);
-      font-size: 0.95rem;
-      line-height: 1.5;
-    }
-
-    @keyframes shake {
-      0%, 100% { transform: translateX(0); }
-      25% { transform: translateX(-5px); }
-      75% { transform: translateX(5px); }
-    }
-
-    @keyframes correctPulse {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.05); }
-    }
-
-    .controls {
-      display: flex;
-      gap: 0.75rem;
-      justify-content: center;
-      flex-wrap: wrap;
-      margin-top: 0.75rem;
-      flex-shrink: 0;
-    }
-
-    .btn {
-      background: #1a1a1a;
-      border: none;
-      border-radius: 12px;
-      padding: 0.75rem 1.5rem;
-      color: #e8e8e8;
-      font-size: 0.8rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.03em;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      box-shadow: 
-        4px 4px 8px #000000,
-        -4px -4px 8px #2a2a2a;
-      font-family: 'Inter', sans-serif;
-    }
-
-    .btn:hover:not(:disabled) {
-      transform: translateY(-2px);
-      box-shadow: 
-        6px 6px 12px #000000,
-        -6px -6px 12px #2a2a2a;
-    }
-
-    .btn.primary {
-      background: rgba(201, 169, 97, 0.2);
-      color: #C9A961;
-    }
-
-    .btn:disabled {
-      opacity: 0.4;
-      cursor: not-allowed;
-    }
-
-    .nav-arrows {
-      position: absolute;
-      top: 50%;
-      left: 0;
-      right: 0;
-      transform: translateY(-50%);
-      display: flex;
-      justify-content: space-between;
-      pointer-events: none;
-      padding: 0 0.5rem;
-      z-index: 10;
-    }
-
-    .arrow {
-      width: 45px;
-      height: 45px;
-      border-radius: 50%;
-      background: #1a1a1a;
-      border: none;
-      box-shadow: 
-        4px 4px 8px #000000,
-        -4px -4px 8px #2a2a2a;
-      color: #C9A961;
-      font-size: 1.3rem;
-      cursor: pointer;
-      pointer-events: all;
-      transition: all 0.2s;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .arrow:hover:not(:disabled) {
-      box-shadow: 
-        6px 6px 12px #000000,
-        -6px -6px 12px #2a2a2a;
-      transform: scale(1.05);
-    }
-
-    .arrow:disabled {
-      opacity: 0.3;
-      cursor: not-allowed;
     }
 
     .nav-dot {
       width: 10px;
       height: 10px;
       border-radius: 50%;
-      background: rgba(201, 169, 97, 0.3);
+      background: rgba(201, 169, 97, 0.2);
+      border: 2px solid rgba(201, 169, 97, 0.3);
       cursor: pointer;
       transition: all 0.3s;
-      box-shadow: 
-        2px 2px 4px #000000,
-        -2px -2px 4px #2a2a2a;
-      position: relative;
-    }
-
-    .nav-dot:hover {
-      background: rgba(201, 169, 97, 0.6);
-      transform: scale(1.2);
     }
 
     .nav-dot.active {
       background: #C9A961;
-      transform: scale(1.3);
-      box-shadow: 
-        0 0 10px rgba(201, 169, 97, 0.5),
-        2px 2px 4px #000000,
-        -2px -2px 4px #2a2a2a;
+      border-color: #C9A961;
+      transform: scale(1.2);
     }
 
     .nav-dot.completed {
       background: #4ade80;
+      border-color: #4ade80;
     }
 
-    .celebration {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      font-size: 4rem;
-      opacity: 0;
-      pointer-events: none;
-      z-index: 1000;
-      animation: celebrate 1s ease;
-    }
-
-    @keyframes celebrate {
-      0% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
-      50% { opacity: 1; transform: translate(-50%, -50%) scale(1.2); }
-      100% { opacity: 0; transform: translate(-50%, -50%) scale(1); }
-    }
-
-    .footer {
+    .quiz-carousel {
+      position: relative;
+      width: 100%;
+      flex: 1;
+      overflow: hidden;
       display: flex;
-      gap: 0.75rem;
+      align-items: stretch;
       justify-content: center;
-      margin-top: 0.75rem;
-      padding-top: 0.75rem;
-      border-top: 2px solid rgba(201, 169, 97, 0.2);
-      flex-wrap: wrap;
+      min-height: 0;
+    }
+
+    .carousel-track {
+      position: relative;
+      width: 100%;
+      height: 100%;
+    }
+
+    .quiz-card-wrapper {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateX(100%);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      pointer-events: none;
+    }
+
+    .quiz-card-wrapper.active {
+      opacity: 1;
+      visibility: visible;
+      transform: translateX(0);
+      pointer-events: auto;
+      z-index: 2;
+    }
+
+    .quiz-card-wrapper.prev {
+      transform: translateX(-100%);
+      z-index: 1;
+    }
+
+    .quiz-card-wrapper.next {
+      transform: translateX(100%);
+      z-index: 1;
+    }
+
+    .quiz-card {
+      background: #1a1a1a;
+      border-radius: 20px;
+      padding: 2rem 1.5rem;
+      box-shadow: 
+        12px 12px 24px #000000,
+        -12px -12px 24px #2a2a2a;
+      border: 2px solid rgba(201, 169, 97, 0.2);
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+
+    .quiz-card::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .quiz-card::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 10px;
+    }
+
+    .quiz-card::-webkit-scrollbar-thumb {
+      background: rgba(201, 169, 97, 0.3);
+      border-radius: 10px;
+    }
+
+    .quiz-card::-webkit-scrollbar-thumb:hover {
+      background: rgba(201, 169, 97, 0.5);
+    }
+
+    .card-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.4rem;
+      color: #C9A961;
+      text-align: center;
+      margin-bottom: 1.5rem;
+      font-weight: 700;
       flex-shrink: 0;
     }
 
-    .footer-btn {
-      background: #1a1a1a;
-      border: none;
-      border-radius: 12px;
-      padding: 0.75rem 1.25rem;
-      color: #e8e8e8;
-      font-size: 0.8rem;
+    .card-subtitle {
+      font-size: 0.9rem;
+      color: rgba(232, 232, 232, 0.7);
+      text-align: center;
+      margin-bottom: 1.5rem;
+      font-style: italic;
+      flex-shrink: 0;
+    }
+
+    .cloze-text {
+      font-size: 1.05rem;
+      line-height: 1.8;
+      color: rgba(232, 232, 232, 0.9);
+      margin-bottom: 1.5rem;
+      flex: 1;
+      overflow-y: auto;
+    }
+
+    .cloze-text p {
+      margin-bottom: 1rem;
+    }
+
+    .cloze-blank {
+      display: inline-block;
+      min-width: 80px;
+      padding: 0.2rem 0.5rem;
+      margin: 0 0.25rem;
+      background: rgba(201, 169, 97, 0.1);
+      border: 2px solid rgba(201, 169, 97, 0.3);
+      border-radius: 6px;
       font-weight: 600;
+      color: #C9A961;
+      text-align: center;
       cursor: pointer;
-      transition: all 0.3s ease;
-      box-shadow: 
-        4px 4px 8px #000000,
-        -4px -4px 8px #2a2a2a;
-      font-family: 'Inter', sans-serif;
+      transition: all 0.3s;
     }
 
-    .footer-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 
-        6px 6px 12px #000000,
-        -6px -6px 12px #2a2a2a;
-    }
-
-    .footer-btn.primary {
+    .cloze-blank:hover {
       background: rgba(201, 169, 97, 0.2);
+      border-color: rgba(201, 169, 97, 0.5);
+    }
+
+    .cloze-blank.filled {
+      background: rgba(74, 222, 128, 0.2);
+      border-color: rgba(74, 222, 128, 0.5);
+      color: #4ade80;
+    }
+
+    .cloze-blank.wrong {
+      background: rgba(239, 68, 68, 0.2);
+      border-color: rgba(239, 68, 68, 0.5);
+      color: #ef4444;
+    }
+
+    .question-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+      flex: 1;
+      overflow-y: auto;
+      padding-right: 0.5rem;
+    }
+
+    .question-item {
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 12px;
+      padding: 1.25rem;
+      border: 2px solid rgba(201, 169, 97, 0.2);
+    }
+
+    .question-text {
+      font-size: 1rem;
+      color: rgba(232, 232, 232, 0.9);
+      margin-bottom: 1rem;
+      line-height: 1.6;
+    }
+
+    .question-options {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.75rem;
+    }
+
+    .option-btn {
+      background: rgba(201, 169, 97, 0.1);
+      border: 2px solid rgba(201, 169, 97, 0.3);
+      border-radius: 10px;
+      padding: 0.75rem 1rem;
+      color: rgba(232, 232, 232, 0.9);
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s;
+      text-align: center;
+    }
+
+    .option-btn:hover {
+      background: rgba(201, 169, 97, 0.2);
+      border-color: rgba(201, 169, 97, 0.5);
+      transform: translateY(-2px);
+    }
+
+    .option-btn.selected {
+      background: rgba(201, 169, 97, 0.3);
+      border-color: #C9A961;
       color: #C9A961;
     }
 
-    /* Mobile Optimizations */
+    .option-btn.correct {
+      background: rgba(74, 222, 128, 0.2);
+      border-color: #4ade80;
+      color: #4ade80;
+    }
+
+    .option-btn.wrong {
+      background: rgba(239, 68, 68, 0.2);
+      border-color: #ef4444;
+      color: #ef4444;
+    }
+
+    .sentence-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      flex: 1;
+      overflow-y: auto;
+      padding-right: 0.5rem;
+    }
+
+    .sentence-item {
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 12px;
+      padding: 1rem 1.25rem;
+      border: 2px solid rgba(201, 169, 97, 0.2);
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .sentence-item:hover {
+      border-color: rgba(201, 169, 97, 0.4);
+      transform: translateX(5px);
+    }
+
+    .sentence-words {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      align-items: center;
+    }
+
+    .word {
+      font-size: 1rem;
+      color: rgba(232, 232, 232, 0.9);
+      padding: 0.3rem 0.6rem;
+      background: rgba(201, 169, 97, 0.1);
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.3s;
+      border: 2px solid transparent;
+    }
+
+    .word:hover {
+      background: rgba(201, 169, 97, 0.2);
+      border-color: rgba(201, 169, 97, 0.3);
+    }
+
+    .word.error {
+      background: rgba(239, 68, 68, 0.2);
+      border-color: #ef4444;
+      color: #ef4444;
+    }
+
+    .word.correct-word {
+      background: rgba(74, 222, 128, 0.2);
+      border-color: #4ade80;
+      color: #4ade80;
+    }
+
+    .ordering-container {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      flex: 1;
+      overflow-y: auto;
+      padding-right: 0.5rem;
+    }
+
+    .ordering-item {
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 12px;
+      padding: 1rem 1.25rem;
+      border: 2px solid rgba(201, 169, 97, 0.2);
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      cursor: move;
+      transition: all 0.3s;
+    }
+
+    .ordering-item:hover {
+      border-color: rgba(201, 169, 97, 0.4);
+      transform: translateX(5px);
+    }
+
+    .order-input {
+      width: 50px;
+      height: 50px;
+      background: rgba(201, 169, 97, 0.1);
+      border: 2px solid rgba(201, 169, 97, 0.3);
+      border-radius: 10px;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #C9A961;
+      text-align: center;
+      font-family: 'Space Grotesk', sans-serif;
+    }
+
+    .order-input:focus {
+      outline: none;
+      border-color: #C9A961;
+      background: rgba(201, 169, 97, 0.2);
+    }
+
+    .order-input.correct {
+      background: rgba(74, 222, 128, 0.2);
+      border-color: #4ade80;
+      color: #4ade80;
+    }
+
+    .order-input.wrong {
+      background: rgba(239, 68, 68, 0.2);
+      border-color: #ef4444;
+      color: #ef4444;
+    }
+
+    .sentence-text {
+      flex: 1;
+      font-size: 1rem;
+      color: rgba(232, 232, 232, 0.9);
+      line-height: 1.6;
+    }
+
+    .controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      margin-top: 1.5rem;
+      flex-shrink: 0;
+    }
+
+    .arrow {
+      background: rgba(201, 169, 97, 0.1);
+      border: 2px solid rgba(201, 169, 97, 0.3);
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #C9A961;
+      font-size: 1.5rem;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .arrow:hover:not(.disabled) {
+      background: rgba(201, 169, 97, 0.2);
+      border-color: #C9A961;
+      transform: scale(1.1);
+    }
+
+    .arrow.disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+
+    .btn {
+      background: rgba(201, 169, 97, 0.2);
+      border: 2px solid #C9A961;
+      border-radius: 12px;
+      padding: 0.85rem 1.75rem;
+      color: #C9A961;
+      font-size: 0.95rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .btn:hover {
+      background: rgba(201, 169, 97, 0.3);
+      transform: translateY(-2px);
+    }
+
+    .btn.success {
+      background: rgba(74, 222, 128, 0.2);
+      border-color: #4ade80;
+      color: #4ade80;
+    }
+
+    .prize-banner {
+      background: linear-gradient(135deg, rgba(201, 169, 97, 0.2), rgba(201, 169, 97, 0.1));
+      border: 2px solid #C9A961;
+      border-radius: 12px;
+      padding: 1rem 1.5rem;
+      margin-bottom: 1rem;
+      text-align: center;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    .prize-banner.eligible {
+      background: linear-gradient(135deg, rgba(74, 222, 128, 0.2), rgba(74, 222, 128, 0.1));
+      border-color: #4ade80;
+    }
+
+    .prize-banner.ineligible {
+      background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(239, 68, 68, 0.1));
+      border-color: #ef4444;
+    }
+
+    .prize-text {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #C9A961;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .prize-banner.eligible .prize-text {
+      color: #4ade80;
+    }
+
+    .prize-banner.ineligible .prize-text {
+      color: #ef4444;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.02); }
+    }
+
     @media (max-width: 768px) {
       .game-container {
-        padding: 1rem 0.75rem;
+        width: 100%;
+        height: 100vh;
         max-height: 100vh;
-        min-height: 100vh;
-        border-radius: 16px;
-      }
-
-      .header {
-        margin-bottom: 0.5rem;
-      }
-
-      .header h1 {
-        font-size: 1.3rem;
-        margin-bottom: 0.15rem;
-      }
-
-      .tagline {
-        display: none;
-      }
-
-      .character-info {
-        gap: 0.5rem;
-        margin-bottom: 0.5rem;
-      }
-
-      .character-display,
-      .category-display {
-        padding: 0.4rem 0.75rem;
-        font-size: 0.8rem;
-      }
-
-      .character-emoji {
-        font-size: 1.2rem;
-      }
-
-      .category-pills {
-        display: none;
-      }
-
-      .progress-bar {
-        height: 4px;
-        margin-bottom: 0.5rem;
-      }
-
-      .score-display {
-        margin-bottom: 0.5rem;
-        font-size: 0.8rem;
-        padding: 0 0.5rem;
-      }
-
-      .score-dots .nav-dot {
-        width: 8px;
-        height: 8px;
-      }
-
-      .exercise-content {
-        padding: 0.75rem;
-      }
-
-      .cloze-text {
-        font-size: 0.95rem;
-        line-height: 1.9;
-      }
-
-      .blank-input {
-        min-width: 60px;
-        font-size: 0.9rem;
-      }
-
-      .controls {
-        gap: 0.5rem;
-        margin-top: 0.5rem;
-      }
-
-      .btn {
-        padding: 0.65rem 1rem;
-        font-size: 0.75rem;
-      }
-
-      .arrow {
-        width: 38px;
-        height: 38px;
-        font-size: 1.2rem;
+        border-radius: 0;
+        padding: 1rem 0.75rem;
       }
 
       .back-btn {
@@ -917,22 +665,89 @@
         font-size: 0.75rem;
       }
 
-      .footer {
-        margin-top: 0.5rem;
-        padding-top: 0.5rem;
+      .header h1 {
+        font-size: 1.8rem;
       }
 
-      .footer-btn {
-        padding: 0.65rem 1rem;
+      .tagline {
         font-size: 0.75rem;
+      }
+
+      .character-display {
+        padding: 0.5rem 1rem;
+      }
+
+      .character-emoji {
+        font-size: 1.5rem;
+      }
+
+      .character-name {
+        font-size: 0.9rem;
+      }
+
+      .category-pills {
+        display: none;
+      }
+
+      .card-title {
+        font-size: 1.1rem;
+      }
+
+      .card-subtitle {
+        font-size: 0.8rem;
+      }
+
+      .cloze-text {
+        font-size: 0.95rem;
+      }
+
+      .question-options {
+        grid-template-columns: 1fr;
+      }
+
+      .option-btn {
+        font-size: 0.85rem;
+        padding: 0.65rem 0.85rem;
+      }
+
+      .word {
+        font-size: 0.9rem;
+        padding: 0.25rem 0.5rem;
+      }
+
+      .order-input {
+        width: 40px;
+        height: 40px;
+        font-size: 1rem;
+      }
+
+      .sentence-text {
+        font-size: 0.9rem;
+      }
+
+      .arrow {
+        width: 40px;
+        height: 40px;
+        font-size: 1.2rem;
+      }
+
+      .btn {
+        padding: 0.7rem 1.2rem;
+        font-size: 0.8rem;
+      }
+
+      .quiz-card-wrapper:not(.active) {
+        display: none;
       }
     }
   </style>
 </head>
 <body>
   <div class="game-container">
-    <button class="back-btn" onclick="goBack()">← Back</button>
-    
+    <a href="javascript:history.back()" class="back-btn">
+      ← Back
+    </a>
+
     <div class="header">
       <h1>INTUITY</h1>
       <p class="tagline">Practice Quiz</p>
@@ -944,52 +759,75 @@
         </div>
       </div>
 
-      <!-- Category Pills (Desktop only) -->
       <div class="category-pills" id="categoryPills">
         <!-- Pills inserted by JavaScript -->
       </div>
     </div>
 
-    <!-- Prize Eligibility Banners -->
-    <div class="prize-warning" id="prizeWarning">
-      <span class="prize-warning-icon">⚠️</span>
-      <span class="prize-warning-text">Get 20/20 on Matching first to earn the prize!</span>
-    </div>
-
-    <div class="prize-eligible" id="prizeEligible">
-      <span class="prize-eligible-icon">🎁</span>
-      <span class="prize-eligible-text">Prize eligible! Get 20/20 here to earn your trophy! 🏆</span>
-    </div>
-
-    <div class="progress-bar">
-      <div class="progress-fill" id="progressFill" style="width: 0%"></div>
-    </div>
-
-    <div class="score-display">
-      <div class="score-left">Exercise <span id="cardNumber">1</span>/4</div>
-      <div class="score-dots" id="scoreDots"></div>
-      <div class="score-right">Score: <span class="score-number" id="scoreDisplay">0/5</span></div>
-    </div>
-
-    <div class="carousel-wrapper">
-      <div class="nav-arrows">
-        <button class="arrow" id="prevArrow" onclick="prevCard()">‹</button>
-        <button class="arrow" id="nextArrow" onclick="nextCard()">›</button>
+    <div class="progress-info">
+      <div class="score-display" id="scoreDisplay">Score: 0 / 20</div>
+      <div class="score-dots" id="scoreDots">
+        <div class="nav-dot active" data-card="0"></div>
+        <div class="nav-dot" data-card="1"></div>
+        <div class="nav-dot" data-card="2"></div>
+        <div class="nav-dot" data-card="3"></div>
       </div>
-      
-      <div class="carousel-track" id="carouselTrack">
-        <!-- Cards will be inserted here by JavaScript -->
+    </div>
+
+    <div id="prizeBanner"></div>
+
+    <div class="quiz-carousel">
+      <div class="carousel-track">
+        <!-- Card 1: Cloze Exercise -->
+        <div class="quiz-card-wrapper active">
+          <div class="quiz-card">
+            <h2 class="card-title">📝 Exercise 1/4: Fill in the Blanks</h2>
+            <p class="card-subtitle">Click on each blank and type the correct verb form</p>
+            <div class="cloze-text" id="clozeText">
+              <!-- Cloze text will be inserted here -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 2: Multiple Choice -->
+        <div class="quiz-card-wrapper">
+          <div class="quiz-card">
+            <h2 class="card-title">✅ Exercise 2/4: Multiple Choice</h2>
+            <p class="card-subtitle">Choose the correct verb form for each sentence</p>
+            <div class="question-list" id="mcQuestions">
+              <!-- MC questions will be inserted here -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 3: Spot the Mistake -->
+        <div class="quiz-card-wrapper">
+          <div class="quiz-card">
+            <h2 class="card-title">🔍 Exercise 3/4: Spot the Mistake</h2>
+            <p class="card-subtitle">Click on the word that is incorrect in each sentence</p>
+            <div class="sentence-list" id="mistakeSentences">
+              <!-- Mistake sentences will be inserted here -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 4: Put in Order -->
+        <div class="quiz-card-wrapper">
+          <div class="quiz-card">
+            <h2 class="card-title">🔢 Exercise 4/4: Put Sentences in Order</h2>
+            <p class="card-subtitle">Number the sentences from 1-7 to create a logical story</p>
+            <div class="ordering-container" id="orderingSentences">
+              <!-- Ordering sentences will be inserted here -->
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
     <div class="controls">
-      <button class="btn" onclick="checkAnswers()">✓ Check Answers</button>
-      <button class="btn primary" id="nextCardBtn" onclick="nextCard()" disabled>Next Exercise →</button>
-    </div>
-
-    <div class="footer" id="footer" style="display: none;">
-      <button class="footer-btn" onclick="retryExercises()">🔄 Repeat Quiz</button>
-      <button class="footer-btn primary" onclick="goHome()">🏠 Home</button>
+      <div class="arrow" id="prevBtn" onclick="previousCard()">‹</div>
+      <button class="btn" id="checkBtn" onclick="checkAnswers()">Check Answers</button>
+      <div class="arrow" id="nextBtn" onclick="nextCard()">›</div>
     </div>
   </div>
 
@@ -998,394 +836,395 @@
 
   <script>
     // ============================================
-    // LOAD DATA FROM character-data.json
+    // GLOBAL VARIABLES
     // ============================================
     
     let selectionData = null;
     let quizData = null;
-    let currentCardIndex = 0;
+    let currentCard = 0;
+    let totalScore = 0;
     let cardScores = [0, 0, 0, 0];
-    let matchingScore = 0;
-    let isPrizeEligible = false;
+    let cardCompleted = [false, false, false, false];
+    
+    // Cloze exercise
+    let clozeAnswers = [];
+    let userClozeAnswers = [];
+    
+    // Multiple choice
+    let mcAnswers = [];
+    let userMCAnswers = [];
+    
+    // Mistake sentences
+    let mistakeData = [];
+    let userMistakeAnswers = [];
+    
+    // Ordering sentences
+    let orderingData = [];
+    let userOrderingAnswers = [];
 
-    async function loadData() {
+    // ============================================
+    // INITIALIZATION
+    // ============================================
+    
+    async function initialize() {
+      console.log('🎮 Initializing Quiz Interface...');
+      
+      // Load selection data
+      const selectionJSON = sessionStorage.getItem('selectionData');
+      if (!selectionJSON) {
+        console.error('❌ No selection data found');
+        alert('Please select a character and category first!');
+        window.location.href = '../index.html';
+        return;
+      }
+      
+      selectionData = JSON.parse(selectionJSON);
+      console.log('📥 Selection loaded:', selectionData);
+      
+      // Update header with character info
+      document.getElementById('displayEmoji').textContent = selectionData.characterEmoji;
+      document.getElementById('displayName').textContent = selectionData.characterName;
+      
+      // Render category pills
+      renderCategoryPills();
+      
+      // Check prize eligibility
+      checkPrizeEligibility();
+      
+      // Load quiz data
+      await loadQuizData();
+      
+      // Render all exercises
+      renderClozeExercise();
+      renderMultipleChoice();
+      renderMistakeSentences();
+      renderOrderingSentences();
+      
+      // Update navigation
+      updateNavigation();
+      
+      console.log('✅ Quiz interface ready!');
+    }
+
+    // ============================================
+    // LOAD QUIZ DATA FROM JSON
+    // ============================================
+    
+    async function loadQuizData() {
       try {
-        const stored = sessionStorage.getItem('selectionData');
-        if (!stored) {
-          showError('No selection found. Please start from the home page.');
-          return false;
-        }
-
-        selectionData = JSON.parse(stored);
-        console.log('📥 Selection loaded:', selectionData);
-
-        // Check matching prerequisite
-        const progress = ProgressTracker.getCategoryProgress(
-          selectionData.characterKey, 
-          selectionData.category
-        );
+        console.log('📥 Fetching character-data.json...');
+        const response = await fetch('../data/character-data.json');
+        const allData = await response.json();
+        console.log('✅ Quiz data loaded');
         
-        matchingScore = progress.matching.score;
-        isPrizeEligible = matchingScore === 20;
-
-        console.log(`📊 Matching score: ${matchingScore}/20`);
-        console.log(`🎁 Prize eligible: ${isPrizeEligible}`);
-
-        // Show appropriate banner
-        if (isPrizeEligible) {
-          document.getElementById('prizeEligible').classList.add('show');
-        } else {
-          document.getElementById('prizeWarning').classList.add('show');
-        }
-
-        // Map all categories to Sarah's daily_habits temporarily
+        const charKey = selectionData.characterKey;
+        
+        // Category mapping (temporary until all categories have content)
         const categoryMapping = {
           'habitual': 'daily_habits',
           'routine': 'daily_habits',
           'frequency': 'daily_habits',
           'conjunctions': 'daily_habits'
         };
-
+        
         const mappedCategory = categoryMapping[selectionData.category] || 'daily_habits';
-
-        console.log('📥 Fetching character-data.json...');
-        const response = await fetch('../data/character-data.json');
+        console.log(`📊 Mapped category: ${selectionData.category} → ${mappedCategory}`);
         
-        if (!response.ok) {
-          throw new Error(`Failed to load character-data.json: ${response.status}`);
-        }
-
-        const allData = await response.json();
-        console.log('✅ Quiz data loaded');
-
-        // Always use Sarah's data for now (temporary until all quiz content exists)
-        const charKey = 'sarah';
-        
-        if (!allData[charKey]) {
-          throw new Error(`Character 'sarah' not found in character-data.json`);
-        }
-
-        if (!allData[charKey].categories[mappedCategory]) {
-          throw new Error(`Category '${mappedCategory}' not found for sarah`);
-        }
-
         quizData = allData[charKey].categories[mappedCategory];
-
-        // Smart pronoun replacement based on character
+        
+        if (!quizData) {
+          console.error('❌ No quiz data found for this combination');
+          alert('Quiz content not available yet for this category!');
+          window.location.href = '../index.html';
+          return;
+        }
+        
+        // Replace pronouns based on character
         replacePronounsInQuizData();
-
-        document.getElementById('displayEmoji').textContent = selectionData.characterEmoji;
-        document.getElementById('displayName').textContent = selectionData.characterName;
-
-        renderCategoryPills();
-
-        console.log('✅ Quiz interface ready!');
-        return true;
-
+        
+        console.log('✅ Quiz data ready:', quizData);
+        
       } catch (error) {
-        console.error('❌ Error loading data:', error);
-        showError(`Failed to load data: ${error.message}`);
-        return false;
+        console.error('❌ Error loading quiz data:', error);
+        alert('Error loading quiz content. Please try again.');
       }
     }
 
     // ============================================
-    // SMART PRONOUN REPLACEMENT
+    // PRONOUN REPLACEMENT
     // ============================================
     
     function replacePronounsInQuizData() {
       const charKey = selectionData.characterKey;
+      const charName = selectionData.characterName;
       
-      // Determine pronouns based on character
-      let from = { subject: 'she', object: 'her', possessive: 'her', name: 'Sarah' };
-      let to = { subject: '', object: '', possessive: '', name: selectionData.characterName };
-
-      if (charKey === 'tom' || charKey === 'alex') {
-        to = { subject: 'he', object: 'him', possessive: 'his', name: selectionData.characterName };
-      } else if (charKey === 'emma') {
-        to = { subject: 'she', object: 'her', possessive: 'her', name: selectionData.characterName };
-      } else {
-        to = { subject: 'she', object: 'her', possessive: 'her', name: selectionData.characterName };
+      // Pronoun mappings
+      const pronounMaps = {
+        'sarah': { from: 'Sarah', to: 'Sarah', he: 'she', him: 'her', his: 'her', He: 'She', Him: 'Her', His: 'Her' },
+        'emma': { from: 'Sarah', to: 'Emma', he: 'she', him: 'her', his: 'her', He: 'She', Him: 'Her', His: 'Her' },
+        'tom': { from: 'Sarah', to: 'Tom', he: 'he', him: 'him', his: 'his', He: 'He', Him: 'Him', His: 'His' },
+        'alex': { from: 'Sarah', to: 'Alex', he: 'he', him: 'him', his: 'his', He: 'He', Him: 'Him', His: 'His' }
+      };
+      
+      const map = pronounMaps[charKey];
+      if (!map || charKey === 'sarah') return; // Sarah's data is already correct
+      
+      function replaceText(text) {
+        if (typeof text !== 'string') return text;
+        
+        return text
+          .replace(/\bSarah\b/g, map.to)
+          .replace(/\bshe\b/g, map.he)
+          .replace(/\bher\b/g, map.him)
+          .replace(/\bhers\b/g, map.his)
+          .replace(/\bShe\b/g, map.He)
+          .replace(/\bHer\b/g, map.Him);
       }
-
+      
       // Replace in cloze templates
-      quizData.clozeTemplates.forEach(template => {
-        template.text = template.text
-          .replace(/\bSarah\b/g, to.name)
-          .replace(/\bshe\b/g, to.subject)
-          .replace(/\bShe\b/g, to.subject.charAt(0).toUpperCase() + to.subject.slice(1))
-          .replace(/\bher\b/g, to.possessive)
-          .replace(/\bHer\b/g, to.possessive.charAt(0).toUpperCase() + to.possessive.slice(1));
-      });
-
-      // Replace in multiple choice questions
-      quizData.multipleChoiceQuestions.forEach(q => {
-        q.text = q.text
-          .replace(/\bSarah\b/g, to.name)
-          .replace(/\bshe\b/g, to.subject)
-          .replace(/\bShe\b/g, to.subject.charAt(0).toUpperCase() + to.subject.slice(1))
-          .replace(/\bher\b/g, to.possessive)
-          .replace(/\bHer\b/g, to.possessive.charAt(0).toUpperCase() + to.possessive.slice(1));
-      });
-
+      if (quizData.clozeTemplates) {
+        quizData.clozeTemplates.forEach(template => {
+          template.text = replaceText(template.text);
+        });
+      }
+      
+      // Replace in MC questions
+      if (quizData.multipleChoiceQuestions) {
+        quizData.multipleChoiceQuestions.forEach(q => {
+          q.text = replaceText(q.text);
+        });
+      }
+      
       // Replace in mistake sentences
-      quizData.mistakeSentences.forEach(s => {
-        s.sentence = s.sentence.map(word => {
-          if (word === 'Sarah') return to.name;
-          if (word === 'she') return to.subject;
-          if (word === 'She') return to.subject.charAt(0).toUpperCase() + to.subject.slice(1);
-          if (word === 'her') return to.possessive;
-          if (word === 'Her') return to.possessive.charAt(0).toUpperCase() + to.possessive.slice(1);
-          return word;
+      if (quizData.mistakeSentences) {
+        quizData.mistakeSentences.forEach(s => {
+          s.sentence = s.sentence.map(word => replaceText(word));
         });
-      });
-
+      }
+      
       // Replace in ordering sentences
-      quizData.orderingSentences.forEach(set => {
-        set.forEach(sentence => {
-          sentence.text = sentence.text
-            .replace(/\bSarah\b/g, to.name)
-            .replace(/\bshe\b/g, to.subject)
-            .replace(/\bShe\b/g, to.subject.charAt(0).toUpperCase() + to.subject.slice(1))
-            .replace(/\bher\b/g, to.possessive)
-            .replace(/\bHer\b/g, to.possessive.charAt(0).toUpperCase() + to.possessive.slice(1));
+      if (quizData.orderingSentences && quizData.orderingSentences[0]) {
+        quizData.orderingSentences[0].forEach(s => {
+          s.text = replaceText(s.text);
         });
-      });
-
-      console.log(`✅ Pronouns replaced for ${to.name}`);
-    }
-
-    function showError(message) {
-      document.body.innerHTML = `
-        <div style="
-          position: fixed;
-          top: 50%;
-          left: 50%;
-          transform: translate(-50%, -50%);
-          background: #1a1a1a;
-          padding: 2rem;
-          border-radius: 16px;
-          box-shadow: 16px 16px 32px #000000;
-          text-align: center;
-          max-width: 400px;
-          z-index: 10000;
-        ">
-          <h2 style="color: #fb923c; margin-bottom: 1rem; font-family: 'Space Grotesk', sans-serif;">⚠️ Error</h2>
-          <p style="color: rgba(232, 232, 232, 0.8); margin-bottom: 1.5rem; font-size: 0.9rem;">${message}</p>
-          <button onclick="window.location.href='../index.html'" style="
-            background: rgba(201, 169, 97, 0.2);
-            border: none;
-            border-radius: 12px;
-            padding: 0.875rem 1.5rem;
-            color: #C9A961;
-            font-size: 0.875rem;
-            font-weight: 600;
-            cursor: pointer;
-            box-shadow: 6px 6px 12px #000000;
-          ">🏠 Return to Home</button>
-        </div>
-      `;
+      }
+      
+      console.log(`✅ Pronouns replaced for ${charName}`);
     }
 
     // ============================================
     // CATEGORY PILLS
     // ============================================
-
+    
     function renderCategoryPills() {
       const pillsContainer = document.getElementById('categoryPills');
       const categories = ProgressTracker.CATEGORIES;
       const charKey = selectionData.characterKey;
-      const currentCat = selectionData.category;
-
+      
       pillsContainer.innerHTML = '';
-
+      
       Object.keys(categories).forEach(catKey => {
         const cat = categories[catKey];
         const progress = ProgressTracker.getCategoryProgress(charKey, catKey);
-
+        
         const pill = document.createElement('div');
         pill.className = 'category-pill';
-        if (catKey === currentCat) pill.classList.add('active');
+        if (catKey === selectionData.category) pill.classList.add('active');
         if (progress.trophy) pill.classList.add('completed');
-
-        pill.innerHTML = `<span>${cat.icon}</span><span>${cat.name}</span>`;
         
+        pill.innerHTML = `${cat.icon} ${cat.name}`;
         pill.addEventListener('click', () => switchCategory(catKey));
+        
         pillsContainer.appendChild(pill);
       });
     }
 
     function switchCategory(newCategory) {
       if (newCategory === selectionData.category) return;
-
-      const categoryInfo = ProgressTracker.CATEGORIES[newCategory];
       
       selectionData.category = newCategory;
-      selectionData.categoryTitle = categoryInfo.name;
-      selectionData.categoryIcon = categoryInfo.icon;
-
-      sessionStorage.setItem('selectionData', JSON.stringify(selectionData));
+      selectionData.categoryTitle = ProgressTracker.CATEGORIES[newCategory].name;
+      selectionData.categoryIcon = ProgressTracker.CATEGORIES[newCategory].icon;
       
-      showCelebration('🔄');
-      setTimeout(() => {
-        location.reload();
-      }, 500);
+      sessionStorage.setItem('selectionData', JSON.stringify(selectionData));
+      location.reload();
     }
 
     // ============================================
-    // RENDER ALL 4 EXERCISE CARDS
+    // PRIZE ELIGIBILITY
     // ============================================
     
-    function renderAllCards() {
-      const track = document.getElementById('carouselTrack');
-      track.innerHTML = '';
-
-      renderClozeCard(track);
-      renderMultipleChoiceCard(track);
-      renderMistakeCard(track);
-      renderOrderingCard(track);
-
-      renderNavigation();
-      updateCarouselPosition();
+    function checkPrizeEligibility() {
+      const charKey = selectionData.characterKey;
+      const category = selectionData.category;
+      const progress = ProgressTracker.getCategoryProgress(charKey, category);
+      
+      const bannerContainer = document.getElementById('prizeBanner');
+      
+      if (progress.matchingScore === 20) {
+        bannerContainer.innerHTML = `
+          <div class="prize-banner eligible">
+            <div class="prize-text">
+              🏆 Matching completed! Get 20/20 on this quiz to earn your trophy!
+            </div>
+          </div>
+        `;
+      } else {
+        bannerContainer.innerHTML = `
+          <div class="prize-banner ineligible">
+            <div class="prize-text">
+              ⚠️ Complete the matching game with 20/20 first to be prize-eligible!
+            </div>
+          </div>
+        `;
+      }
     }
 
-    function renderClozeCard(track) {
-      const cardWrapper = document.createElement('div');
-      cardWrapper.className = 'card-wrapper active';
-      cardWrapper.setAttribute('data-card-type', 'cloze');
-
+    // ============================================
+    // RENDER EXERCISES
+    // ============================================
+    
+    function renderClozeExercise() {
       const template = quizData.clozeTemplates[0];
-      const textWithBlanks = template.text.replace(/(\w+)___/g, (match, firstLetter) => {
-        return `${firstLetter}<input type="text" class="blank-input" data-answer="" />`;
+      clozeAnswers = template.answers;
+      userClozeAnswers = new Array(clozeAnswers.length).fill('');
+      
+      let text = template.text;
+      const paragraphs = text.split('\n\n');
+      
+      let blankIndex = 0;
+      let html = '';
+      
+      paragraphs.forEach(para => {
+        let processedPara = para;
+        
+        // Find all blanks in this paragraph
+        const blankPattern = /(\w)_{3,}/g;
+        processedPara = processedPara.replace(blankPattern, (match, firstLetter) => {
+          const blankHTML = `<span class="cloze-blank" data-index="${blankIndex}" onclick="fillBlank(${blankIndex})">${firstLetter}_____</span>`;
+          blankIndex++;
+          return blankHTML;
+        });
+        
+        html += `<p>${processedPara}</p>`;
       });
+      
+      document.getElementById('clozeText').innerHTML = html;
+    }
 
-      cardWrapper.innerHTML = `
-        <div class="exercise-card">
-          <div class="card-title">Fill in the Blanks</div>
-          <div class="exercise-content">
-            <div class="cloze-text">${textWithBlanks.split('\n\n').map(p => `<p>${p}</p>`).join('')}</div>
+    function fillBlank(index) {
+      if (cardCompleted[0]) return;
+      
+      const answer = prompt(`Fill in the blank (starts with "${clozeAnswers[index][0]}"):`);
+      if (answer === null || answer === '') return;
+      
+      userClozeAnswers[index] = answer.trim().toLowerCase();
+      
+      const blank = document.querySelector(`.cloze-blank[data-index="${index}"]`);
+      blank.textContent = answer;
+      blank.classList.add('filled');
+    }
+
+    function renderMultipleChoice() {
+      const questions = quizData.multipleChoiceQuestions.slice(0, 5);
+      mcAnswers = questions.map(q => q.correct);
+      userMCAnswers = new Array(5).fill('');
+      
+      let html = '';
+      questions.forEach((q, qIndex) => {
+        html += `
+          <div class="question-item">
+            <div class="question-text">${qIndex + 1}. ${q.text}</div>
+            <div class="question-options">
+              ${q.options.map((opt, optIndex) => `
+                <button class="option-btn" onclick="selectMCOption(${qIndex}, '${opt}')">${opt}</button>
+              `).join('')}
+            </div>
           </div>
-        </div>
-      `;
+        `;
+      });
+      
+      document.getElementById('mcQuestions').innerHTML = html;
+    }
 
-      const inputs = cardWrapper.querySelectorAll('.blank-input');
-      template.answers.forEach((answer, i) => {
-        if (inputs[i]) {
-          inputs[i].setAttribute('data-answer', answer.toLowerCase());
+    function selectMCOption(questionIndex, option) {
+      if (cardCompleted[1]) return;
+      
+      userMCAnswers[questionIndex] = option;
+      
+      // Update UI
+      const questionItem = document.querySelectorAll('.question-item')[questionIndex];
+      const buttons = questionItem.querySelectorAll('.option-btn');
+      
+      buttons.forEach(btn => {
+        btn.classList.remove('selected');
+        if (btn.textContent === option) {
+          btn.classList.add('selected');
         }
       });
-
-      track.appendChild(cardWrapper);
     }
 
-    function renderMultipleChoiceCard(track) {
-      const cardWrapper = document.createElement('div');
-      cardWrapper.className = 'card-wrapper';
-      cardWrapper.setAttribute('data-card-type', 'mc');
-
-      const questions = quizData.multipleChoiceQuestions.slice(0, 5);
-      
-      const questionsHTML = questions.map((q, index) => `
-        <div class="mc-question" data-question="${index}">
-          <div class="mc-question-text">${index + 1}. ${q.text}</div>
-          <div class="mc-options">
-            ${q.options.map(opt => `
-              <div class="mc-option" data-answer="${opt}" data-correct="${q.correct}">
-                ${opt}
-              </div>
-            `).join('')}
-          </div>
-        </div>
-      `).join('');
-
-      cardWrapper.innerHTML = `
-        <div class="exercise-card">
-          <div class="card-title">Multiple Choice</div>
-          <div class="exercise-content">
-            ${questionsHTML}
-          </div>
-        </div>
-      `;
-
-      cardWrapper.querySelectorAll('.mc-option').forEach(option => {
-        option.addEventListener('click', () => {
-          const question = option.closest('.mc-question');
-          question.querySelectorAll('.mc-option').forEach(opt => {
-            opt.classList.remove('selected');
-          });
-          option.classList.add('selected');
-        });
-      });
-
-      track.appendChild(cardWrapper);
-    }
-
-    function renderMistakeCard(track) {
-      const cardWrapper = document.createElement('div');
-      cardWrapper.className = 'card-wrapper';
-      cardWrapper.setAttribute('data-card-type', 'mistake');
-
+    function renderMistakeSentences() {
       const sentences = quizData.mistakeSentences.slice(0, 5);
+      mistakeData = sentences;
+      userMistakeAnswers = new Array(5).fill(-1);
       
-      const sentencesHTML = sentences.map((s, index) => `
-        <div class="mistake-sentence" data-sentence="${index}" data-error-index="${s.errorIndex}">
-          <div class="mistake-number">Sentence ${index + 1}</div>
-          <div class="mistake-words">
-            ${s.sentence.map((word, wordIndex) => `
-              <div class="mistake-word" data-index="${wordIndex}">${word}</div>
-            `).join('')}
+      let html = '';
+      sentences.forEach((s, sIndex) => {
+        html += `
+          <div class="sentence-item">
+            <div class="sentence-words">
+              ${s.sentence.map((word, wIndex) => `
+                <span class="word" data-sentence="${sIndex}" data-word="${wIndex}" onclick="selectMistakeWord(${sIndex}, ${wIndex})">${word}</span>
+              `).join('')}
+            </div>
           </div>
-        </div>
-      `).join('');
-
-      cardWrapper.innerHTML = `
-        <div class="exercise-card">
-          <div class="card-title">Spot the Mistake</div>
-          <div class="exercise-content">
-            ${sentencesHTML}
-          </div>
-        </div>
-      `;
-
-      cardWrapper.querySelectorAll('.mistake-word').forEach(word => {
-        word.addEventListener('click', () => {
-          const sentence = word.closest('.mistake-sentence');
-          sentence.querySelectorAll('.mistake-word').forEach(w => {
-            w.classList.remove('selected');
-          });
-          word.classList.add('selected');
-        });
+        `;
       });
-
-      track.appendChild(cardWrapper);
+      
+      document.getElementById('mistakeSentences').innerHTML = html;
     }
 
-    function renderOrderingCard(track) {
-      const cardWrapper = document.createElement('div');
-      cardWrapper.className = 'card-wrapper';
-      cardWrapper.setAttribute('data-card-type', 'ordering');
+    function selectMistakeWord(sentenceIndex, wordIndex) {
+      if (cardCompleted[2]) return;
+      
+      userMistakeAnswers[sentenceIndex] = wordIndex;
+      
+      // Update UI
+      const sentenceItem = document.querySelectorAll('.sentence-item')[sentenceIndex];
+      const words = sentenceItem.querySelectorAll('.word');
+      
+      words.forEach((word, idx) => {
+        word.classList.remove('error');
+        if (idx === wordIndex) {
+          word.classList.add('error');
+        }
+      });
+    }
 
+    function renderOrderingSentences() {
       const sentences = quizData.orderingSentences[0];
+      orderingData = sentences;
+      userOrderingAnswers = new Array(7).fill('');
+      
+      // Shuffle sentences
       const shuffled = [...sentences].sort(() => Math.random() - 0.5);
-
-      const sentencesHTML = shuffled.map((s, index) => `
-        <div class="ordering-sentence" data-correct-order="${s.order}">
-          <input type="number" class="ordering-number-input" min="1" max="${sentences.length}" placeholder="#" />
-          <div class="ordering-text">${s.text}</div>
-        </div>
-      `).join('');
-
-      cardWrapper.innerHTML = `
-        <div class="exercise-card">
-          <div class="card-title">Put Sentences in Order</div>
-          <div class="exercise-content">
-            <div class="ordering-instructions">Number these sentences from 1 to ${sentences.length}</div>
-            ${sentencesHTML}
+      
+      let html = '';
+      shuffled.forEach((s, index) => {
+        html += `
+          <div class="ordering-item">
+            <input type="number" class="order-input" min="1" max="7" data-index="${index}" data-correct="${s.order}" onchange="updateOrderAnswer(${index}, this.value)">
+            <div class="sentence-text">${s.text}</div>
           </div>
-        </div>
-      `;
+        `;
+      });
+      
+      document.getElementById('orderingSentences').innerHTML = html;
+    }
 
-      track.appendChild(cardWrapper);
+    function updateOrderAnswer(index, value) {
+      userOrderingAnswers[index] = parseInt(value) || 0;
     }
 
     // ============================================
@@ -1393,271 +1232,232 @@
     // ============================================
     
     function checkAnswers() {
-      const currentCard = document.querySelectorAll('.card-wrapper')[currentCardIndex];
-      const cardType = currentCard.getAttribute('data-card-type');
+      if (currentCard === 0) checkClozeAnswers();
+      else if (currentCard === 1) checkMCAnswers();
+      else if (currentCard === 2) checkMistakeAnswers();
+      else if (currentCard === 3) checkOrderingAnswers();
+    }
+
+    function checkClozeAnswers() {
       let score = 0;
-
-      if (cardType === 'cloze') {
-        const inputs = currentCard.querySelectorAll('.blank-input');
-        inputs.forEach(input => {
-          const userAnswer = input.value.trim().toLowerCase();
-          const correctAnswer = input.getAttribute('data-answer');
-          
-          if (userAnswer === correctAnswer) {
-            input.classList.remove('wrong');
-            input.classList.add('correct');
-            score++;
-          } else {
-            input.classList.remove('correct');
-            input.classList.add('wrong');
-          }
-        });
-      }
-
-      if (cardType === 'mc') {
-        const questions = currentCard.querySelectorAll('.mc-question');
-        questions.forEach(question => {
-          const selected = question.querySelector('.mc-option.selected');
-          if (selected) {
-            const userAnswer = selected.getAttribute('data-answer');
-            const correctAnswer = selected.getAttribute('data-correct');
-            
-            if (userAnswer === correctAnswer) {
-              selected.classList.add('correct');
-              score++;
-            } else {
-              selected.classList.add('wrong');
-              question.querySelectorAll('.mc-option').forEach(opt => {
-                if (opt.getAttribute('data-answer') === correctAnswer) {
-                  opt.classList.add('correct');
-                }
-              });
-            }
-          }
-        });
-      }
-
-      if (cardType === 'mistake') {
-        const sentences = currentCard.querySelectorAll('.mistake-sentence');
-        sentences.forEach(sentence => {
-          const selected = sentence.querySelector('.mistake-word.selected');
-          const correctIndex = parseInt(sentence.getAttribute('data-error-index'));
-          
-          if (selected) {
-            const selectedIndex = parseInt(selected.getAttribute('data-index'));
-            
-            if (selectedIndex === correctIndex) {
-              selected.classList.add('correct');
-              score++;
-            } else {
-              selected.classList.add('wrong');
-              const correctWord = sentence.querySelector(`.mistake-word[data-index="${correctIndex}"]`);
-              if (correctWord) {
-                correctWord.classList.add('correct');
-              }
-            }
-          }
-        });
-      }
-
-      if (cardType === 'ordering') {
-        const sentences = currentCard.querySelectorAll('.ordering-sentence');
-        sentences.forEach(sentence => {
-          const input = sentence.querySelector('.ordering-number-input');
-          const userOrder = parseInt(input.value);
-          const correctOrder = parseInt(sentence.getAttribute('data-correct-order'));
-          
-          if (userOrder === correctOrder) {
-            input.classList.remove('wrong');
-            input.classList.add('correct');
-            score++;
-          } else {
-            input.classList.remove('correct');
-            input.classList.add('wrong');
-          }
-        });
-      }
-
-      cardScores[currentCardIndex] = score;
+      
+      clozeAnswers.forEach((correct, index) => {
+        const userAnswer = userClozeAnswers[index].toLowerCase();
+        const correctAnswer = correct.toLowerCase();
+        const blank = document.querySelector(`.cloze-blank[data-index="${index}"]`);
+        
+        if (userAnswer === correctAnswer) {
+          score++;
+          blank.classList.remove('wrong');
+          blank.classList.add('filled');
+        } else {
+          blank.classList.remove('filled');
+          blank.classList.add('wrong');
+        }
+      });
+      
+      cardScores[0] = score;
+      cardCompleted[0] = true;
       updateScore();
-      updateProgress();
       
-      document.getElementById('nextCardBtn').disabled = false;
+      alert(`Cloze Exercise: ${score} / ${clozeAnswers.length} correct!`);
+    }
+
+    function checkMCAnswers() {
+      let score = 0;
       
-      const dots = document.querySelectorAll('.nav-dot');
-      if (dots[currentCardIndex]) {
-        dots[currentCardIndex].classList.add('completed');
-      }
+      document.querySelectorAll('.question-item').forEach((item, qIndex) => {
+        const buttons = item.querySelectorAll('.option-btn');
+        const userAnswer = userMCAnswers[qIndex];
+        const correctAnswer = mcAnswers[qIndex];
+        
+        buttons.forEach(btn => {
+          btn.classList.remove('selected', 'correct', 'wrong');
+          const btnText = btn.textContent;
+          
+          if (btnText === correctAnswer) {
+            btn.classList.add('correct');
+          }
+          
+          if (btnText === userAnswer && userAnswer !== correctAnswer) {
+            btn.classList.add('wrong');
+          }
+        });
+        
+        if (userAnswer === correctAnswer) {
+          score++;
+        }
+      });
+      
+      cardScores[1] = score;
+      cardCompleted[1] = true;
+      updateScore();
+      
+      alert(`Multiple Choice: ${score} / 5 correct!`);
+    }
 
-      if (score === 5) {
-        showCelebration('🎉');
-      }
+    function checkMistakeAnswers() {
+      let score = 0;
+      
+      document.querySelectorAll('.sentence-item').forEach((item, sIndex) => {
+        const words = item.querySelectorAll('.word');
+        const userAnswer = userMistakeAnswers[sIndex];
+        const correctAnswer = mistakeData[sIndex].errorIndex;
+        
+        words.forEach((word, wIndex) => {
+          word.classList.remove('error', 'correct-word');
+          
+          if (wIndex === correctAnswer) {
+            word.classList.add('correct-word');
+          }
+        });
+        
+        if (userAnswer === correctAnswer) {
+          score++;
+        }
+      });
+      
+      cardScores[2] = score;
+      cardCompleted[2] = true;
+      updateScore();
+      
+      alert(`Spot the Mistake: ${score} / 5 correct!`);
+    }
 
-      checkAllComplete();
+    function checkOrderingAnswers() {
+      let score = 0;
+      
+      document.querySelectorAll('.order-input').forEach((input, index) => {
+        const userAnswer = parseInt(input.value) || 0;
+        const correctAnswer = parseInt(input.dataset.correct);
+        
+        input.classList.remove('correct', 'wrong');
+        
+        if (userAnswer === correctAnswer) {
+          score++;
+          input.classList.add('correct');
+        } else {
+          input.classList.add('wrong');
+        }
+      });
+      
+      cardScores[3] = score;
+      cardCompleted[3] = true;
+      updateScore();
+      
+      alert(`Sentence Ordering: ${score} / 7 correct!`);
+      
+      // Check if all exercises completed
+      if (cardCompleted.every(c => c)) {
+        saveQuizScore();
+      }
     }
 
     // ============================================
-    // NAVIGATION
+    // SCORE MANAGEMENT
+    // ============================================
+    
+    function updateScore() {
+      totalScore = cardScores.reduce((a, b) => a + b, 0);
+      document.getElementById('scoreDisplay').textContent = `Score: ${totalScore} / 20`;
+      
+      // Update dots
+      document.querySelectorAll('.nav-dot').forEach((dot, index) => {
+        if (cardCompleted[index]) {
+          dot.classList.add('completed');
+        }
+      });
+    }
+
+    function saveQuizScore() {
+      const charKey = selectionData.characterKey;
+      const category = selectionData.category;
+      
+      ProgressTracker.saveQuizScore(charKey, category, totalScore);
+      
+      const progress = ProgressTracker.getCategoryProgress(charKey, category);
+      
+      if (progress.trophy) {
+        setTimeout(() => {
+          alert('🏆 CONGRATULATIONS! 🏆\n\nYou earned a trophy!\n\nYou completed both the matching game and quiz with 20/20!');
+          window.location.href = '../index.html';
+        }, 500);
+      } else if (totalScore === 20 && progress.matchingScore < 20) {
+        alert('🎉 Perfect score!\n\nBut you need 20/20 on the matching game too for the trophy.');
+      } else if (totalScore < 20) {
+        alert(`Quiz completed: ${totalScore}/20\n\nKeep practicing to improve your score!`);
+      }
+    }
+
+    // ============================================
+    // CAROUSEL NAVIGATION
     // ============================================
     
     function nextCard() {
-      if (currentCardIndex < 3) {
-        currentCardIndex++;
-        updateCarouselPosition();
-        updateScore();
-        document.getElementById('nextCardBtn').disabled = true;
+      if (currentCard < 3) {
+        showCard(currentCard + 1);
       }
     }
 
-    function prevCard() {
-      if (currentCardIndex > 0) {
-        currentCardIndex--;
-        updateCarouselPosition();
-        updateScore();
+    function previousCard() {
+      if (currentCard > 0) {
+        showCard(currentCard - 1);
       }
     }
 
-    function updateCarouselPosition() {
-      const track = document.getElementById('carouselTrack');
-      const offset = -currentCardIndex * 100;
-      track.style.transform = `translateX(${offset}%)`;
+    function showCard(index) {
+      const wrappers = document.querySelectorAll('.quiz-card-wrapper');
       
-      document.querySelectorAll('.card-wrapper').forEach((card, index) => {
-        card.classList.toggle('active', index === currentCardIndex);
-      });
-      
-      document.getElementById('cardNumber').textContent = currentCardIndex + 1;
-      document.getElementById('prevArrow').disabled = currentCardIndex === 0;
-      document.getElementById('nextArrow').disabled = currentCardIndex === 3;
-      
-      const dots = document.querySelectorAll('.nav-dot');
-      dots.forEach((dot, i) => {
-        dot.classList.toggle('active', i === currentCardIndex);
-      });
-    }
-
-    function renderNavigation() {
-      const nav = document.getElementById('scoreDots');
-      nav.innerHTML = '';
-      
-      for (let i = 0; i < 4; i++) {
-        const dot = document.createElement('div');
-        dot.className = 'nav-dot';
-        if (i === currentCardIndex) dot.classList.add('active');
-        dot.addEventListener('click', () => goToCard(i));
-        nav.appendChild(dot);
-      }
-    }
-
-    function goToCard(index) {
-      currentCardIndex = index;
-      updateCarouselPosition();
-      updateScore();
-    }
-
-    function updateScore() {
-      const score = cardScores[currentCardIndex];
-      document.getElementById('scoreDisplay').textContent = `${score}/5`;
-    }
-
-    function updateProgress() {
-      const totalScore = cardScores.reduce((a, b) => a + b, 0);
-      const percentage = Math.round((totalScore / 20) * 100);
-      document.getElementById('progressFill').style.width = percentage + '%';
-    }
-
-    function showCelebration(emoji) {
-      const celebration = document.createElement('div');
-      celebration.className = 'celebration';
-      celebration.textContent = emoji;
-      document.body.appendChild(celebration);
-      
-      setTimeout(() => {
-        document.body.removeChild(celebration);
-      }, 1000);
-    }
-
-    function checkAllComplete() {
-      const allChecked = cardScores.every(score => score > 0);
-      
-      if (allChecked) {
-        const totalScore = cardScores.reduce((a, b) => a + b, 0);
+      wrappers.forEach((wrapper, i) => {
+        wrapper.classList.remove('active', 'prev', 'next');
         
-        // Save quiz score
-        ProgressTracker.saveQuizScore(
-          selectionData.characterKey, 
-          selectionData.category, 
-          totalScore
-        );
-
-        document.querySelector('.controls').style.display = 'none';
-        document.getElementById('footer').style.display = 'flex';
-
-        // Check if trophy was earned
-        const earnedTrophy = isPrizeEligible && totalScore === 20;
-        
-        if (earnedTrophy) {
-          showCelebration('🏆');
-          setTimeout(() => {
-            alert('🎉 CONGRATULATIONS! 🏆\n\nYou earned your trophy!\nYou got 20/20 on BOTH Matching and Quiz!\n\n✨ Collect your prize! ✨');
-          }, 1500);
-        } else if (totalScore === 20 && !isPrizeEligible) {
-          showCelebration('😊');
-          setTimeout(() => {
-            alert('Great job on the quiz! 👏\n\nBut remember: To get the prize, you need 20/20 on MATCHING first!\n\nGo back and complete the matching game perfectly! 💪');
-          }, 1500);
+        if (i === index) {
+          wrapper.classList.add('active');
+        } else if (i < index) {
+          wrapper.classList.add('prev');
         } else {
-          showCelebration('👍');
+          wrapper.classList.add('next');
         }
+      });
+      
+      currentCard = index;
+      updateNavigation();
+    }
 
-        console.log(`✅ Quiz complete: ${totalScore}/20 saved`);
-        console.log(`🏆 Trophy earned: ${earnedTrophy}`);
+    function updateNavigation() {
+      const prevBtn = document.getElementById('prevBtn');
+      const nextBtn = document.getElementById('nextBtn');
+      const dots = document.querySelectorAll('.nav-dot');
+      
+      // Update prev/next button states
+      prevBtn.classList.toggle('disabled', currentCard === 0);
+      nextBtn.classList.toggle('disabled', currentCard === 3);
+      
+      // Update dots
+      dots.forEach((dot, index) => {
+        dot.classList.toggle('active', index === currentCard);
+      });
+      
+      // Update check button text
+      const checkBtn = document.getElementById('checkBtn');
+      if (cardCompleted[currentCard]) {
+        checkBtn.textContent = 'Checked ✓';
+        checkBtn.classList.add('success');
+      } else {
+        checkBtn.textContent = 'Check Answers';
+        checkBtn.classList.remove('success');
       }
+      
+      // Add click handlers to dots
+      dots.forEach((dot, index) => {
+        dot.onclick = () => showCard(index);
+      });
     }
 
     // ============================================
-    // FOOTER ACTIONS
+    // INITIALIZE ON PAGE LOAD
     // ============================================
     
-    function retryExercises() {
-      location.reload();
-    }
-
-    function goHome() {
-      sessionStorage.removeItem('selectionData');
-      window.location.href = '../index.html';
-    }
-
-    function goBack() {
-      window.history.back();
-    }
-
-    // ============================================
-    // KEYBOARD NAVIGATION
-    // ============================================
-    
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'ArrowRight' && currentCardIndex < 3) nextCard();
-      else if (e.key === 'ArrowLeft' && currentCardIndex > 0) prevCard();
-    });
-
-    // ============================================
-    // INITIALIZE
-    // ============================================
-    
-    async function initialize() {
-      console.log('🎮 Initializing Quiz Interface...');
-      
-      const loaded = await loadData();
-      
-      if (!loaded) return;
-
-      renderAllCards();
-      updateScore();
-      
-      console.log('✅ Quiz Interface Ready!');
-    }
-
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', initialize);
     } else {
