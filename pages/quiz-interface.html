@@ -826,17 +826,170 @@
     function createCard(index) {
       const card = document.createElement('div');
       card.className = 'quiz-card';
-      const titles = ['📝 Exercise 1/4: Fill in the Blanks', '✅ Exercise 2/4: Multiple Choice', '🔍 Exercise 3/4: Spot the Mistake', '🔢 Exercise 4/4: Put in Order'];
-      const subtitles = ['Type directly into each blank space', 'Choose the correct verb form', 'Click on the word that is incorrect', 'Number the sentences from 1-7'];
       
-      card.innerHTML = `
-        <h2 class="card-title">${titles[index]}</h2>
-        <p class="card-subtitle">${subtitles[index]}</p>
-        <div style="flex: 1; display: flex; align-items: center; justify-content: center; color: rgba(232, 232, 232, 0.5);">
-          Exercise ${index + 1} content
+      if (index === 0) {
+        card.innerHTML = renderClozeExerciseHTML();
+      } else if (index === 1) {
+        card.innerHTML = renderMultipleChoiceHTML();
+      } else if (index === 2) {
+        card.innerHTML = renderMistakeSentencesHTML();
+      } else if (index === 3) {
+        card.innerHTML = renderOrderingSentencesHTML();
+      }
+      
+      return card;
+    }
+
+    function renderClozeExerciseHTML() {
+      return `
+        <h2 class="card-title">📝 Exercise 1/4: Fill in the Blanks</h2>
+        <p class="card-subtitle">Type directly into each blank space</p>
+        <div class="cloze-text">
+          <p>Sarah <input type="text" class="cloze-blank" data-index="0" placeholder="d___" value=""> hot chocolate every morning. She <input type="text" class="cloze-blank" data-index="1" placeholder="t___" value=""> the bus to school and sits at the front in class. She <input type="text" class="cloze-blank" data-index="2" placeholder="d___" value=""> all her homework carefully.</p>
+          <p>She <input type="text" class="cloze-blank" data-index="3" placeholder="r___" value=""> books before bed. She <input type="text" class="cloze-blank" data-index="4" placeholder="p___" value=""> the piano after school. She <input type="text" class="cloze-blank" data-index="5" placeholder="h___" value=""> mum cook dinner.</p>
         </div>
       `;
-      return card;
+    }
+
+    function renderMultipleChoiceHTML() {
+      return `
+        <h2 class="card-title">✅ Exercise 2/4: Multiple Choice</h2>
+        <p class="card-subtitle">Choose the correct verb form for each sentence</p>
+        <div class="question-list">
+          <div class="question-item">
+            <div class="question-text">1. Sarah _____ hot chocolate every morning.</div>
+            <div class="question-options">
+              <button class="option-btn">drinks</button>
+              <button class="option-btn">drink</button>
+              <button class="option-btn">drinking</button>
+              <button class="option-btn">drank</button>
+            </div>
+          </div>
+          <div class="question-item">
+            <div class="question-text">2. She _____ the bus to school.</div>
+            <div class="question-options">
+              <button class="option-btn">takes</button>
+              <button class="option-btn">take</button>
+              <button class="option-btn">taking</button>
+              <button class="option-btn">took</button>
+            </div>
+          </div>
+          <div class="question-item">
+            <div class="question-text">3. She _____ books before bed.</div>
+            <div class="question-options">
+              <button class="option-btn">reads</button>
+              <button class="option-btn">read</button>
+              <button class="option-btn">reading</button>
+              <button class="option-btn">readed</button>
+            </div>
+          </div>
+          <div class="question-item">
+            <div class="question-text">4. She _____ all her homework carefully.</div>
+            <div class="question-options">
+              <button class="option-btn">does</button>
+              <button class="option-btn">do</button>
+              <button class="option-btn">doing</button>
+              <button class="option-btn">did</button>
+            </div>
+          </div>
+          <div class="question-item">
+            <div class="question-text">5. She _____ the piano after school.</div>
+            <div class="question-options">
+              <button class="option-btn">practices</button>
+              <button class="option-btn">practice</button>
+              <button class="option-btn">practicing</button>
+              <button class="option-btn">practiced</button>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderMistakeSentencesHTML() {
+      return `
+        <h2 class="card-title">🔍 Exercise 3/4: Spot the Mistake</h2>
+        <p class="card-subtitle">Click on the word that is incorrect in each sentence</p>
+        <div class="sentence-list">
+          <div class="sentence-item">
+            <div class="sentence-words">
+              <span class="word">Sarah</span>
+              <span class="word">drink</span>
+              <span class="word">hot</span>
+              <span class="word">chocolate</span>
+            </div>
+          </div>
+          <div class="sentence-item">
+            <div class="sentence-words">
+              <span class="word">She</span>
+              <span class="word">takes</span>
+              <span class="word">the</span>
+              <span class="word">buss</span>
+            </div>
+          </div>
+          <div class="sentence-item">
+            <div class="sentence-words">
+              <span class="word">She</span>
+              <span class="word">do</span>
+              <span class="word">all</span>
+              <span class="word">homework</span>
+            </div>
+          </div>
+          <div class="sentence-item">
+            <div class="sentence-words">
+              <span class="word">She</span>
+              <span class="word">read</span>
+              <span class="word">books</span>
+              <span class="word">before</span>
+              <span class="word">bed</span>
+            </div>
+          </div>
+          <div class="sentence-item">
+            <div class="sentence-words">
+              <span class="word">She</span>
+              <span class="word">practices</span>
+              <span class="word">the</span>
+              <span class="word">piana</span>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderOrderingSentencesHTML() {
+      return `
+        <h2 class="card-title">🔢 Exercise 4/4: Put Sentences in Order</h2>
+        <p class="card-subtitle">Number the sentences from 1-7 to create a logical story</p>
+        <div class="ordering-container">
+          <div class="ordering-item">
+            <input type="number" class="order-input" min="1" max="7" placeholder="?">
+            <div class="sentence-text">She has a quick shower.</div>
+          </div>
+          <div class="ordering-item">
+            <input type="number" class="order-input" min="1" max="7" placeholder="?">
+            <div class="sentence-text">She wakes up at 6:30 in the morning.</div>
+          </div>
+          <div class="ordering-item">
+            <input type="number" class="order-input" min="1" max="7" placeholder="?">
+            <div class="sentence-text">She gets dressed for school.</div>
+          </div>
+          <div class="ordering-item">
+            <input type="number" class="order-input" min="1" max="7" placeholder="?">
+            <div class="sentence-text">She eats breakfast with family.</div>
+          </div>
+          <div class="ordering-item">
+            <input type="number" class="order-input" min="1" max="7" placeholder="?">
+            <div class="sentence-text">She leaves home at 8 o'clock.</div>
+          </div>
+          <div class="ordering-item">
+            <input type="number" class="order-input" min="1" max="7" placeholder="?">
+            <div class="sentence-text">She arrives at school by 8:30.</div>
+          </div>
+          <div class="ordering-item">
+            <input type="number" class="order-input" min="1" max="7" placeholder="?">
+            <div class="sentence-text">She goes to lessons until 3 o'clock.</div>
+          </div>
+        </div>
+      `;
     }
 
     function renderExerciseDots() {
