@@ -34,7 +34,6 @@
       z-index: 1;
     }
 
-    /* Toast Notification System */
     .toast-container {
       position: fixed;
       top: 1.5rem;
@@ -49,12 +48,10 @@
     .toast {
       background: rgba(28, 28, 30, 0.98);
       backdrop-filter: blur(40px) saturate(180%);
-      -webkit-backdrop-filter: blur(40px) saturate(180%);
       border-radius: 0.875rem;
       padding: 1rem 1.25rem;
       min-width: 280px;
-      max-width: 400px;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6), 0 2px 8px rgba(0, 0, 0, 0.2);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
       display: flex;
       align-items: flex-start;
       gap: 0.75rem;
@@ -86,31 +83,12 @@
     .toast-title {
       font-size: 0.875rem;
       font-weight: 600;
-      letter-spacing: -0.01em;
     }
 
     .toast-message {
       font-size: 0.8125rem;
       opacity: 0.85;
-      letter-spacing: -0.01em;
       line-height: 1.4;
-    }
-
-    .toast-close {
-      background: none;
-      border: none;
-      color: inherit;
-      cursor: pointer;
-      font-size: 1.25rem;
-      padding: 0;
-      opacity: 0.5;
-      transition: opacity 0.2s;
-      flex-shrink: 0;
-      line-height: 1;
-    }
-
-    .toast-close:hover {
-      opacity: 1;
     }
 
     .toast.success {
@@ -125,53 +103,15 @@
       color: #4ade80;
     }
 
-    .toast.success .toast-message {
-      color: #e5e5e7;
-    }
-
-    .toast.info {
-      border-color: rgba(201, 169, 97, 0.4);
-    }
-
-    .toast.info .toast-icon {
-      color: #C9A961;
-    }
-
-    .toast.info .toast-title {
-      color: #C9A961;
-    }
-
-    .toast.info .toast-message {
-      color: #e5e5e7;
-    }
-
-    .toast.error {
-      border-color: rgba(239, 68, 68, 0.4);
-    }
-
-    .toast.error .toast-icon {
-      color: #ef4444;
-    }
-
-    .toast.error .toast-title {
-      color: #ef4444;
-    }
-
-    .toast.error .toast-message {
-      color: #e5e5e7;
-    }
-
     .game-container {
       background: #1a1a1a;
-      width: 95%;
-      max-width: 1000px;
-      height: 95vh;
-      max-height: 900px;
+      width: 90%;
+      max-width: 900px;
+      height: 92vh;
+      max-height: 850px;
       border-radius: 24px;
-      padding: 1.5rem;
-      box-shadow: 
-        12px 12px 24px #000000,
-        -12px -12px 24px #2a2a2a;
+      padding: 1.25rem;
+      box-shadow: 12px 12px 24px #000000, -12px -12px 24px #2a2a2a;
       position: relative;
       z-index: 2;
       display: flex;
@@ -191,22 +131,11 @@
       font-size: 0.8rem;
       font-weight: 600;
       cursor: pointer;
-      box-shadow: 
-        4px 4px 8px #000000,
-        -4px -4px 8px #2a2a2a;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       z-index: 10;
       text-decoration: none;
       display: flex;
       align-items: center;
       gap: 0.5rem;
-    }
-
-    .back-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 
-        6px 6px 12px #000000,
-        -6px -6px 12px #2a2a2a;
     }
 
     .header {
@@ -219,25 +148,13 @@
       font-family: 'Space Grotesk', sans-serif;
       font-size: 1.75rem;
       color: #C9A961;
-      margin-bottom: 0.15rem;
       font-weight: 700;
-      letter-spacing: -0.02em;
     }
 
     .tagline {
       font-size: 0.75rem;
       color: rgba(232, 232, 232, 0.6);
-      margin-bottom: 0.75rem;
-      font-weight: 500;
-    }
-
-    .character-info {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 0.75rem;
-      margin-bottom: 0.75rem;
-      flex-wrap: wrap;
+      margin-bottom: 0.5rem;
     }
 
     .character-display {
@@ -248,6 +165,8 @@
       padding: 0.5rem 1rem;
       border-radius: 12px;
       border: 2px solid rgba(201, 169, 97, 0.3);
+      width: fit-content;
+      margin: 0 auto;
     }
 
     .character-emoji {
@@ -258,55 +177,6 @@
       font-size: 1rem;
       color: #C9A961;
       font-weight: 600;
-      font-family: 'Space Grotesk', sans-serif;
-    }
-
-    .category-pills {
-      display: flex;
-      justify-content: center;
-      gap: 0.5rem;
-      margin-bottom: 0.75rem;
-      flex-wrap: wrap;
-    }
-
-    .category-pill {
-      background: #1a1a1a;
-      border: 2px solid rgba(201, 169, 97, 0.3);
-      border-radius: 12px;
-      padding: 0.5rem 0.75rem;
-      font-size: 0.8rem;
-      color: rgba(232, 232, 232, 0.7);
-      cursor: pointer;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      display: flex;
-      align-items: center;
-      gap: 0.35rem;
-      box-shadow: 
-        3px 3px 6px #000000,
-        -3px -3px 6px #2a2a2a;
-    }
-
-    .category-pill:hover {
-      border-color: #C9A961;
-      color: #C9A961;
-      transform: translateY(-2px);
-    }
-
-    .category-pill.active {
-      background: rgba(201, 169, 97, 0.2);
-      border-color: #C9A961;
-      color: #C9A961;
-      font-weight: 600;
-    }
-
-    .category-pill.completed {
-      border-color: #4ade80;
-      color: #4ade80;
-    }
-
-    .category-pill.completed::after {
-      content: '✓';
-      font-size: 0.9rem;
     }
 
     .nav-header {
@@ -333,14 +203,8 @@
       border-radius: 50%;
       background: rgba(99, 99, 102, 0.3);
       cursor: pointer;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: all 0.3s;
       border: 2px solid rgba(99, 99, 102, 0.2);
-      position: relative;
-    }
-
-    .exercise-dot:hover {
-      transform: scale(1.3);
-      background: rgba(142, 142, 147, 0.5);
     }
 
     .exercise-dot.current {
@@ -354,12 +218,6 @@
       box-shadow: 0 0 8px rgba(132, 204, 22, 0.4);
     }
 
-    .exercise-dot.completed.current {
-      background: linear-gradient(135deg, #84cc16 0%, #65a30d 100%);
-      box-shadow: 0 0 0 3px rgba(201, 169, 97, 0.6);
-      transform: scale(1.5);
-    }
-
     .mode-toggle-container {
       display: flex;
       align-items: center;
@@ -367,18 +225,7 @@
       font-size: 0.6875rem;
       font-weight: 500;
       color: #636366;
-      letter-spacing: 0.02em;
-      text-transform: uppercase;
       flex-shrink: 0;
-    }
-
-    .mode-toggle-label {
-      opacity: 0.6;
-      transition: opacity 0.3s;
-    }
-
-    .mode-toggle-container:hover .mode-toggle-label {
-      opacity: 0.85;
     }
 
     .mode-toggle-switch {
@@ -388,12 +235,8 @@
       background: rgba(99, 99, 102, 0.25);
       border-radius: 0.75rem;
       cursor: pointer;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: all 0.3s;
       border: 1px solid rgba(99, 99, 102, 0.2);
-    }
-
-    .mode-toggle-switch:hover {
-      background: rgba(99, 99, 102, 0.35);
     }
 
     .mode-toggle-switch::after {
@@ -405,8 +248,7 @@
       height: 1.125rem;
       background: #8e8e93;
       border-radius: 50%;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+      transition: all 0.3s;
     }
 
     .mode-toggle-switch.active {
@@ -424,88 +266,13 @@
       margin-bottom: 0.5rem;
       font-size: 0.8rem;
       color: rgba(232, 232, 232, 0.7);
-      font-weight: 500;
       flex-shrink: 0;
     }
 
     .score-number {
       color: #C9A961;
       font-size: 1rem;
-      font-family: 'Space Grotesk', sans-serif;
       font-weight: 600;
-    }
-
-    .prize-banner {
-      background: linear-gradient(135deg, rgba(201, 169, 97, 0.2), rgba(201, 169, 97, 0.1));
-      border: 2px solid #C9A961;
-      border-radius: 12px;
-      padding: 0.6rem 0.85rem;
-      margin-bottom: 0.5rem;
-      text-align: center;
-      animation: pulse 2s ease-in-out infinite;
-      flex-shrink: 0;
-    }
-
-    .prize-banner.eligible {
-      background: linear-gradient(135deg, rgba(74, 222, 128, 0.2), rgba(74, 222, 128, 0.1));
-      border-color: #4ade80;
-    }
-
-    .prize-banner.ineligible {
-      background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(239, 68, 68, 0.1));
-      border-color: #ef4444;
-    }
-
-    .prize-text {
-      font-size: 0.75rem;
-      font-weight: 600;
-      color: #C9A961;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
-    }
-
-    .prize-banner.eligible .prize-text {
-      color: #4ade80;
-    }
-
-    .prize-banner.ineligible .prize-text {
-      color: #ef4444;
-    }
-
-    @keyframes pulse {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.02); }
-    }
-
-    /* Loading State */
-    .loading-container {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 1.5rem;
-    }
-
-    .loading-spinner {
-      width: 60px;
-      height: 60px;
-      border: 4px solid rgba(201, 169, 97, 0.2);
-      border-top-color: #C9A961;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-    }
-
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-
-    .loading-text {
-      font-size: 1rem;
-      color: rgba(232, 232, 232, 0.7);
-      font-weight: 500;
     }
 
     .content-container {
@@ -516,70 +283,65 @@
       position: relative;
     }
 
-    /* FULL MODE - Vertical scrolling exercises */
+    /* FULL MODE - No boxes */
     .exercises-list {
       display: flex;
       flex-direction: column;
-      gap: 1rem;
+      gap: 2rem;
       overflow-y: auto;
-      padding: 0.5rem;
+      padding: 1rem 0.5rem;
       flex: 1;
       min-height: 0;
     }
 
-    .exercises-list::-webkit-scrollbar { width: 6px; }
-    .exercises-list::-webkit-scrollbar-track {
-      background: rgba(0, 0, 0, 0.3);
-      border-radius: 10px;
+    .exercises-list::-webkit-scrollbar {
+      width: 6px;
     }
+
     .exercises-list::-webkit-scrollbar-thumb {
       background: rgba(201, 169, 97, 0.4);
       border-radius: 10px;
     }
 
-    /* SINGLE MODE - One exercise at a time */
+    /* SINGLE MODE */
     .single-exercise-container {
       flex: 1;
       display: flex;
       flex-direction: column;
       min-height: 0;
+      padding: 0.5rem;
     }
 
     .quiz-card {
-      background: #1a1a1a;
-      border-radius: 16px;
-      padding: 1.25rem 1rem;
-      box-shadow: 
-        8px 8px 16px #000000,
-        -8px -8px 16px #2a2a2a;
-      border: 2px solid rgba(201, 169, 97, 0.2);
+      background: transparent;
+      border-radius: 0;
+      padding: 0;
+      box-shadow: none;
+      border: none;
+      border-bottom: 2px solid rgba(201, 169, 97, 0.2);
+      padding-bottom: 2rem;
+      margin-bottom: 0;
       display: flex;
       flex-direction: column;
-      overflow-y: auto;
+      overflow-y: visible;
       overflow-x: hidden;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      flex: 1;
-      min-height: 0;
-      margin-bottom: 1rem;
+      transition: all 0.3s;
+      min-height: auto;
     }
 
     .quiz-card:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
       margin-bottom: 0;
     }
-
-    .quiz-card.current-exercise {
-      border-color: rgba(201, 169, 97, 0.5);
-      background: rgba(201, 169, 97, 0.05);
-      box-shadow: 0 0 0 1px rgba(201, 169, 97, 0.2);
+    
+    /* Full mode cards are not flex-1 to allow natural height */
+    .exercises-list .quiz-card {
+      flex: none;
     }
 
     .quiz-card::-webkit-scrollbar {
       width: 6px;
-    }
-
-    .quiz-card::-webkit-scrollbar-track {
-      background: rgba(0, 0, 0, 0.2);
-      border-radius: 10px;
     }
 
     .quiz-card::-webkit-scrollbar-thumb {
@@ -587,23 +349,52 @@
       border-radius: 10px;
     }
 
+    /* SINGLE MODE - Restore boxes */
+    .single-exercise-container .quiz-card {
+      background: #1a1a1a;
+      border-radius: 16px;
+      padding: 1.25rem 1rem;
+      box-shadow: 8px 8px 16px #000000, -8px -8px 16px #2a2a2a;
+      border: 2px solid rgba(201, 169, 97, 0.2);
+      border-bottom: 2px solid rgba(201, 169, 97, 0.2);
+      padding-bottom: 1.25rem;
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+
     .card-title {
       font-family: 'Space Grotesk', sans-serif;
-      font-size: 1.1rem;
+      font-size: 1.3rem;
       color: #C9A961;
-      text-align: center;
-      margin-bottom: 0.75rem;
+      margin-bottom: 1rem;
       font-weight: 700;
       flex-shrink: 0;
+      text-align: left;
+      padding-left: 0.5rem;
+      border-left: 4px solid #C9A961;
+    }
+
+    .single-exercise-container .card-title {
+      text-align: center;
+      border-left: none;
+      padding-left: 0;
     }
 
     .card-subtitle {
       font-size: 0.75rem;
       color: rgba(232, 232, 232, 0.7);
-      text-align: center;
-      margin-bottom: 0.75rem;
+      text-align: left;
+      margin-bottom: 1rem;
       font-style: italic;
       flex-shrink: 0;
+      padding-left: 0.5rem;
+    }
+
+    .single-exercise-container .card-subtitle {
+      text-align: center;
+      padding-left: 0;
     }
 
     /* CLOZE EXERCISE */
@@ -612,8 +403,9 @@
       line-height: 1.8;
       color: rgba(232, 232, 232, 0.9);
       margin-bottom: 0.75rem;
-      flex: 1;
-      overflow-y: auto;
+      flex: none;
+      overflow-y: visible;
+      padding: 0;
     }
 
     .cloze-text p {
@@ -630,13 +422,10 @@
       font-size: inherit;
       font-family: inherit;
       outline: none;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      text-align: left;
-      letter-spacing: inherit;
+      transition: all 0.3s;
       padding: 0 2px;
       margin: 0 2px;
       min-width: 80px;
-      vertical-align: baseline;
     }
 
     .cloze-blank:focus {
@@ -645,21 +434,14 @@
       background: rgba(201, 169, 97, 0.08);
     }
 
-    .cloze-blank.filled {
-      color: #38bdf8;
-      border-bottom-color: rgba(56, 189, 248, 0.5);
-    }
-
     .cloze-blank.correct {
       color: #84cc16;
       border-bottom-color: rgba(132, 204, 22, 0.6);
-      font-weight: 600;
     }
 
     .cloze-blank.wrong {
       color: #fb923c;
       border-bottom-color: rgba(251, 146, 60, 0.6);
-      font-weight: 600;
     }
 
     /* MULTIPLE CHOICE */
@@ -667,17 +449,25 @@
       display: flex;
       flex-direction: column;
       gap: 0.85rem;
-      flex: 1;
-      overflow-y: auto;
-      padding-right: 0.5rem;
+      flex: none;
+      overflow-y: visible;
+      padding: 0;
+      margin-bottom: 0;
     }
 
     .question-item {
-      background: rgba(0, 0, 0, 0.3);
+      background: rgba(0, 0, 0, 0.2);
       border-radius: 10px;
       padding: 0.85rem;
-      border: 2px solid rgba(201, 169, 97, 0.2);
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      border: 2px solid rgba(201, 169, 97, 0.15);
+      transition: all 0.3s;
+      display: block;
+    }
+
+    .question-item:hover {
+      background: rgba(0, 0, 0, 0.3);
+      border-color: rgba(201, 169, 97, 0.3);
+      transform: translateY(-2px);
     }
 
     .question-text {
@@ -702,15 +492,13 @@
       font-size: 0.85rem;
       font-weight: 500;
       cursor: pointer;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: all 0.3s;
       text-align: center;
-      min-height: 38px;
     }
 
     .option-btn:hover {
       background: rgba(201, 169, 97, 0.2);
       border-color: rgba(201, 169, 97, 0.5);
-      transform: translateY(-2px);
     }
 
     .option-btn.selected {
@@ -738,20 +526,23 @@
       gap: 0.75rem;
       flex: 1;
       overflow-y: auto;
-      padding-right: 0.5rem;
+      padding: 0;
+      margin-bottom: 0;
     }
 
     .sentence-item {
-      background: rgba(0, 0, 0, 0.3);
+      background: rgba(0, 0, 0, 0.2);
       border-radius: 10px;
       padding: 0.75rem 0.85rem;
-      border: 2px solid rgba(201, 169, 97, 0.2);
+      border: 2px solid rgba(201, 169, 97, 0.15);
       cursor: pointer;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: all 0.3s;
+      display: block;
     }
 
     .sentence-item:hover {
-      border-color: rgba(201, 169, 97, 0.4);
+      background: rgba(0, 0, 0, 0.3);
+      border-color: rgba(201, 169, 97, 0.3);
       transform: translateX(5px);
     }
 
@@ -769,7 +560,7 @@
       background: rgba(201, 169, 97, 0.1);
       border-radius: 6px;
       cursor: pointer;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: all 0.3s;
       border: 2px solid transparent;
     }
 
@@ -797,22 +588,24 @@
       gap: 0.75rem;
       flex: 1;
       overflow-y: auto;
-      padding-right: 0.5rem;
+      padding: 0;
+      margin-bottom: 0;
     }
 
     .ordering-item {
-      background: rgba(0, 0, 0, 0.3);
+      background: rgba(0, 0, 0, 0.2);
       border-radius: 10px;
       padding: 0.75rem 0.85rem;
-      border: 2px solid rgba(201, 169, 97, 0.2);
+      border: 2px solid rgba(201, 169, 97, 0.15);
       display: flex;
       align-items: center;
       gap: 0.75rem;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: all 0.3s;
     }
 
     .ordering-item:hover {
-      border-color: rgba(201, 169, 97, 0.4);
+      background: rgba(0, 0, 0, 0.3);
+      border-color: rgba(201, 169, 97, 0.3);
       transform: translateX(5px);
     }
 
@@ -827,7 +620,7 @@
       color: #C9A961;
       text-align: center;
       font-family: 'Space Grotesk', sans-serif;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: all 0.3s;
     }
 
     .order-input:focus {
@@ -855,7 +648,6 @@
       line-height: 1.5;
     }
 
-    /* External navigation for single mode */
     .external-nav {
       display: none;
       align-items: center;
@@ -878,8 +670,7 @@
       cursor: pointer;
       font-size: 0.875rem;
       font-weight: 500;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      letter-spacing: -0.01em;
+      transition: all 0.3s;
       min-width: 140px;
     }
 
@@ -887,8 +678,6 @@
       background: rgba(201, 169, 97, 0.25);
       border-color: rgba(201, 169, 97, 0.3);
       color: #C9A961;
-      transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(201, 169, 97, 0.2);
     }
 
     .external-nav-arrow:disabled {
@@ -916,7 +705,7 @@
       text-transform: uppercase;
       letter-spacing: 0.05em;
       cursor: pointer;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: all 0.3s;
       font-family: 'Inter', sans-serif;
     }
 
@@ -936,20 +725,7 @@
       cursor: not-allowed;
     }
 
-    .hidden { display: none !important; }
-
-    /* Mobile Optimizations */
     @media (max-width: 768px) {
-      .toast-container {
-        top: 1rem;
-        right: 1rem;
-        left: 1rem;
-      }
-
-      .toast {
-        min-width: auto;
-      }
-
       .game-container {
         width: 100%;
         height: 100vh;
@@ -958,151 +734,41 @@
         padding: 1rem 0.75rem;
       }
 
-      .back-btn {
-        top: 1rem;
-        left: 1rem;
-        padding: 0.5rem 0.8rem;
-        font-size: 0.75rem;
-      }
-
       .header h1 {
         font-size: 1.3rem;
-      }
-
-      .tagline {
-        display: none;
-      }
-
-      .character-display {
-        padding: 0.4rem 0.75rem;
-      }
-
-      .character-emoji {
-        font-size: 1.2rem;
-      }
-
-      .character-name {
-        font-size: 0.85rem;
-      }
-
-      .category-pills {
-        display: none;
-      }
-
-      .nav-header {
-        padding: 0 0.25rem;
-        gap: 0.75rem;
-      }
-
-      .exercise-dot {
-        width: 0.875rem;
-        height: 0.875rem;
-      }
-
-      .mode-toggle-label {
-        font-size: 0.625rem;
-      }
-
-      .mode-toggle-switch {
-        width: 2.5rem;
-        height: 1.25rem;
-      }
-
-      .mode-toggle-switch::after {
-        width: 0.95rem;
-        height: 0.95rem;
-      }
-
-      .mode-toggle-switch.active::after {
-        left: 1.35rem;
       }
 
       .card-title {
         font-size: 1rem;
       }
 
-      .card-subtitle {
-        font-size: 0.7rem;
-      }
-
-      .cloze-text {
-        font-size: 0.9rem;
-      }
-
-      .cloze-blank {
-        min-width: 60px;
-      }
-
       .question-options {
         grid-template-columns: 1fr;
-      }
-
-      .option-btn {
-        font-size: 0.8rem;
-        padding: 0.55rem 0.7rem;
-      }
-
-      .word {
-        font-size: 0.85rem;
-        padding: 0.2rem 0.45rem;
-      }
-
-      .order-input {
-        width: 40px;
-        height: 40px;
-        font-size: 1rem;
-      }
-
-      .sentence-text {
-        font-size: 0.85rem;
-      }
-
-      .btn {
-        padding: 0.55rem 1rem;
-        font-size: 0.75rem;
-      }
-
-      .external-nav-arrow {
-        padding: 0.65rem 1.25rem;
-        font-size: 0.8rem;
-        min-width: 120px;
       }
     }
   </style>
 </head>
 <body>
-  <!-- Toast Container -->
   <div class="toast-container" id="toastContainer"></div>
 
   <div class="game-container">
-    <a href="javascript:history.back()" class="back-btn">
-      ← Back
-    </a>
+    <a href="javascript:history.back()" class="back-btn">← Back</a>
 
     <div class="header">
       <h1>INTUITY</h1>
       <p class="tagline">Practice Quiz</p>
-      
-      <div class="character-info">
-        <div class="character-display">
-          <span class="character-emoji" id="displayEmoji">👧</span>
-          <span class="character-name" id="displayName">Sarah</span>
-        </div>
-      </div>
-
-      <div class="category-pills" id="categoryPills">
-        <!-- Pills inserted by JavaScript -->
+      <div class="character-display">
+        <span class="character-emoji" id="displayEmoji">👧</span>
+        <span class="character-name" id="displayName">Sarah</span>
       </div>
     </div>
 
     <div class="nav-header">
-      <div class="exercise-dots-container" id="exerciseDotsContainer">
-        <!-- Exercise navigation dots inserted by JavaScript -->
-      </div>
+      <div class="exercise-dots-container" id="exerciseDotsContainer"></div>
       <div class="mode-toggle-container">
-        <span class="mode-toggle-label">Full</span>
+        <span>Full</span>
         <div class="mode-toggle-switch" id="modeToggleSwitch" onclick="toggleMode()"></div>
-        <span class="mode-toggle-label">Screen</span>
+        <span>Screen</span>
       </div>
     </div>
 
@@ -1110,13 +776,12 @@
       Score: <span class="score-number" id="scoreDisplay">0/20</span>
     </div>
 
-    <div id="prizeBanner"></div>
-
     <div class="content-container" id="contentContainer">
-      <!-- Loading state shown by default -->
-      <div class="loading-container">
-        <div class="loading-spinner"></div>
-        <div class="loading-text">Loading quiz content...</div>
+      <div style="display: flex; align-items: center; justify-content: center; height: 100%;">
+        <div style="text-align: center; color: rgba(232, 232, 232, 0.7);">
+          <div style="font-size: 3rem; margin-bottom: 1rem;">📚</div>
+          <div>Quiz interface ready</div>
+        </div>
       </div>
     </div>
 
@@ -1129,377 +794,60 @@
       <button class="btn" id="checkBtn" onclick="checkAnswers()">Check Answers</button>
     </div>
   </div>
-  <script src="../assets/js/progress-tracker.js"></script>
 
   <script>
-    // ============================================
-    // TOAST NOTIFICATION SYSTEM
-    // ============================================
-    
-    function showToast(message, type = 'info', duration = 4000) {
-      const container = document.getElementById('toastContainer');
-      const toast = document.createElement('div');
-      toast.className = `toast ${type}`;
-      
-      const icons = {
-        success: '✓',
-        info: 'ℹ',
-        error: '✕'
-      };
-      
-      const titles = {
-        success: 'Success',
-        info: 'Info',
-        error: 'Error'
-      };
-      
-      toast.innerHTML = `
-        <div class="toast-icon">${icons[type]}</div>
-        <div class="toast-content">
-          <div class="toast-title">${titles[type]}</div>
-          <div class="toast-message">${message}</div>
-        </div>
-        <button class="toast-close" onclick="this.parentElement.remove()">×</button>
-      `;
-      
-      container.appendChild(toast);
-      
-      setTimeout(() => toast.classList.add('show'), 10);
-      
-      setTimeout(() => {
-        toast.classList.remove('show');
-        setTimeout(() => toast.remove(), 400);
-      }, duration);
-    }
-
-    // ============================================
-    // GLOBAL VARIABLES
-    // ============================================
-    
-    let selectionData = null;
-    let quizData = null;
     let currentMode = 'full';
     let currentExercise = 0;
-    let totalScore = 0;
-    let cardScores = [0, 0, 0, 0];
-    let cardCompleted = [false, false, false, false];
-    
-    let clozeAnswers = [];
-    let userClozeAnswers = [];
-    
-    let mcAnswers = [];
-    let userMCAnswers = [];
-    
-    let mistakeData = [];
-    let userMistakeAnswers = [];
-    
-    let orderingData = [];
-    let userOrderingAnswers = [];
 
-    // ============================================
-    // INITIALIZATION
-    // ============================================
-    
-    async function initialize() {
-      console.log('🎮 Initializing Quiz Interface...');
-      
-      const selectionJSON = sessionStorage.getItem('selectionData');
-      if (!selectionJSON) {
-        console.error('❌ No selection data found');
-        showToast('Please select a character and category first!', 'error');
-        setTimeout(() => window.location.href = '../index.html', 2000);
-        return;
-      }
-      
-      selectionData = JSON.parse(selectionJSON);
-      console.log('📥 Selection loaded:', selectionData);
-      
-      document.getElementById('displayEmoji').textContent = selectionData.characterEmoji;
-      document.getElementById('displayName').textContent = selectionData.characterName;
-      
-      renderCategoryPills();
-      checkPrizeEligibility();
-      
-      const dataLoaded = await loadQuizData();
-      
-      if (!dataLoaded) {
-        console.error('❌ Quiz data failed to load - stopping initialization');
-        return;
-      }
-      
+    function toggleMode() {
+      const toggleSwitch = document.getElementById('modeToggleSwitch');
+      currentMode = currentMode === 'full' ? 'single' : 'full';
+      toggleSwitch.classList.toggle('active');
       renderContent();
-      renderExerciseDots();
       updateExternalNav();
-      
-      console.log('✅ Quiz interface ready!');
     }
 
-    // ============================================
-    // LOAD QUIZ DATA FROM JSON
-    // ============================================
-    
-    async function loadQuizData() {
-      try {
-        console.log('📥 Fetching character-data.json...');
-        const response = await fetch('../data/character-data.json');
-        
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
+    function renderContent() {
+      const container = document.getElementById('contentContainer');
+      if (currentMode === 'full') {
+        container.innerHTML = '<div class="exercises-list" id="exercisesList"></div>';
+        const list = document.getElementById('exercisesList');
+        for (let i = 0; i < 4; i++) {
+          const card = createCard(i);
+          list.appendChild(card);
         }
-        
-        const allData = await response.json();
-        console.log('✅ Quiz data loaded successfully');
-        
-        const charKey = selectionData.characterKey;
-        
-        const categoryMapping = {
-          'habitual': 'daily_habits',
-          'routine': 'daily_habits',
-          'frequency': 'daily_habits',
-          'conjunctions': 'daily_habits'
-        };
-        
-        const mappedCategory = categoryMapping[selectionData.category] || 'daily_habits';
-        console.log(`📊 Mapped category: ${selectionData.category} → ${mappedCategory}`);
-        
-        if (!allData[charKey]) {
-          throw new Error(`Character '${charKey}' not found in data`);
-        }
-        
-        if (!allData[charKey].categories) {
-          throw new Error(`No categories found for character '${charKey}'`);
-        }
-        
-        if (!allData[charKey].categories[mappedCategory]) {
-          throw new Error(`Category '${mappedCategory}' not found for character '${charKey}'`);
-        }
-        
-        quizData = allData[charKey].categories[mappedCategory];
-        
-        if (!quizData.clozeTemplates || quizData.clozeTemplates.length === 0) {
-          throw new Error('No cloze templates found');
-        }
-        if (!quizData.multipleChoiceQuestions || quizData.multipleChoiceQuestions.length === 0) {
-          throw new Error('No multiple choice questions found');
-        }
-        if (!quizData.mistakeSentences || quizData.mistakeSentences.length === 0) {
-          throw new Error('No mistake sentences found');
-        }
-        if (!quizData.orderingSentences || quizData.orderingSentences.length === 0) {
-          throw new Error('No ordering sentences found');
-        }
-        
-        console.log('✅ All quiz data validated:', {
-          clozeTemplates: quizData.clozeTemplates.length,
-          multipleChoice: quizData.multipleChoiceQuestions.length,
-          mistakes: quizData.mistakeSentences.length,
-          ordering: quizData.orderingSentences.length
-        });
-        
-        replacePronounsInQuizData();
-        
-        return true;
-        
-      } catch (error) {
-        console.error('❌ Error loading quiz data:', error);
-        showToast('Error loading quiz content: ' + error.message, 'error');
-        
-        const container = document.getElementById('contentContainer');
-        container.innerHTML = `
-          <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; gap: 1rem;">
-            <div style="font-size: 3rem;">⚠️</div>
-            <div style="color: #ef4444; font-size: 1.1rem; font-weight: 600;">Failed to Load Quiz</div>
-            <div style="color: rgba(232, 232, 232, 0.7); font-size: 0.9rem; text-align: center; max-width: 400px;">${error.message}</div>
-            <button onclick="window.location.href='../index.html'" style="
-              background: rgba(201, 169, 97, 0.2);
-              border: 2px solid #C9A961;
-              color: #C9A961;
-              padding: 0.75rem 1.5rem;
-              border-radius: 10px;
-              font-weight: 600;
-              cursor: pointer;
-              margin-top: 1rem;
-            ">← Back to Home</button>
-          </div>
-        `;
-        
-        return false;
-      }
-    }
-
-    // ============================================
-    // PRONOUN REPLACEMENT
-    // ============================================
-    
-    function replacePronounsInQuizData() {
-      const charKey = selectionData.characterKey;
-      const charName = selectionData.characterName;
-      
-      const pronounMaps = {
-        'sarah': { from: 'Sarah', to: 'Sarah', he: 'she', him: 'her', his: 'her', He: 'She', Him: 'Her', His: 'Her' },
-        'emma': { from: 'Sarah', to: 'Emma', he: 'she', him: 'her', his: 'her', He: 'She', Him: 'Her', His: 'Her' },
-        'tom': { from: 'Sarah', to: 'Tom', he: 'he', him: 'him', his: 'his', He: 'He', Him: 'Him', His: 'His' },
-        'alex': { from: 'Sarah', to: 'Alex', he: 'he', him: 'him', his: 'his', He: 'He', Him: 'Him', His: 'His' }
-      };
-      
-      const map = pronounMaps[charKey];
-      if (!map || charKey === 'sarah') return;
-      
-      function replaceText(text) {
-        if (typeof text !== 'string') return text;
-        
-        return text
-          .replace(/\bSarah\b/g, map.to)
-          .replace(/\bshe\b/g, map.he)
-          .replace(/\bher\b/g, map.him)
-          .replace(/\bhers\b/g, map.his)
-          .replace(/\bShe\b/g, map.He)
-          .replace(/\bHer\b/g, map.Him);
-      }
-      
-      if (quizData.clozeTemplates) {
-        quizData.clozeTemplates.forEach(template => {
-          template.text = replaceText(template.text);
-        });
-      }
-      
-      if (quizData.multipleChoiceQuestions) {
-        quizData.multipleChoiceQuestions.forEach(q => {
-          q.text = replaceText(q.text);
-        });
-      }
-      
-      if (quizData.mistakeSentences) {
-        quizData.mistakeSentences.forEach(s => {
-          s.sentence = s.sentence.map(word => replaceText(word));
-        });
-      }
-      
-      if (quizData.orderingSentences && quizData.orderingSentences[0]) {
-        quizData.orderingSentences[0].forEach(s => {
-          s.text = replaceText(s.text);
-        });
-      }
-      
-      console.log(`✅ Pronouns replaced for ${charName}`);
-    }
-
-    // ============================================
-    // CATEGORY PILLS
-    // ============================================
-    
-    function renderCategoryPills() {
-      const pillsContainer = document.getElementById('categoryPills');
-      const categories = ProgressTracker.CATEGORIES;
-      const charKey = selectionData.characterKey;
-      
-      pillsContainer.innerHTML = '';
-      
-      Object.keys(categories).forEach(catKey => {
-        const cat = categories[catKey];
-        const progress = ProgressTracker.getCategoryProgress(charKey, catKey);
-        
-        const pill = document.createElement('div');
-        pill.className = 'category-pill';
-        if (catKey === selectionData.category) pill.classList.add('active');
-        if (progress.trophy) pill.classList.add('completed');
-        
-        pill.innerHTML = `<span>${cat.icon}</span><span>${cat.name}</span>`;
-        pill.addEventListener('click', () => switchCategory(catKey));
-        
-        pillsContainer.appendChild(pill);
-      });
-    }
-
-    function switchCategory(newCategory) {
-      if (newCategory === selectionData.category) return;
-      
-      selectionData.category = newCategory;
-      selectionData.categoryTitle = ProgressTracker.CATEGORIES[newCategory].name;
-      selectionData.categoryIcon = ProgressTracker.CATEGORIES[newCategory].icon;
-      
-      sessionStorage.setItem('selectionData', JSON.stringify(selectionData));
-      location.reload();
-    }
-
-    // ============================================
-    // PRIZE ELIGIBILITY
-    // ============================================
-    
-    function checkPrizeEligibility() {
-      const bannerContainer = document.getElementById('prizeBanner');
-      bannerContainer.innerHTML = '';
-    }
-
-    // ============================================
-    // SCORE MANAGEMENT
-    // ============================================
-    
-    function updateScore() {
-      totalScore = cardScores.reduce((a, b) => a + b, 0);
-      document.getElementById('scoreDisplay').textContent = `${totalScore}/20`;
-      
-      const checkBtn = document.getElementById('checkBtn');
-      if (cardCompleted[currentExercise]) {
-        checkBtn.textContent = 'Checked ✓';
-        checkBtn.classList.add('success');
       } else {
-        checkBtn.textContent = 'Check Answers';
-        checkBtn.classList.remove('success');
+        container.innerHTML = '<div class="single-exercise-container"></div>';
+        const single = container.querySelector('.single-exercise-container');
+        single.appendChild(createCard(currentExercise));
       }
     }
 
-    function saveQuizScore() {
-      const charKey = selectionData.characterKey;
-      const category = selectionData.category;
+    function createCard(index) {
+      const card = document.createElement('div');
+      card.className = 'quiz-card';
+      const titles = ['📝 Exercise 1/4: Fill in the Blanks', '✅ Exercise 2/4: Multiple Choice', '🔍 Exercise 3/4: Spot the Mistake', '🔢 Exercise 4/4: Put in Order'];
+      const subtitles = ['Type directly into each blank space', 'Choose the correct verb form', 'Click on the word that is incorrect', 'Number the sentences from 1-7'];
       
-      ProgressTracker.saveQuizScore(charKey, category, totalScore);
-      
-      const progress = ProgressTracker.getCategoryProgress(charKey, category);
-      
-      if (progress.trophy) {
-        setTimeout(() => {
-          showToast('🏆 CONGRATULATIONS! You earned a trophy! You completed both games with 20/20!', 'success', 6000);
-          setTimeout(() => {
-            window.location.href = '../index.html';
-          }, 3000);
-        }, 500);
-      } else if (totalScore === 20 && progress.matchingScore < 20) {
-        showToast('🎉 Perfect score! But you need 20/20 on the matching game too for the trophy.', 'info', 5000);
-      } else if (totalScore < 20) {
-        showToast(`Quiz completed: ${totalScore}/20. Keep practicing to improve your score!`, 'info', 4000);
-      }
+      card.innerHTML = `
+        <h2 class="card-title">${titles[index]}</h2>
+        <p class="card-subtitle">${subtitles[index]}</p>
+        <div style="flex: 1; display: flex; align-items: center; justify-content: center; color: rgba(232, 232, 232, 0.5);">
+          Exercise ${index + 1} content
+        </div>
+      `;
+      return card;
     }
 
-    // ============================================
-    // NAVIGATION
-    // ============================================
-    
-    function nextExercise() {
-      if (currentExercise < 3) {
-        currentExercise++;
-        renderContent();
-        renderExerciseDots();
-        updateScore();
-        updateExternalNav();
-        
-        if (currentMode === 'full') {
-          scrollToCurrentExercise();
-        }
-      }
-    }
-
-    function previousExercise() {
-      if (currentExercise > 0) {
-        currentExercise--;
-        renderContent();
-        renderExerciseDots();
-        updateScore();
-        updateExternalNav();
-        
-        if (currentMode === 'full') {
-          scrollToCurrentExercise();
-        }
+    function renderExerciseDots() {
+      const container = document.getElementById('exerciseDotsContainer');
+      container.innerHTML = '';
+      for (let i = 0; i < 4; i++) {
+        const dot = document.createElement('div');
+        dot.className = 'exercise-dot';
+        if (i === currentExercise) dot.classList.add('current');
+        dot.addEventListener('click', () => goToExercise(i));
+        container.appendChild(dot);
       }
     }
 
@@ -1507,492 +855,48 @@
       currentExercise = index;
       renderContent();
       renderExerciseDots();
-      updateScore();
       updateExternalNav();
-      
-      if (currentMode === 'full') {
-        scrollToCurrentExercise();
+    }
+
+    function previousExercise() {
+      if (currentExercise > 0) {
+        currentExercise--;
+        renderContent();
+        renderExerciseDots();
+        updateExternalNav();
       }
     }
 
-    function scrollToCurrentExercise() {
-      setTimeout(() => {
-        const cards = document.querySelectorAll('.quiz-card');
-        if (cards[currentExercise]) {
-          cards[currentExercise].scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-      }, 100);
+    function nextExercise() {
+      if (currentExercise < 3) {
+        currentExercise++;
+        renderContent();
+        renderExerciseDots();
+        updateExternalNav();
+      }
     }
 
     function updateExternalNav() {
-      const externalNav = document.getElementById('externalNav');
+      const nav = document.getElementById('externalNav');
       const prevBtn = document.getElementById('prevExerciseBtn');
       const nextBtn = document.getElementById('nextExerciseBtn');
       
       if (currentMode === 'single') {
-        externalNav.classList.add('active');
+        nav.classList.add('active');
         prevBtn.disabled = currentExercise === 0;
         nextBtn.disabled = currentExercise === 3;
       } else {
-        externalNav.classList.remove('active');
+        nav.classList.remove('active');
       }
     }
 
-    // ============================================
-    // MODE TOGGLE
-    // ============================================
-
-    function toggleMode() {
-      const toggleSwitch = document.getElementById('modeToggleSwitch');
-      
-      if (currentMode === 'full') {
-        currentMode = 'single';
-        toggleSwitch.classList.add('active');
-      } else {
-        currentMode = 'full';
-        toggleSwitch.classList.remove('active');
-      }
-      
-      renderContent();
-      updateExternalNav();
-    }
-
-    // ============================================
-    // RENDER EXERCISE NAVIGATION DOTS
-    // ============================================
-
-    function renderExerciseDots() {
-      const container = document.getElementById('exerciseDotsContainer');
-      container.innerHTML = '';
-      
-      const exerciseTitles = ['Fill Blanks', 'Multiple Choice', 'Spot Mistake', 'Put in Order'];
-      
-      for (let i = 0; i < 4; i++) {
-        const dot = document.createElement('div');
-        dot.className = 'exercise-dot';
-        dot.title = exerciseTitles[i];
-        
-        if (i === currentExercise) {
-          dot.classList.add('current');
-        }
-        
-        if (cardCompleted[i]) {
-          dot.classList.add('completed');
-        }
-        
-        dot.addEventListener('click', () => goToExercise(i));
-        container.appendChild(dot);
-      }
-    }
-
-    // ============================================
-    // RENDER CONTENT (UNIFIED)
-    // ============================================
-    
-    function renderContent() {
-      const container = document.getElementById('contentContainer');
-      
-      if (currentMode === 'full') {
-        renderFullMode(container);
-      } else {
-        renderSingleMode(container);
-      }
-      
-      attachExerciseListeners();
-    }
-
-    function renderFullMode(container) {
-      container.innerHTML = '<div class="exercises-list"></div>';
-      const list = container.querySelector('.exercises-list');
-      
-      for (let i = 0; i < 4; i++) {
-        const card = createExerciseCard(i);
-        if (i === currentExercise) {
-          card.classList.add('current-exercise');
-        }
-        list.appendChild(card);
-      }
-    }
-
-    function renderSingleMode(container) {
-      container.innerHTML = '<div class="single-exercise-container"></div>';
-      const singleContainer = container.querySelector('.single-exercise-container');
-      
-      const card = createExerciseCard(currentExercise);
-      card.classList.add('current-exercise');
-      singleContainer.appendChild(card);
-    }
-
-    function createExerciseCard(exerciseIndex) {
-      const card = document.createElement('div');
-      card.className = 'quiz-card';
-      
-      if (exerciseIndex === 0) {
-        card.innerHTML = renderClozeExerciseHTML();
-      } else if (exerciseIndex === 1) {
-        card.innerHTML = renderMultipleChoiceHTML();
-      } else if (exerciseIndex === 2) {
-        card.innerHTML = renderMistakeSentencesHTML();
-      } else if (exerciseIndex === 3) {
-        card.innerHTML = renderOrderingSentencesHTML();
-      }
-      
-      return card;
-    }
-
-    function renderClozeExerciseHTML() {
-      const template = quizData.clozeTemplates[0];
-      clozeAnswers = template.answers;
-      if (userClozeAnswers.length === 0) {
-        userClozeAnswers = new Array(clozeAnswers.length).fill('');
-      }
-      
-      let text = template.text;
-      const paragraphs = text.split('\n\n');
-      
-      let blankIndex = 0;
-      let html = '<h2 class="card-title">📝 Exercise 1/4: Fill in the Blanks</h2>';
-      html += '<p class="card-subtitle">Type directly into each blank space</p>';
-      html += '<div class="cloze-text">';
-      
-      paragraphs.forEach(para => {
-        let processedPara = para;
-        const blankPattern = /(\w)_{3,}/g;
-        processedPara = processedPara.replace(blankPattern, (match, firstLetter) => {
-          const value = userClozeAnswers[blankIndex] || '';
-          const blankHTML = `<input type="text" class="cloze-blank${value ? ' filled' : ''}" data-index="${blankIndex}" value="${value}" placeholder="${firstLetter}___">`;
-          blankIndex++;
-          return blankHTML;
-        });
-        html += `<p>${processedPara}</p>`;
-      });
-      
-      html += '</div>';
-      return html;
-    }
-
-    function renderMultipleChoiceHTML() {
-      const questions = quizData.multipleChoiceQuestions.slice(0, 5);
-      mcAnswers = questions.map(q => q.correct);
-      if (userMCAnswers.length === 0) {
-        userMCAnswers = new Array(5).fill('');
-      }
-      
-      let html = '<h2 class="card-title">✅ Exercise 2/4: Multiple Choice</h2>';
-      html += '<p class="card-subtitle">Choose the correct verb form for each sentence</p>';
-      html += '<div class="question-list">';
-      
-      questions.forEach((q, qIndex) => {
-        html += `
-          <div class="question-item">
-            <div class="question-text">${qIndex + 1}. ${q.text}</div>
-            <div class="question-options">
-              ${q.options.map((opt, optIndex) => `
-                <button class="option-btn" data-q="${qIndex}" data-opt="${opt}">${opt}</button>
-              `).join('')}
-            </div>
-          </div>
-        `;
-      });
-      
-      html += '</div>';
-      return html;
-    }
-
-    function renderMistakeSentencesHTML() {
-      const sentences = quizData.mistakeSentences.slice(0, 5);
-      mistakeData = sentences;
-      if (userMistakeAnswers.length === 0) {
-        userMistakeAnswers = new Array(5).fill(-1);
-      }
-      
-      let html = '<h2 class="card-title">🔍 Exercise 3/4: Spot the Mistake</h2>';
-      html += '<p class="card-subtitle">Click on the word that is incorrect in each sentence</p>';
-      html += '<div class="sentence-list">';
-      
-      sentences.forEach((s, sIndex) => {
-        html += `
-          <div class="sentence-item">
-            <div class="sentence-words">
-              ${s.sentence.map((word, wIndex) => `
-                <span class="word" data-s="${sIndex}" data-w="${wIndex}">${word}</span>
-              `).join('')}
-            </div>
-          </div>
-        `;
-      });
-      
-      html += '</div>';
-      return html;
-    }
-
-    function renderOrderingSentencesHTML() {
-      const sentences = quizData.orderingSentences[0];
-      orderingData = sentences;
-      if (userOrderingAnswers.length === 0) {
-        userOrderingAnswers = new Array(7).fill('');
-      }
-      
-      const shuffled = [...sentences].sort(() => Math.random() - 0.5);
-      
-      let html = '<h2 class="card-title">🔢 Exercise 4/4: Put Sentences in Order</h2>';
-      html += '<p class="card-subtitle">Number the sentences from 1-7 to create a logical story</p>';
-      html += '<div class="ordering-container">';
-      
-      shuffled.forEach((s, index) => {
-        html += `
-          <div class="ordering-item">
-            <input type="number" class="order-input" min="1" max="7" data-idx="${index}" data-correct="${s.order}" value="${userOrderingAnswers[index] || ''}">
-            <div class="sentence-text">${s.text}</div>
-          </div>
-        `;
-      });
-      
-      html += '</div>';
-      return html;
-    }
-
-    // ============================================
-    // ATTACH EVENT LISTENERS
-    // ============================================
-
-    function attachExerciseListeners() {
-      document.querySelectorAll('.cloze-blank').forEach(input => {
-        input.addEventListener('input', function() {
-          const index = parseInt(this.dataset.index);
-          userClozeAnswers[index] = this.value.trim();
-          
-          if (this.value.trim()) {
-            this.classList.add('filled');
-          } else {
-            this.classList.remove('filled');
-          }
-        });
-      });
-
-      document.querySelectorAll('.option-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-          const qIdx = parseInt(this.dataset.q);
-          const opt = this.dataset.opt;
-          selectMCOption(qIdx, opt);
-        });
-      });
-
-      document.querySelectorAll('.word').forEach(word => {
-        word.addEventListener('click', function() {
-          const sIdx = parseInt(this.dataset.s);
-          const wIdx = parseInt(this.dataset.w);
-          selectMistakeWord(sIdx, wIdx);
-        });
-      });
-
-      document.querySelectorAll('.order-input').forEach(input => {
-        input.addEventListener('change', function() {
-          const idx = parseInt(this.dataset.idx);
-          updateOrderAnswer(idx, this.value);
-        });
-      });
-    }
-
-    // ============================================
-    // EXERCISE INTERACTIONS
-    // ============================================
-
-    function selectMCOption(questionIndex, option) {
-      if (cardCompleted[1]) return;
-      
-      userMCAnswers[questionIndex] = option;
-      
-      const questionItems = document.querySelectorAll('.question-item');
-      const questionItem = questionItems[questionIndex];
-      if (!questionItem) return;
-      
-      const buttons = questionItem.querySelectorAll('.option-btn');
-      
-      buttons.forEach(btn => {
-        btn.classList.remove('selected');
-        if (btn.dataset.opt === option) {
-          btn.classList.add('selected');
-        }
-      });
-    }
-
-    function selectMistakeWord(sentenceIndex, wordIndex) {
-      if (cardCompleted[2]) return;
-      
-      userMistakeAnswers[sentenceIndex] = wordIndex;
-      
-      const sentenceItems = document.querySelectorAll('.sentence-item');
-      const sentenceItem = sentenceItems[sentenceIndex];
-      if (!sentenceItem) return;
-      
-      const words = sentenceItem.querySelectorAll('.word');
-      
-      words.forEach((word, idx) => {
-        word.classList.remove('error');
-        if (idx === wordIndex) {
-          word.classList.add('error');
-        }
-      });
-    }
-
-    function updateOrderAnswer(index, value) {
-      userOrderingAnswers[index] = parseInt(value) || 0;
-    }
-
-    // ============================================
-    // CHECK ANSWERS
-    // ============================================
-    
     function checkAnswers() {
-      if (currentExercise === 0) checkClozeAnswers();
-      else if (currentExercise === 1) checkMCAnswers();
-      else if (currentExercise === 2) checkMistakeAnswers();
-      else if (currentExercise === 3) checkOrderingAnswers();
+      alert('Check answers button clicked');
     }
 
-    function checkClozeAnswers() {
-      let score = 0;
-      
-      const blanks = document.querySelectorAll('.cloze-blank');
-      clozeAnswers.forEach((correct, index) => {
-        const userAnswer = userClozeAnswers[index].toLowerCase();
-        const correctAnswer = correct.toLowerCase();
-        const blank = blanks[index];
-        
-        if (!blank) return;
-        
-        blank.classList.remove('filled', 'wrong', 'correct');
-        
-        if (userAnswer === correctAnswer) {
-          score++;
-          blank.classList.add('correct');
-        } else {
-          blank.classList.add('wrong');
-        }
-      });
-      
-      cardScores[0] = score;
-      cardCompleted[0] = true;
-      updateScore();
-      renderExerciseDots();
-      
-      showToast(`Cloze Exercise: ${score} / ${clozeAnswers.length} correct!`, score === clozeAnswers.length ? 'success' : 'info');
-    }
-
-    function checkMCAnswers() {
-      let score = 0;
-      
-      const questionItems = document.querySelectorAll('.question-item');
-      questionItems.forEach((item, qIndex) => {
-        const buttons = item.querySelectorAll('.option-btn');
-        const userAnswer = userMCAnswers[qIndex];
-        const correctAnswer = mcAnswers[qIndex];
-        
-        buttons.forEach(btn => {
-          btn.classList.remove('selected', 'correct', 'wrong');
-          const btnText = btn.dataset.opt;
-          
-          if (btnText === correctAnswer) {
-            btn.classList.add('correct');
-          }
-          
-          if (btnText === userAnswer && userAnswer !== correctAnswer) {
-            btn.classList.add('wrong');
-          }
-        });
-        
-        if (userAnswer === correctAnswer) {
-          score++;
-        }
-      });
-      
-      cardScores[1] = score;
-      cardCompleted[1] = true;
-      updateScore();
-      renderExerciseDots();
-      
-      showToast(`Multiple Choice: ${score} / 5 correct!`, score === 5 ? 'success' : 'info');
-    }
-
-    function checkMistakeAnswers() {
-      let score = 0;
-      
-      const sentenceItems = document.querySelectorAll('.sentence-item');
-      sentenceItems.forEach((item, sIndex) => {
-        const words = item.querySelectorAll('.word');
-        const userAnswer = userMistakeAnswers[sIndex];
-        const correctAnswer = mistakeData[sIndex].errorIndex;
-        
-        words.forEach((word, wIndex) => {
-          word.classList.remove('error', 'correct-word');
-          
-          if (wIndex === correctAnswer) {
-            word.classList.add('correct-word');
-          }
-        });
-        
-        if (userAnswer === correctAnswer) {
-          score++;
-        }
-      });
-      
-      cardScores[2] = score;
-      cardCompleted[2] = true;
-      updateScore();
-      renderExerciseDots();
-      
-      showToast(`Spot the Mistake: ${score} / 5 correct!`, score === 5 ? 'success' : 'info');
-    }
-
-    function checkOrderingAnswers() {
-      let score = 0;
-      
-      const inputs = document.querySelectorAll('.order-input');
-      inputs.forEach((input, index) => {
-        const userAnswer = parseInt(input.value) || 0;
-        const correctAnswer = parseInt(input.dataset.correct);
-        
-        input.classList.remove('correct', 'wrong');
-        
-        if (userAnswer === correctAnswer) {
-          score++;
-          input.classList.add('correct');
-        } else {
-          input.classList.add('wrong');
-        }
-      });
-      
-      cardScores[3] = score;
-      cardCompleted[3] = true;
-      updateScore();
-      renderExerciseDots();
-      
-      showToast(`Sentence Ordering: ${score} / 7 correct!`, score === 7 ? 'success' : 'info');
-      
-      if (cardCompleted.every(c => c)) {
-        saveQuizScore();
-      }
-    }
-
-    // ============================================
-    // KEYBOARD NAVIGATION
-    // ============================================
-    
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'ArrowRight' && currentExercise < 3) nextExercise();
-      else if (e.key === 'ArrowLeft' && currentExercise > 0) previousExercise();
-    });
-
-    // ============================================
-    // INITIALIZE ON PAGE LOAD
-    // ============================================
-    
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', initialize);
-    } else {
-      initialize();
-    }
+    renderExerciseDots();
+    renderContent();
+    updateExternalNav();
   </script>
 </body>
 </html>
