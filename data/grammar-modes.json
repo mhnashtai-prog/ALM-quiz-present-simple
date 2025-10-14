@@ -422,7 +422,8 @@
               { "verb": "browses", "object": "Reddit gaming forums", "emoji": "💭" },
               { "verb": "customizes", "object": "his PC settings", "emoji": "⚙️" },
               { "verb": "researches", "object": "new tech gadgets", "emoji": "🔍" },
-              { "verb": "collects", "object": "achievements in games", "emoji": "🏆" }
+              { "verb": "collects", "object": "achievements in games", "emoji": "🏆" },
+              { "verb": "types", "object": "fast on his mechanical keyboard", "emoji": "⌨️" }
             ]
           }
         ]
