@@ -283,7 +283,6 @@
       position: relative;
     }
 
-    /* FULL MODE - No boxes */
     .exercises-list {
       display: flex;
       flex-direction: column;
@@ -303,7 +302,6 @@
       border-radius: 10px;
     }
 
-    /* SINGLE MODE */
     .single-exercise-container {
       flex: 1;
       display: flex;
@@ -334,22 +332,11 @@
       padding-bottom: 0;
       margin-bottom: 0;
     }
-    
-    /* Full mode cards are not flex-1 to allow natural height */
+
     .exercises-list .quiz-card {
       flex: none;
     }
 
-    .quiz-card::-webkit-scrollbar {
-      width: 6px;
-    }
-
-    .quiz-card::-webkit-scrollbar-thumb {
-      background: rgba(201, 169, 97, 0.3);
-      border-radius: 10px;
-    }
-
-    /* SINGLE MODE - Restore boxes */
     .single-exercise-container .quiz-card {
       background: #1a1a1a;
       border-radius: 16px;
@@ -397,7 +384,6 @@
       padding-left: 0;
     }
 
-    /* CLOZE EXERCISE */
     .cloze-text {
       font-size: 0.95rem;
       line-height: 1.8;
@@ -444,7 +430,6 @@
       border-bottom-color: rgba(251, 146, 60, 0.6);
     }
 
-    /* MULTIPLE CHOICE */
     .question-list {
       display: flex;
       flex-direction: column;
@@ -467,7 +452,6 @@
     .question-item:hover {
       background: rgba(0, 0, 0, 0.3);
       border-color: rgba(201, 169, 97, 0.3);
-      transform: translateY(-2px);
     }
 
     .question-text {
@@ -499,33 +483,36 @@
     .option-btn:hover {
       background: rgba(201, 169, 97, 0.2);
       border-color: rgba(201, 169, 97, 0.5);
+      transform: translateY(-2px);
     }
 
     .option-btn.selected {
       background: rgba(201, 169, 97, 0.3);
       border-color: #C9A961;
       color: #C9A961;
+      font-weight: 600;
     }
 
     .option-btn.correct {
-      background: rgba(74, 222, 128, 0.2);
-      border-color: #4ade80;
-      color: #4ade80;
+      background: rgba(132, 204, 22, 0.2);
+      border-color: #84cc16;
+      color: #84cc16;
+      font-weight: 600;
     }
 
     .option-btn.wrong {
-      background: rgba(239, 68, 68, 0.2);
-      border-color: #ef4444;
-      color: #ef4444;
+      background: rgba(251, 146, 60, 0.2);
+      border-color: #fb923c;
+      color: #fb923c;
+      font-weight: 600;
     }
 
-    /* MISTAKE SENTENCES */
     .sentence-list {
       display: flex;
       flex-direction: column;
       gap: 0.75rem;
-      flex: 1;
-      overflow-y: auto;
+      flex: none;
+      overflow-y: visible;
       padding: 0;
       margin-bottom: 0;
     }
@@ -569,25 +556,33 @@
       border-color: rgba(201, 169, 97, 0.3);
     }
 
-    .word.error {
-      background: rgba(239, 68, 68, 0.2);
-      border-color: #ef4444;
-      color: #ef4444;
+    .word.selected {
+      background: rgba(201, 169, 97, 0.3);
+      border-color: #C9A961;
+      color: #C9A961;
+      font-weight: 600;
     }
 
-    .word.correct-word {
-      background: rgba(74, 222, 128, 0.2);
-      border-color: #4ade80;
-      color: #4ade80;
+    .word.correct {
+      background: rgba(132, 204, 22, 0.2);
+      border-color: #84cc16;
+      color: #84cc16;
+      font-weight: 600;
     }
 
-    /* ORDERING */
+    .word.wrong {
+      background: rgba(251, 146, 60, 0.2);
+      border-color: #fb923c;
+      color: #fb923c;
+      font-weight: 600;
+    }
+
     .ordering-container {
       display: flex;
       flex-direction: column;
       gap: 0.75rem;
-      flex: 1;
-      overflow-y: auto;
+      flex: none;
+      overflow-y: visible;
       padding: 0;
       margin-bottom: 0;
     }
@@ -630,15 +625,15 @@
     }
 
     .order-input.correct {
-      background: rgba(74, 222, 128, 0.2);
-      border-color: #4ade80;
-      color: #4ade80;
+      background: rgba(132, 204, 22, 0.2);
+      border-color: #84cc16;
+      color: #84cc16;
     }
 
     .order-input.wrong {
-      background: rgba(239, 68, 68, 0.2);
-      border-color: #ef4444;
-      color: #ef4444;
+      background: rgba(251, 146, 60, 0.2);
+      border-color: #fb923c;
+      color: #fb923c;
     }
 
     .sentence-text {
@@ -715,9 +710,9 @@
     }
 
     .btn.success {
-      background: rgba(74, 222, 128, 0.2);
-      border-color: #4ade80;
-      color: #4ade80;
+      background: rgba(132, 204, 22, 0.2);
+      border-color: #84cc16;
+      color: #84cc16;
     }
 
     .btn:disabled {
@@ -759,7 +754,7 @@
       <p class="tagline">Practice Quiz</p>
       <div class="character-display">
         <span class="character-emoji" id="displayEmoji">👧</span>
-        <span class="character-name" id="displayName">Sarah</span>
+        <span class="character-name" id="displayName">Loading...</span>
       </div>
     </div>
 
@@ -780,7 +775,7 @@
       <div style="display: flex; align-items: center; justify-content: center; height: 100%;">
         <div style="text-align: center; color: rgba(232, 232, 232, 0.7);">
           <div style="font-size: 3rem; margin-bottom: 1rem;">📚</div>
-          <div>Quiz interface ready</div>
+          <div>Loading quiz...</div>
         </div>
       </div>
     </div>
@@ -798,6 +793,74 @@
   <script>
     let currentMode = 'full';
     let currentExercise = 0;
+    let cardCompleted = [false, false, false, false];
+    let userAnswers = {
+      cloze: {},
+      mc: {},
+      mistakes: {},
+      ordering: {}
+    };
+    
+    let characterData = null;
+    let characterKey = null;
+    let categoryData = null;
+    let clozeTemplate = null;
+    let mcQuestions = [];
+    let mistakeSentences = [];
+    let orderingSentences = [];
+
+    // Initialize on page load
+    async function initialize() {
+      console.log('🎮 Initializing Quiz...');
+      
+      // Get character from URL parameter (e.g., ?character=sarah)
+      const urlParams = new URLSearchParams(window.location.search);
+      characterKey = urlParams.get('character') || 'sarah';
+      
+      try {
+        // Load character data from JSON
+        const response = await fetch('../data/character-data.json');
+        if (!response.ok) throw new Error('Failed to load character data');
+        
+        const allData = await response.json();
+        characterData = allData[characterKey];
+        
+        if (!characterData) {
+          throw new Error(`Character "${characterKey}" not found`);
+        }
+        
+        // Set character display
+        document.getElementById('displayEmoji').textContent = characterData.emoji;
+        document.getElementById('displayName').textContent = characterData.name;
+        
+        // Get category data (default to daily_habits)
+        categoryData = characterData.categories.daily_habits;
+        
+        // Load exercise data
+        clozeTemplate = categoryData.clozeTemplates[0];
+        mcQuestions = categoryData.multipleChoiceQuestions.slice(0, 5);
+        mistakeSentences = categoryData.mistakeSentences.slice(0, 5);
+        orderingSentences = categoryData.orderingSentences[0];
+        
+        console.log('✅ Data loaded successfully');
+        
+        renderExerciseDots();
+        renderContent();
+        updateExternalNav();
+        
+      } catch (error) {
+        console.error('Error loading data:', error);
+        document.getElementById('contentContainer').innerHTML = `
+          <div style="display: flex; align-items: center; justify-content: center; height: 100%;">
+            <div style="text-align: center; color: rgba(239, 68, 68, 0.9);">
+              <div style="font-size: 3rem; margin-bottom: 1rem;">⚠️</div>
+              <div>Error loading quiz data</div>
+              <div style="font-size: 0.8rem; margin-top: 0.5rem; opacity: 0.7;">${error.message}</div>
+            </div>
+          </div>
+        `;
+      }
+    }
 
     function toggleMode() {
       const toggleSwitch = document.getElementById('modeToggleSwitch');
@@ -821,6 +884,7 @@
         const single = container.querySelector('.single-exercise-container');
         single.appendChild(createCard(currentExercise));
       }
+      attachEventListeners();
     }
 
     function createCard(index) {
@@ -841,155 +905,163 @@
     }
 
     function renderClozeExerciseHTML() {
+      if (!clozeTemplate) return '<p>Loading...</p>';
+      
+      // Convert text with blanks (w_____ -> input field)
+      let textWithInputs = clozeTemplate.text;
+      let blankIndex = 0;
+      
+      textWithInputs = textWithInputs.replace(/\b\w_+\b/g, () => {
+        const input = `<input type="text" class="cloze-blank" data-index="${blankIndex}" placeholder="?" value="">`;
+        blankIndex++;
+        return input;
+      });
+      
+      // Split by double newlines for paragraphs
+      const paragraphs = textWithInputs.split('\n\n').map(p => `<p>${p}</p>`).join('');
+      
       return `
         <h2 class="card-title">📝 Exercise 1/4: Fill in the Blanks</h2>
-        <p class="card-subtitle">Type directly into each blank space</p>
+        <p class="card-subtitle">Type the correct verb form in each blank space</p>
         <div class="cloze-text">
-          <p>Sarah <input type="text" class="cloze-blank" data-index="0" placeholder="d___" value=""> hot chocolate every morning. She <input type="text" class="cloze-blank" data-index="1" placeholder="t___" value=""> the bus to school and sits at the front in class. She <input type="text" class="cloze-blank" data-index="2" placeholder="d___" value=""> all her homework carefully.</p>
-          <p>She <input type="text" class="cloze-blank" data-index="3" placeholder="r___" value=""> books before bed. She <input type="text" class="cloze-blank" data-index="4" placeholder="p___" value=""> the piano after school. She <input type="text" class="cloze-blank" data-index="5" placeholder="h___" value=""> mum cook dinner.</p>
+          ${paragraphs}
         </div>
       `;
     }
 
     function renderMultipleChoiceHTML() {
-      return `
+      if (!mcQuestions || mcQuestions.length === 0) return '<p>Loading...</p>';
+      
+      let html = `
         <h2 class="card-title">✅ Exercise 2/4: Multiple Choice</h2>
         <p class="card-subtitle">Choose the correct verb form for each sentence</p>
         <div class="question-list">
-          <div class="question-item">
-            <div class="question-text">1. Sarah _____ hot chocolate every morning.</div>
-            <div class="question-options">
-              <button class="option-btn">drinks</button>
-              <button class="option-btn">drink</button>
-              <button class="option-btn">drinking</button>
-              <button class="option-btn">drank</button>
-            </div>
-          </div>
-          <div class="question-item">
-            <div class="question-text">2. She _____ the bus to school.</div>
-            <div class="question-options">
-              <button class="option-btn">takes</button>
-              <button class="option-btn">take</button>
-              <button class="option-btn">taking</button>
-              <button class="option-btn">took</button>
-            </div>
-          </div>
-          <div class="question-item">
-            <div class="question-text">3. She _____ books before bed.</div>
-            <div class="question-options">
-              <button class="option-btn">reads</button>
-              <button class="option-btn">read</button>
-              <button class="option-btn">reading</button>
-              <button class="option-btn">readed</button>
-            </div>
-          </div>
-          <div class="question-item">
-            <div class="question-text">4. She _____ all her homework carefully.</div>
-            <div class="question-options">
-              <button class="option-btn">does</button>
-              <button class="option-btn">do</button>
-              <button class="option-btn">doing</button>
-              <button class="option-btn">did</button>
-            </div>
-          </div>
-          <div class="question-item">
-            <div class="question-text">5. She _____ the piano after school.</div>
-            <div class="question-options">
-              <button class="option-btn">practices</button>
-              <button class="option-btn">practice</button>
-              <button class="option-btn">practicing</button>
-              <button class="option-btn">practiced</button>
-            </div>
-          </div>
-        </div>
       `;
+      
+      mcQuestions.forEach((q, idx) => {
+        html += `
+          <div class="question-item" data-question="${idx}">
+            <div class="question-text">${idx + 1}. ${q.text}</div>
+            <div class="question-options">
+        `;
+        
+        q.options.forEach((opt, optIdx) => {
+          html += `<button class="option-btn" data-option="${optIdx}">${opt}</button>`;
+        });
+        
+        html += `
+            </div>
+          </div>
+        `;
+      });
+      
+      html += '</div>';
+      return html;
     }
 
     function renderMistakeSentencesHTML() {
-      return `
+      if (!mistakeSentences || mistakeSentences.length === 0) return '<p>Loading...</p>';
+      
+      let html = `
         <h2 class="card-title">🔍 Exercise 3/4: Spot the Mistake</h2>
         <p class="card-subtitle">Click on the word that is incorrect in each sentence</p>
         <div class="sentence-list">
-          <div class="sentence-item">
-            <div class="sentence-words">
-              <span class="word">Sarah</span>
-              <span class="word">drink</span>
-              <span class="word">hot</span>
-              <span class="word">chocolate</span>
-            </div>
-          </div>
-          <div class="sentence-item">
-            <div class="sentence-words">
-              <span class="word">She</span>
-              <span class="word">takes</span>
-              <span class="word">the</span>
-              <span class="word">buss</span>
-            </div>
-          </div>
-          <div class="sentence-item">
-            <div class="sentence-words">
-              <span class="word">She</span>
-              <span class="word">do</span>
-              <span class="word">all</span>
-              <span class="word">homework</span>
-            </div>
-          </div>
-          <div class="sentence-item">
-            <div class="sentence-words">
-              <span class="word">She</span>
-              <span class="word">read</span>
-              <span class="word">books</span>
-              <span class="word">before</span>
-              <span class="word">bed</span>
-            </div>
-          </div>
-          <div class="sentence-item">
-            <div class="sentence-words">
-              <span class="word">She</span>
-              <span class="word">practices</span>
-              <span class="word">the</span>
-              <span class="word">piana</span>
-            </div>
-          </div>
-        </div>
       `;
+      
+      mistakeSentences.forEach((item, sentenceIdx) => {
+        html += `
+          <div class="sentence-item" data-sentence="${sentenceIdx}">
+            <div class="sentence-words">
+        `;
+        
+        item.sentence.forEach((word, wordIdx) => {
+          html += `<span class="word" data-word="${wordIdx}">${word}</span>`;
+        });
+        
+        html += `
+            </div>
+          </div>
+        `;
+      });
+      
+      html += '</div>';
+      return html;
     }
 
     function renderOrderingSentencesHTML() {
-      return `
+      if (!orderingSentences || orderingSentences.length === 0) return '<p>Loading...</p>';
+      
+      let html = `
         <h2 class="card-title">🔢 Exercise 4/4: Put Sentences in Order</h2>
-        <p class="card-subtitle">Number the sentences from 1-7 to create a logical story</p>
+        <p class="card-subtitle">Number the sentences from 1-${orderingSentences.length} to create a logical story</p>
         <div class="ordering-container">
-          <div class="ordering-item">
-            <input type="number" class="order-input" min="1" max="7" placeholder="?">
-            <div class="sentence-text">She has a quick shower.</div>
-          </div>
-          <div class="ordering-item">
-            <input type="number" class="order-input" min="1" max="7" placeholder="?">
-            <div class="sentence-text">She wakes up at 6:30 in the morning.</div>
-          </div>
-          <div class="ordering-item">
-            <input type="number" class="order-input" min="1" max="7" placeholder="?">
-            <div class="sentence-text">She gets dressed for school.</div>
-          </div>
-          <div class="ordering-item">
-            <input type="number" class="order-input" min="1" max="7" placeholder="?">
-            <div class="sentence-text">She eats breakfast with family.</div>
-          </div>
-          <div class="ordering-item">
-            <input type="number" class="order-input" min="1" max="7" placeholder="?">
-            <div class="sentence-text">She leaves home at 8 o'clock.</div>
-          </div>
-          <div class="ordering-item">
-            <input type="number" class="order-input" min="1" max="7" placeholder="?">
-            <div class="sentence-text">She arrives at school by 8:30.</div>
-          </div>
-          <div class="ordering-item">
-            <input type="number" class="order-input" min="1" max="7" placeholder="?">
-            <div class="sentence-text">She goes to lessons until 3 o'clock.</div>
-          </div>
-        </div>
       `;
+      
+      orderingSentences.forEach((item, idx) => {
+        html += `
+          <div class="ordering-item" data-item="${idx}">
+            <input type="number" class="order-input" min="1" max="${orderingSentences.length}" placeholder="?" data-order="${idx}">
+            <div class="sentence-text">${item.text}</div>
+          </div>
+        `;
+      });
+      
+      html += '</div>';
+      return html;
+    }
+
+    function attachEventListeners() {
+      // Multiple choice option buttons
+      document.querySelectorAll('.option-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          const questionItem = this.closest('.question-item');
+          const questionIdx = questionItem.dataset.question;
+          const optionIdx = this.dataset.option;
+          
+          // Remove selected class from siblings
+          questionItem.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+          
+          // Add selected class to clicked button
+          this.classList.add('selected');
+          
+          // Store answer
+          userAnswers.mc[questionIdx] = parseInt(optionIdx);
+        });
+      });
+      
+      // Mistake sentences - word selection
+      document.querySelectorAll('.word').forEach(word => {
+        word.addEventListener('click', function() {
+          const sentenceItem = this.closest('.sentence-item');
+          const sentenceIdx = sentenceItem.dataset.sentence;
+          const wordIdx = this.dataset.word;
+          
+          // Remove selected class from siblings
+          sentenceItem.querySelectorAll('.word').forEach(w => w.classList.remove('selected'));
+          
+          // Add selected class to clicked word
+          this.classList.add('selected');
+          
+          // Store answer
+          userAnswers.mistakes[sentenceIdx] = parseInt(wordIdx);
+        });
+      });
+      
+      // Cloze inputs - store on change
+      document.querySelectorAll('.cloze-blank').forEach(input => {
+        input.addEventListener('input', function() {
+          const idx = this.dataset.index;
+          userAnswers.cloze[idx] = this.value.trim().toLowerCase();
+        });
+      });
+      
+      // Ordering inputs - store on change
+      document.querySelectorAll('.order-input').forEach(input => {
+        input.addEventListener('input', function() {
+          const idx = this.dataset.order;
+          userAnswers.ordering[idx] = parseInt(this.value);
+        });
+      });
     }
 
     function renderExerciseDots() {
@@ -999,6 +1071,7 @@
         const dot = document.createElement('div');
         dot.className = 'exercise-dot';
         if (i === currentExercise) dot.classList.add('current');
+        if (cardCompleted[i]) dot.classList.add('completed');
         dot.addEventListener('click', () => goToExercise(i));
         container.appendChild(dot);
       }
@@ -1044,12 +1117,128 @@
     }
 
     function checkAnswers() {
-      alert('Check answers button clicked');
+      let score = 0;
+      let total = 0;
+      
+      // Check cloze answers
+      if (clozeTemplate && clozeTemplate.answers) {
+        clozeTemplate.answers.forEach((answer, idx) => {
+          total++;
+          const input = document.querySelector(`.cloze-blank[data-index="${idx}"]`);
+          if (input) {
+            const userAnswer = (userAnswers.cloze[idx] || '').toLowerCase();
+            const correctAnswer = answer.toLowerCase();
+            
+            if (userAnswer === correctAnswer) {
+              input.classList.add('correct');
+              input.classList.remove('wrong');
+              score++;
+            } else {
+              input.classList.add('wrong');
+              input.classList.remove('correct');
+            }
+          }
+        });
+      }
+      
+      // Check multiple choice
+      mcQuestions.forEach((q, idx) => {
+        total++;
+        const correctIdx = q.options.indexOf(q.correct);
+        const userIdx = userAnswers.mc[idx];
+        
+        const questionItem = document.querySelector(`.question-item[data-question="${idx}"]`);
+        if (questionItem) {
+          const buttons = questionItem.querySelectorAll('.option-btn');
+          buttons.forEach((btn, btnIdx) => {
+            btn.classList.remove('correct', 'wrong', 'selected');
+            if (btnIdx === correctIdx) {
+              btn.classList.add('correct');
+            } else if (btnIdx === userIdx && userIdx !== correctIdx) {
+              btn.classList.add('wrong');
+            }
+          });
+          
+          if (userIdx === correctIdx) {
+            score++;
+          }
+        }
+      });
+      
+      // Check mistake sentences
+      mistakeSentences.forEach((item, idx) => {
+        total++;
+        const userWordIdx = userAnswers.mistakes[idx];
+        const correctIdx = item.errorIndex;
+        
+        const sentenceItem = document.querySelector(`.sentence-item[data-sentence="${idx}"]`);
+        if (sentenceItem) {
+          const words = sentenceItem.querySelectorAll('.word');
+          words.forEach((word, wordIdx) => {
+            word.classList.remove('correct', 'wrong', 'selected');
+            if (wordIdx === correctIdx) {
+              word.classList.add('correct');
+            } else if (wordIdx === userWordIdx && userWordIdx !== correctIdx) {
+              word.classList.add('wrong');
+            }
+          });
+          
+          if (userWordIdx === correctIdx) {
+            score++;
+          }
+        }
+      });
+      
+      // Check ordering
+      orderingSentences.forEach((item, idx) => {
+        total++;
+        const userOrder = userAnswers.ordering[idx];
+        const correctOrder = item.order;
+        
+        const input = document.querySelector(`.order-input[data-order="${idx}"]`);
+        if (input) {
+          if (userOrder === correctOrder) {
+            input.classList.add('correct');
+            input.classList.remove('wrong');
+            score++;
+          } else {
+            input.classList.add('wrong');
+            input.classList.remove('correct');
+          }
+        }
+      });
+      
+      // Update score display
+      document.getElementById('scoreDisplay').textContent = `${score}/${total}`;
+      
+      // Show toast notification
+      showToast('✅', 'Quiz Checked!', `You scored ${score} out of ${total}`);
     }
 
-    renderExerciseDots();
-    renderContent();
-    updateExternalNav();
+    function showToast(icon, title, message) {
+      const container = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      toast.className = 'toast success';
+      toast.innerHTML = `
+        <div class="toast-icon">${icon}</div>
+        <div class="toast-content">
+          <div class="toast-title">${title}</div>
+          <div class="toast-message">${message}</div>
+        </div>
+      `;
+      
+      container.appendChild(toast);
+      
+      setTimeout(() => toast.classList.add('show'), 10);
+      
+      setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 400);
+      }, 3000);
+    }
+
+    // Initialize on load
+    initialize();
   </script>
 </body>
 </html>
