@@ -46,7 +46,6 @@
       border: 1px solid rgba(201, 169, 97, 0.2);
     }
 
-    /* Header - More Compact */
     .header {
       text-align: center;
       margin-bottom: 0.75rem;
@@ -67,7 +66,6 @@
       letter-spacing: 0.05em;
     }
 
-    /* Progress Bar - More Compact */
     .progress-section {
       background: rgba(0, 0, 0, 0.3);
       border-radius: 0.875rem;
@@ -109,7 +107,6 @@
       text-align: center;
     }
 
-    /* Characters - More Compact */
     .characters-section {
       flex-shrink: 0;
       margin-bottom: 0.75rem;
@@ -192,13 +189,11 @@
       font-size: 0.875rem;
     }
 
-    /* Categories - COMPACT 2x2 Grid */
     .categories-section {
       flex: 1;
       display: flex;
       flex-direction: column;
       min-height: 0;
-      margin-bottom: 0.75rem;
     }
 
     .categories-grid {
@@ -229,6 +224,12 @@
       transform: translateY(-3px);
       border-color: rgba(201, 169, 97, 0.5);
       background: rgba(201, 169, 97, 0.1);
+    }
+
+    .category-card.selected {
+      border-color: #C9A961;
+      background: rgba(201, 169, 97, 0.15);
+      box-shadow: 0 0 0 3px rgba(201, 169, 97, 0.2);
     }
 
     .category-card.completed {
@@ -267,51 +268,6 @@
       font-size: 1rem;
     }
 
-    /* Start Button - Compact */
-    .start-section {
-      flex-shrink: 0;
-    }
-
-    .start-button {
-      width: 100%;
-      background: rgba(201, 169, 97, 0.2);
-      border: 2px solid #C9A961;
-      border-radius: 0.875rem;
-      padding: 0.875rem;
-      color: #C9A961;
-      font-size: 0.85rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      font-family: 'Inter', sans-serif;
-    }
-
-    .start-button:hover:not(:disabled) {
-      background: rgba(201, 169, 97, 0.3);
-      transform: translateY(-2px);
-      box-shadow: 0 8px 24px rgba(201, 169, 97, 0.3);
-    }
-
-    .start-button:disabled {
-      opacity: 0.4;
-      cursor: not-allowed;
-    }
-
-    .start-button.ready {
-      background: rgba(201, 169, 97, 0.25);
-      border-color: #C9A961;
-      box-shadow: 0 4px 16px rgba(201, 169, 97, 0.2);
-      animation: pulse 2s ease-in-out infinite;
-    }
-
-    @keyframes pulse {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.02); }
-    }
-
-    /* Mobile Optimization */
     @media (max-width: 480px) {
       .container {
         max-width: 100%;
@@ -361,13 +317,11 @@
 </head>
 <body>
   <div class="container">
-    <!-- Header -->
     <div class="header">
       <h1>INTUITY</h1>
       <p class="subtitle">Present Simple Practice</p>
     </div>
 
-    <!-- Overall Progress -->
     <div class="progress-section">
       <div class="progress-label">Overall Progress</div>
       <div class="progress-bar">
@@ -376,33 +330,18 @@
       <div class="progress-text" id="overallProgressText">0 / 16 Trophies</div>
     </div>
 
-    <!-- Characters -->
     <div class="characters-section">
       <div class="section-title">Select Character</div>
-      <div class="characters-scroll" id="charactersScroll">
-        <!-- Characters inserted by JS -->
-      </div>
+      <div class="characters-scroll" id="charactersScroll"></div>
     </div>
 
-    <!-- Categories -->
     <div class="categories-section">
-      <div class="categories-grid" id="categoriesGrid">
-        <!-- Categories inserted by JS -->
-      </div>
-    </div>
-
-    <!-- Start Button -->
-    <div class="start-section">
-      <button class="start-button" id="startButton" disabled>
-      </button>
+      <div class="section-title">Select Topic</div>
+      <div class="categories-grid" id="categoriesGrid"></div>
     </div>
   </div>
 
   <script>
-    // ============================================
-    // PROGRESS TRACKER (Built-in)
-    // ============================================
-    
     const ProgressTracker = {
       CATEGORIES: {
         'habitual': { name: 'Habitual Actions', icon: '🔄' },
@@ -433,40 +372,6 @@
         const progress = this.getProgress();
         const key = `${characterKey}_${categoryKey}`;
         return progress[key] || { matchingScore: 0, quizScore: 0, trophy: false };
-      },
-
-      saveMatchingScore(characterKey, categoryKey, score) {
-        const progress = this.getProgress();
-        const key = `${characterKey}_${categoryKey}`;
-        
-        if (!progress[key]) {
-          progress[key] = { matchingScore: 0, quizScore: 0, trophy: false };
-        }
-        
-        progress[key].matchingScore = Math.max(progress[key].matchingScore, score);
-        
-        if (progress[key].matchingScore === 20 && progress[key].quizScore === 20) {
-          progress[key].trophy = true;
-        }
-        
-        this.saveProgress(progress);
-      },
-
-      saveQuizScore(characterKey, categoryKey, score) {
-        const progress = this.getProgress();
-        const key = `${characterKey}_${categoryKey}`;
-        
-        if (!progress[key]) {
-          progress[key] = { matchingScore: 0, quizScore: 0, trophy: false };
-        }
-        
-        progress[key].quizScore = Math.max(progress[key].quizScore, score);
-        
-        if (progress[key].matchingScore === 20 && progress[key].quizScore === 20) {
-          progress[key].trophy = true;
-        }
-        
-        this.saveProgress(progress);
       },
 
       getCharacterProgress(characterKey) {
@@ -504,10 +409,6 @@
       }
     };
 
-    // ============================================
-    // CHARACTERS DATA
-    // ============================================
-    
     const characters = [
       { key: 'alex', name: 'Alex', emoji: '🧒' },
       { key: 'sarah', name: 'Sarah', emoji: '👧' },
@@ -515,13 +416,9 @@
       { key: 'emma', name: 'Emma', emoji: '👩' }
     ];
 
-    let selectedCharacter = 'alex'; // Auto-select first character
+    let selectedCharacter = 'alex';
     let selectedCategory = null;
 
-    // ============================================
-    // RENDER CHARACTERS
-    // ============================================
-    
     function renderCharacters() {
       const scroll = document.getElementById('charactersScroll');
       scroll.innerHTML = '';
@@ -549,23 +446,14 @@
       updateOverallProgress();
     }
 
-    // ============================================
-    // SELECT CHARACTER
-    // ============================================
-    
     function selectCharacter(characterKey) {
       selectedCharacter = characterKey;
       selectedCategory = null;
       
       renderCharacters();
       renderCategories();
-      updateStartButton();
     }
 
-    // ============================================
-    // RENDER CATEGORIES
-    // ============================================
-    
     function renderCategories() {
       const grid = document.getElementById('categoriesGrid');
       const progress = ProgressTracker.getCharacterProgress(selectedCharacter);
@@ -575,10 +463,7 @@
         const card = document.createElement('div');
         card.className = 'category-card';
         if (cat.trophy) card.classList.add('completed');
-        if (selectedCategory === cat.key) {
-          card.style.borderColor = '#C9A961';
-          card.style.background = 'rgba(201, 169, 97, 0.15)';
-        }
+        if (selectedCategory === cat.key) card.classList.add('selected');
 
         const statusText = cat.trophy 
           ? '🏆 Trophy' 
@@ -598,39 +483,17 @@
       });
     }
 
-    // ============================================
-    // SELECT CATEGORY
-    // ============================================
-    
     function selectCategory(categoryKey) {
       selectedCategory = categoryKey;
       renderCategories();
-      updateStartButton();
-    }
-
-    // ============================================
-    // UPDATE START BUTTON
-    // ============================================
-    
-    function updateStartButton() {
-      const button = document.getElementById('startButton');
       
+      // Auto-start: Navigate immediately when both are selected
       if (selectedCharacter && selectedCategory) {
-        button.disabled = false;
-        button.classList.add('ready');
-      } else {
-        button.disabled = true;
-        button.classList.remove('ready');
+        startPractice();
       }
     }
 
-    // ============================================
-    // START PRACTICE
-    // ============================================
-    
-    document.getElementById('startButton').addEventListener('click', () => {
-      if (!selectedCharacter || !selectedCategory) return;
-
+    function startPractice() {
       const character = characters.find(c => c.key === selectedCharacter);
       const categoryInfo = ProgressTracker.CATEGORIES[selectedCategory];
 
@@ -644,14 +507,10 @@
       };
 
       sessionStorage.setItem('selectionData', JSON.stringify(selectionData));
-      console.log('🚀 Starting:', selectionData);
+      console.log('🚀 Auto-starting:', selectionData);
       window.location.href = 'pages/matching-game.html';
-    });
+    }
 
-    // ============================================
-    // OVERALL PROGRESS
-    // ============================================
-    
     function updateOverallProgress() {
       const overall = ProgressTracker.getOverallProgress();
       const percentage = overall.percentage;
@@ -661,16 +520,11 @@
         `${overall.trophies} / ${overall.total} Trophies`;
     }
 
-    // ============================================
-    // INITIALIZE
-    // ============================================
-    
     function initialize() {
       console.log('🎮 Initializing INTUITY...');
       ProgressTracker.init();
       renderCharacters();
-      renderCategories(); // Now renders immediately with Alex selected
-      updateStartButton();
+      renderCategories();
       console.log('✅ Ready!');
     }
 
