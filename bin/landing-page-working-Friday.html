@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>INTUITY - Present Simple</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #000000;
+      font-family: 'Inter', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      padding: 1rem;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' /%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23noise)' opacity='0.02'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .container {
+      background: #1a1a1a;
+      width: 100%;
+      max-width: 420px;
+      height: calc(100vh - 2rem);
+      max-height: 800px;
+      border-radius: 2rem;
+      padding: 1.25rem;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      border: 1px solid rgba(201, 169, 97, 0.2);
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 0.75rem;
+      flex-shrink: 0;
+    }
+
+    .header h1 {
+      font-size: 1.5rem;
+      color: #C9A961;
+      margin-bottom: 0.15rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .subtitle {
+      font-size: 0.7rem;
+      color: rgba(232, 232, 232, 0.6);
+      letter-spacing: 0.05em;
+    }
+
+    .progress-section {
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 0.875rem;
+      padding: 0.625rem 0.875rem;
+      margin-bottom: 0.75rem;
+      flex-shrink: 0;
+    }
+
+    .progress-label {
+      font-size: 0.65rem;
+      color: rgba(232, 232, 232, 0.5);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 0.4rem;
+      text-align: center;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 6px;
+      background: rgba(0, 0, 0, 0.4);
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 0.4rem;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #C9A961, #e8d9a8);
+      border-radius: 10px;
+      transition: width 0.6s ease;
+      box-shadow: 0 0 8px rgba(201, 169, 97, 0.4);
+    }
+
+    .progress-text {
+      font-size: 0.7rem;
+      color: #C9A961;
+      font-weight: 600;
+      text-align: center;
+    }
+
+    .characters-section {
+      flex-shrink: 0;
+      margin-bottom: 0.75rem;
+    }
+
+    .section-title {
+      font-size: 0.75rem;
+      color: rgba(232, 232, 232, 0.7);
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      padding-left: 0.25rem;
+    }
+
+    .characters-scroll {
+      display: flex;
+      gap: 0.625rem;
+      overflow-x: auto;
+      padding-bottom: 0.4rem;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(201, 169, 97, 0.3) transparent;
+    }
+
+    .characters-scroll::-webkit-scrollbar {
+      height: 3px;
+    }
+
+    .characters-scroll::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .characters-scroll::-webkit-scrollbar-thumb {
+      background: rgba(201, 169, 97, 0.3);
+      border-radius: 10px;
+    }
+
+    .character-card {
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 0.875rem;
+      padding: 0.75rem 0.625rem;
+      min-width: 90px;
+      cursor: pointer;
+      transition: all 0.3s;
+      border: 2px solid transparent;
+      text-align: center;
+      position: relative;
+    }
+
+    .character-card:hover {
+      transform: translateY(-3px);
+      border-color: rgba(201, 169, 97, 0.5);
+      background: rgba(201, 169, 97, 0.1);
+    }
+
+    .character-card.selected {
+      border-color: #C9A961;
+      background: rgba(201, 169, 97, 0.15);
+    }
+
+    .character-emoji {
+      font-size: 2rem;
+      margin-bottom: 0.35rem;
+    }
+
+    .character-name {
+      font-size: 0.75rem;
+      color: #C9A961;
+      font-weight: 600;
+      margin-bottom: 0.2rem;
+    }
+
+    .character-trophies {
+      font-size: 0.65rem;
+      color: rgba(232, 232, 232, 0.5);
+    }
+
+    .trophy-badge {
+      position: absolute;
+      top: 0.4rem;
+      right: 0.4rem;
+      font-size: 0.875rem;
+    }
+
+    .categories-section {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+
+    .categories-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.75rem;
+      height: 100%;
+      align-content: start;
+    }
+
+    .category-card {
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 1rem;
+      padding: 0.875rem 0.625rem;
+      cursor: pointer;
+      transition: all 0.3s;
+      border: 2px solid transparent;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 95px;
+      max-height: 110px;
+      position: relative;
+    }
+
+    .category-card:hover {
+      transform: translateY(-3px);
+      border-color: rgba(201, 169, 97, 0.5);
+      background: rgba(201, 169, 97, 0.1);
+    }
+
+    .category-card.selected {
+      border-color: #C9A961;
+      background: rgba(201, 169, 97, 0.15);
+      box-shadow: 0 0 0 3px rgba(201, 169, 97, 0.2);
+    }
+
+    .category-card.completed {
+      border-color: #4ade80;
+      background: rgba(74, 222, 128, 0.05);
+    }
+
+    .category-icon {
+      font-size: 1.75rem;
+      margin-bottom: 0.4rem;
+    }
+
+    .category-name {
+      font-size: 0.75rem;
+      color: rgba(232, 232, 232, 0.9);
+      font-weight: 600;
+      text-align: center;
+      margin-bottom: 0.25rem;
+      line-height: 1.15;
+    }
+
+    .category-status {
+      font-size: 0.625rem;
+      color: rgba(201, 169, 97, 0.7);
+      text-align: center;
+    }
+
+    .category-card.completed .category-status {
+      color: #4ade80;
+    }
+
+    .category-trophy {
+      position: absolute;
+      top: 0.4rem;
+      right: 0.4rem;
+      font-size: 1rem;
+    }
+
+    @media (max-width: 480px) {
+      .container {
+        max-width: 100%;
+        height: 100vh;
+        border-radius: 0;
+        padding: 1rem;
+      }
+
+      body {
+        padding: 0;
+      }
+
+      .header h1 {
+        font-size: 1.4rem;
+      }
+
+      .character-card {
+        min-width: 85px;
+        padding: 0.625rem 0.5rem;
+      }
+
+      .character-emoji {
+        font-size: 1.875rem;
+      }
+
+      .category-card {
+        min-height: 90px;
+        max-height: 105px;
+        padding: 0.75rem 0.5rem;
+      }
+
+      .category-icon {
+        font-size: 1.625rem;
+      }
+
+      .category-name {
+        font-size: 0.7rem;
+      }
+    }
+
+    @media (min-width: 768px) {
+      .container {
+        max-width: 480px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>INTUITY</h1>
+      <p class="subtitle">Present Simple Practice</p>
+    </div>
+
+    <div class="progress-section">
+      <div class="progress-label">Overall Progress</div>
+      <div class="progress-bar">
+        <div class="progress-fill" id="overallProgressFill" style="width: 0%"></div>
+      </div>
+      <div class="progress-text" id="overallProgressText">0 / 16 Trophies</div>
+    </div>
+
+    <div class="characters-section">
+      <div class="section-title">Select Character</div>
+      <div class="characters-scroll" id="charactersScroll"></div>
+    </div>
+
+    <div class="categories-section">
+      <div class="section-title">Select Topic</div>
+      <div class="categories-grid" id="categoriesGrid"></div>
+    </div>
+  </div>
+
+  <script>
+    const ProgressTracker = {
+      CATEGORIES: {
+        'habitual': { name: 'Habitual Actions', icon: '🔄' },
+        'routine': { name: 'Daily Routines', icon: '📅' },
+        'frequency': { name: 'Frequency Adverbs', icon: '⏰' },
+        'conjunctions': { name: 'Time Conjunctions', icon: '🔗' }
+      },
+
+      init() {
+        if (!localStorage.getItem('intuity_progress')) {
+          localStorage.setItem('intuity_progress', JSON.stringify({}));
+        }
+      },
+
+      getProgress() {
+        try {
+          return JSON.parse(localStorage.getItem('intuity_progress') || '{}');
+        } catch (e) {
+          return {};
+        }
+      },
+
+      saveProgress(data) {
+        localStorage.setItem('intuity_progress', JSON.stringify(data));
+      },
+
+      getCategoryProgress(characterKey, categoryKey) {
+        const progress = this.getProgress();
+        const key = `${characterKey}_${categoryKey}`;
+        return progress[key] || { matchingScore: 0, quizScore: 0, trophy: false };
+      },
+
+      getCharacterProgress(characterKey) {
+        const categories = Object.keys(this.CATEGORIES).map(catKey => {
+          const catProgress = this.getCategoryProgress(characterKey, catKey);
+          return {
+            key: catKey,
+            name: this.CATEGORIES[catKey].name,
+            icon: this.CATEGORIES[catKey].icon,
+            matchingScore: catProgress.matchingScore,
+            quizScore: catProgress.quizScore,
+            trophy: catProgress.trophy
+          };
+        });
+
+        const trophies = categories.filter(c => c.trophy).length;
+        const completed = trophies === categories.length;
+
+        return { categories, trophies, completed };
+      },
+
+      getOverallProgress() {
+        const allCharacters = ['alex', 'sarah', 'tom', 'emma'];
+        let totalTrophies = 0;
+        
+        allCharacters.forEach(charKey => {
+          const charProgress = this.getCharacterProgress(charKey);
+          totalTrophies += charProgress.trophies;
+        });
+
+        const total = allCharacters.length * Object.keys(this.CATEGORIES).length;
+        const percentage = (totalTrophies / total) * 100;
+
+        return { trophies: totalTrophies, total, percentage };
+      }
+    };
+
+    const characters = [
+      { key: 'alex', name: 'Alex', emoji: '🧒' },
+      { key: 'sarah', name: 'Sarah', emoji: '👧' },
+      { key: 'tom', name: 'Tom', emoji: '🧑' },
+      { key: 'emma', name: 'Emma', emoji: '👩' }
+    ];
+
+    let selectedCharacter = 'alex';
+    let selectedCategory = null;
+
+    function renderCharacters() {
+      const scroll = document.getElementById('charactersScroll');
+      scroll.innerHTML = '';
+
+      characters.forEach(char => {
+        const progress = ProgressTracker.getCharacterProgress(char.key);
+        const trophyCount = progress.trophies;
+        const isComplete = progress.completed;
+
+        const card = document.createElement('div');
+        card.className = 'character-card';
+        if (selectedCharacter === char.key) card.classList.add('selected');
+
+        card.innerHTML = `
+          ${isComplete ? '<div class="trophy-badge">✅</div>' : ''}
+          <div class="character-emoji">${char.emoji}</div>
+          <div class="character-name">${char.name}</div>
+          <div class="character-trophies">${trophyCount}/4 🏆</div>
+        `;
+
+        card.addEventListener('click', () => selectCharacter(char.key));
+        scroll.appendChild(card);
+      });
+
+      updateOverallProgress();
+    }
+
+    function selectCharacter(characterKey) {
+      selectedCharacter = characterKey;
+      selectedCategory = null;
+      
+      renderCharacters();
+      renderCategories();
+    }
+
+    function renderCategories() {
+      const grid = document.getElementById('categoriesGrid');
+      const progress = ProgressTracker.getCharacterProgress(selectedCharacter);
+      grid.innerHTML = '';
+
+      progress.categories.forEach(cat => {
+        const card = document.createElement('div');
+        card.className = 'category-card';
+        if (cat.trophy) card.classList.add('completed');
+        if (selectedCategory === cat.key) card.classList.add('selected');
+
+        const statusText = cat.trophy 
+          ? '🏆 Trophy' 
+          : cat.matchingScore > 0 || cat.quizScore > 0
+            ? 'In Progress'
+            : 'Start';
+
+        card.innerHTML = `
+          ${cat.trophy ? '<div class="category-trophy">🏆</div>' : ''}
+          <div class="category-icon">${cat.icon}</div>
+          <div class="category-name">${cat.name}</div>
+          <div class="category-status">${statusText}</div>
+        `;
+
+        card.addEventListener('click', () => selectCategory(cat.key));
+        grid.appendChild(card);
+      });
+    }
+
+    function selectCategory(categoryKey) {
+      selectedCategory = categoryKey;
+      renderCategories();
+      
+      // Auto-start: Navigate immediately when both are selected
+      if (selectedCharacter && selectedCategory) {
+        startPractice();
+      }
+    }
+
+    function startPractice() {
+      const character = characters.find(c => c.key === selectedCharacter);
+      const categoryInfo = ProgressTracker.CATEGORIES[selectedCategory];
+
+      const selectionData = {
+        characterKey: selectedCharacter,
+        characterName: character.name,
+        characterEmoji: character.emoji,
+        category: selectedCategory,
+        categoryTitle: categoryInfo.name,
+        categoryIcon: categoryInfo.icon
+      };
+
+      sessionStorage.setItem('selectionData', JSON.stringify(selectionData));
+      console.log('🚀 Auto-starting:', selectionData);
+      window.location.href = 'pages/matching-game.html';
+    }
+
+    function updateOverallProgress() {
+      const overall = ProgressTracker.getOverallProgress();
+      const percentage = overall.percentage;
+
+      document.getElementById('overallProgressFill').style.width = percentage + '%';
+      document.getElementById('overallProgressText').textContent = 
+        `${overall.trophies} / ${overall.total} Trophies`;
+    }
+
+    function initialize() {
+      console.log('🎮 Initializing INTUITY...');
+      ProgressTracker.init();
+      renderCharacters();
+      renderCategories();
+      console.log('✅ Ready!');
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initialize);
+    } else {
+      initialize();
+    }
+  </script>
+</body>
+</html>
