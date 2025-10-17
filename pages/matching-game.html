@@ -175,7 +175,6 @@
       font-size: 0.9rem;
     }
 
-    /* Navigation header */
     .nav-header {
       display: flex;
       justify-content: space-between;
@@ -286,7 +285,6 @@
       background: #C9A961;
     }
 
-    /* Match navigation dots - 20 small dots for all matches */
     .match-nav-dots-container {
       display: flex;
       justify-content: flex-start;
@@ -360,7 +358,6 @@
       box-shadow: 0 0 10px rgba(201, 169, 97, 0.5);
     }
 
-    /* Content container */
     .content-container {
       flex: 1;
       display: flex;
@@ -369,7 +366,6 @@
       position: relative;
     }
 
-    /* FULL MODE - Vertical scrolling list */
     .cards-list {
       display: flex;
       flex-direction: column;
@@ -390,7 +386,6 @@
       border-radius: 10px;
     }
 
-    /* SINGLE MODE - One card at a time */
     .single-card-container {
       flex: 1;
       display: flex;
@@ -495,6 +490,15 @@
       font-weight: 600;
     }
 
+    /* ⭐ NEW: Blue fill for confirmed selections BEFORE submit */
+    .match-item.selected-match {
+      background: rgba(96, 165, 250, 0.2);
+      border: 2px solid #60a5fa;
+      color: #60a5fa;
+      font-weight: 600;
+      cursor: default;
+    }
+
     .match-item.correct {
       background: rgba(74, 222, 128, 0.2);
       border: 2px solid #4ade80;
@@ -508,6 +512,7 @@
       border: 2px solid #fb923c;
       color: #fb923c;
       animation: shake 0.5s ease;
+      cursor: default;
     }
 
     .emoji {
@@ -527,7 +532,6 @@
       50% { transform: scale(1.05); }
     }
 
-    /* External navigation for single mode */
     .external-nav {
       display: none;
       align-items: center;
@@ -636,9 +640,23 @@
       font-weight: 700;
     }
 
+    /* ⭐ NEW: Submit button styling */
+    .footer-btn.submit {
+      background: rgba(96, 165, 250, 0.2);
+      border: 2px solid #60a5fa;
+      color: #60a5fa;
+      font-weight: 700;
+      font-size: 0.875rem;
+      padding: 0.75rem 1.5rem;
+    }
+
+    .footer-btn.submit:hover {
+      background: rgba(96, 165, 250, 0.3);
+      transform: translateY(-2px) scale(1.05);
+    }
+
     .hidden { display: none !important; }
 
-    /* Mobile Optimizations */
     @media (max-width: 768px) {
       .game-container {
         padding: 1rem 0.75rem;
@@ -751,13 +769,11 @@
       </div>
 
       <div class="category-pills" id="categoryPills">
-        <!-- Pills inserted by JavaScript -->
       </div>
     </div>
 
     <div class="nav-header">
       <div class="card-dots-container" id="cardDotsContainer">
-        <!-- Card navigation dots (4) -->
       </div>
       <div class="mode-toggle-container">
         <span class="mode-toggle-label">Full</span>
@@ -767,11 +783,10 @@
     </div>
 
     <div class="match-nav-dots-container" id="matchNavDotsContainer">
-      <!-- Match navigation dots (20) -->
     </div>
 
     <div class="score-display">
-      Score: <span class="score-number" id="scoreDisplay">0/20</span>
+      Matches: <span class="score-number" id="scoreDisplay">0/20</span>
     </div>
 
     <div class="progress-bar">
@@ -792,10 +807,12 @@
       <button class="external-nav-arrow" id="nextCardBtn" onclick="nextCard()">Next Card →</button>
     </div>
 
+    <!-- ⭐ NEW: Updated footer with submit button first -->
     <div class="footer" id="footer">
-      <button class="footer-btn" onclick="retryGame()">🔄 Repeat</button>
-      <button class="footer-btn quiz" onclick="goToQuiz()">🎯 Take Quiz →</button>
-      <button class="footer-btn primary" onclick="goHome()">🏠 Home</button>
+      <button class="footer-btn submit" id="submitBtn" onclick="submitAnswers()">✓ Submit Answers</button>
+      <button class="footer-btn hidden" id="retryBtn" onclick="retryGame()">🔄 Repeat</button>
+      <button class="footer-btn quiz hidden" id="quizBtn" onclick="goToQuiz()">🎯 Take Quiz →</button>
+      <button class="footer-btn primary hidden" id="homeBtn" onclick="goHome()">🏠 Home</button>
     </div>
   </div>
 
@@ -809,13 +826,14 @@
     let selectionData = null;
     let grammarData = null;
     let characterData = null;
-    let currentMode = 'full'; // 'full' or 'single'
+    let currentMode = 'full';
     
     let currentCardIndex = 0;
-    let userMatches = {}; // Store all matches by index
+    let userMatches = {};
     let cardVerbs = [];
     let selectedVerb = null;
     let selectedObject = null;
+    let isSubmitted = false; // ⭐ NEW: Track if answers have been submitted
 
     // ============================================
     // LOAD DATA
@@ -873,7 +891,6 @@
           verbs: verbs
         };
 
-        // Update character display
         document.getElementById('characterInfo').innerHTML = `
           <div class="character-display">
             <span class="character-emoji">${characterData.emoji}</span>
@@ -925,10 +942,6 @@
       `;
     }
 
-    // ============================================
-    // CATEGORY PILLS
-    // ============================================
-
     function renderCategoryPills() {
       const pillsContainer = document.getElementById('categoryPills');
       const categories = ProgressTracker.CATEGORIES;
@@ -970,10 +983,6 @@
       }, 500);
     }
 
-    // ============================================
-    // PREPARE CARD DATA
-    // ============================================
-    
     function prepareCardData() {
       cardVerbs = [
         characterData.verbs.slice(0, 5),
@@ -982,10 +991,6 @@
         characterData.verbs.slice(15, 20)
       ];
     }
-
-    // ============================================
-    // MODE TOGGLE
-    // ============================================
 
     function toggleMode() {
       const toggleSwitch = document.getElementById('modeToggleSwitch');
@@ -1001,10 +1006,6 @@
       renderContent();
       updateExternalNav();
     }
-
-    // ============================================
-    // RENDER NAVIGATION DOTS
-    // ============================================
 
     function renderCardDots() {
       const container = document.getElementById('cardDotsContainer');
@@ -1065,10 +1066,6 @@
       return true;
     }
 
-    // ============================================
-    // RENDER CONTENT (UNIFIED)
-    // ============================================
-    
     function renderContent() {
       const container = document.getElementById('contentContainer');
       
@@ -1103,6 +1100,7 @@
       singleContainer.appendChild(card);
     }
 
+    // ⭐ MODIFIED: Conditional rendering based on isSubmitted
     function createCardElement(cardIndex) {
       const card = document.createElement('div');
       card.className = 'matching-card';
@@ -1119,8 +1117,15 @@
 
       const verbsHTML = verbs.map((v, i) => {
         const matchIdx = startIdx + i;
-        const isMatched = userMatches[matchIdx];
-        const classes = `match-item ${isMatched ? 'correct' : ''}`;
+        const match = userMatches[matchIdx];
+        let classes = 'match-item';
+        
+        // ⭐ NEW: Check submission state before showing feedback
+        if (isSubmitted && match) {
+          classes += match.isCorrect ? ' correct' : ' wrong';
+        } else if (match) {
+          classes += ' selected-match';
+        }
         
         return `
           <div class="${classes}" data-type="verb" data-value="${v.verb}" data-match-idx="${matchIdx}">
@@ -1130,8 +1135,14 @@
       }).join('');
 
       const objectsHTML = shuffledObjects.map((obj) => {
-        const isMatched = userMatches[obj.matchIdx];
-        const classes = `match-item ${isMatched ? 'correct' : ''}`;
+        const match = userMatches[obj.matchIdx];
+        let classes = 'match-item';
+        
+        if (isSubmitted && match) {
+          classes += match.isCorrect ? ' correct' : ' wrong';
+        } else if (match) {
+          classes += ' selected-match';
+        }
         
         return `
           <div class="${classes}" data-type="object" data-value="${obj.object}" data-correct="${obj.correctVerb}" data-match-idx="${obj.matchIdx}">
@@ -1151,23 +1162,31 @@
       return card;
     }
 
-    // ============================================
-    // MATCHING LOGIC
-    // ============================================
-    
     function attachMatchingListeners() {
       document.querySelectorAll('.match-item').forEach(item => {
         item.addEventListener('click', handleItemClick);
       });
     }
 
+    // ⭐ MODIFIED: Prevent changes after submit, allow deselection
     function handleItemClick(e) {
+      if (isSubmitted) return; // Can't change after submit
+      
       const item = e.currentTarget;
       const matchIdx = parseInt(item.dataset.matchIdx);
       const cardIdx = Math.floor(matchIdx / 5);
       
       if (currentMode === 'single' && cardIdx !== currentCardIndex) return;
-      if (item.classList.contains('correct')) return;
+      
+      // ⭐ NEW: Allow clicking on already-matched items to deselect them
+      if (item.classList.contains('selected-match')) {
+        delete userMatches[matchIdx];
+        renderContent();
+        updateScore();
+        updateProgress();
+        updateSubmitButton();
+        return;
+      }
       
       const type = item.dataset.type;
       
@@ -1196,67 +1215,86 @@
       if (selectedVerb && selectedObject) {
         const sameCard = Math.floor(selectedVerb.matchIdx / 5) === Math.floor(selectedObject.matchIdx / 5);
         if (sameCard) {
-          attemptMatch();
+          confirmMatch();
         }
       }
     }
 
-    function attemptMatch() {
-      if (selectedVerb.value === selectedObject.correct) {
-        const verbItems = document.querySelectorAll(`.match-item[data-type="verb"][data-match-idx="${selectedVerb.matchIdx}"]`);
-        const objItems = document.querySelectorAll(`.match-item[data-type="object"][data-match-idx="${selectedObject.matchIdx}"]`);
-        
-        verbItems.forEach(v => {
-          v.classList.remove('selected');
-          v.classList.add('correct');
-        });
-        
-        objItems.forEach(o => {
-          o.classList.remove('selected');
-          o.classList.add('correct');
-        });
-        
-        userMatches[selectedVerb.matchIdx] = true;
-        userMatches[selectedObject.matchIdx] = true;
-        
-        if (navigator.vibrate) navigator.vibrate(50);
-        showCelebration('✨');
-        
-        renderMatchNavDots();
-        renderCardDots();
-        updateScore();
-        updateProgress();
-        checkAllComplete();
-        
-      } else {
-        const verbItems = document.querySelectorAll(`.match-item[data-type="verb"][data-match-idx="${selectedVerb.matchIdx}"]`);
-        const objItems = document.querySelectorAll(`.match-item[data-type="object"][data-match-idx="${selectedObject.matchIdx}"]`);
-        
-        verbItems.forEach(v => {
-          v.classList.add('wrong');
-          setTimeout(() => {
-            v.classList.remove('wrong', 'selected');
-          }, 500);
-        });
-        
-        objItems.forEach(o => {
-          o.classList.add('wrong');
-          setTimeout(() => {
-            o.classList.remove('wrong', 'selected');
-          }, 500);
-        });
-
-        if (navigator.vibrate) navigator.vibrate(200);
-      }
+    // ⭐ RENAMED & MODIFIED: Store match without showing feedback
+    function confirmMatch() {
+      const matchData = {
+        verb: selectedVerb.value,
+        object: selectedObject.value,
+        correctVerb: selectedObject.correct,
+        isCorrect: selectedVerb.value === selectedObject.correct
+      };
+      
+      userMatches[selectedVerb.matchIdx] = matchData;
+      userMatches[selectedObject.matchIdx] = matchData;
       
       selectedVerb = null;
       selectedObject = null;
+      
+      renderContent();
+      renderMatchNavDots();
+      renderCardDots();
+      updateScore();
+      updateProgress();
+      updateSubmitButton(); // ⭐ NEW: Show submit button when ready
     }
 
-    // ============================================
-    // NAVIGATION
-    // ============================================
-    
+    // ⭐ NEW: Submit answers function
+    function submitAnswers() {
+      if (isSubmitted) return;
+      
+      isSubmitted = true;
+      
+      let correctCount = 0;
+      Object.keys(userMatches).forEach(idx => {
+        if (userMatches[idx].isCorrect) {
+          correctCount++;
+        }
+      });
+      
+      correctCount = correctCount / 2;
+      
+      renderContent();
+      
+      if (correctCount === 20) {
+        showCelebration('🏆');
+        ProgressTracker.saveMatchingScore(
+          selectionData.characterKey,
+          selectionData.category,
+          20
+        );
+      } else if (correctCount >= 15) {
+        showCelebration('🎉');
+      } else {
+        showCelebration('📝');
+      }
+      
+      document.getElementById('submitBtn').classList.add('hidden');
+      document.getElementById('retryBtn').classList.remove('hidden');
+      document.getElementById('quizBtn').classList.remove('hidden');
+      document.getElementById('homeBtn').classList.remove('hidden');
+      
+      console.log(`✅ Submitted: ${correctCount}/20 correct`);
+    }
+
+    // ⭐ NEW: Control submit button visibility
+    function updateSubmitButton() {
+      const totalMatches = Object.keys(userMatches).length / 2;
+      const footer = document.getElementById('footer');
+      const submitBtn = document.getElementById('submitBtn');
+      
+      if (totalMatches === 20 && !isSubmitted) {
+        footer.classList.add('active');
+        submitBtn.classList.remove('hidden');
+      } else if (!isSubmitted) {
+        footer.classList.remove('active');
+      }
+    }
+
     function nextCard() {
       if (currentCardIndex < 3) {
         currentCardIndex++;
@@ -1323,17 +1361,13 @@
       }
     }
 
-    // ============================================
-    // SCORE & PROGRESS
-    // ============================================
-
     function updateScore() {
-      const totalMatches = Object.keys(userMatches).length;
-      document.getElementById('scoreDisplay').textContent = `${totalMatches}/20`;
+      const totalMatches = Object.keys(userMatches).length / 2;
+      document.getElementById('scoreDisplay').textContent = `${Math.floor(totalMatches)}/20`;
     }
 
     function updateProgress() {
-      const totalMatches = Object.keys(userMatches).length;
+      const totalMatches = Object.keys(userMatches).length / 2;
       const percentage = Math.round((totalMatches / 20) * 100);
       document.getElementById('progressFill').style.width = percentage + '%';
     }
@@ -1349,28 +1383,6 @@
       }, 1000);
     }
 
-    function checkAllComplete() {
-      const totalMatches = Object.keys(userMatches).length;
-      
-      if (totalMatches === 20) {
-        ProgressTracker.saveMatchingScore(
-          selectionData.characterKey, 
-          selectionData.category, 
-          20
-        );
-
-        document.getElementById('externalNav').style.display = 'none';
-        document.getElementById('footer').classList.add('active');
-        showCelebration('🏆');
-
-        console.log('✅ Matching complete: 20/20 saved');
-      }
-    }
-
-    // ============================================
-    // FOOTER ACTIONS
-    // ============================================
-    
     function retryGame() {
       location.reload();
     }
@@ -1388,23 +1400,15 @@
       window.history.back();
     }
 
-    // ============================================
-    // KEYBOARD NAVIGATION
-    // ============================================
-    
     document.addEventListener('keydown', (e) => {
       if (e.key === 'ArrowRight' && currentCardIndex < 3) nextCard();
       else if (e.key === 'ArrowLeft' && currentCardIndex > 0) prevCard();
+      else if (e.key === 'Enter' && Object.keys(userMatches).length === 40 && !isSubmitted) submitAnswers();
     });
 
-    // ============================================
-    // INITIALIZE
-    // ============================================
-    
     async function initialize() {
       console.log('🎮 Initializing Matching Game...');
       
-      // Load the full data
       const loaded = await loadData();
       
       if (!loaded) return;
@@ -1415,6 +1419,7 @@
       renderMatchNavDots();
       updateScore();
       updateExternalNav();
+      updateSubmitButton();
       
       console.log('✅ Matching Game Ready!');
     }
