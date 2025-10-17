@@ -35,7 +35,8 @@
       background: #1a1a1a;
       width: 95%;
       max-width: 1000px;
-      height: 88vh;
+      height: 95vh;
+      max-height: 900px;
       border-radius: 24px;
       padding: 1.5rem;
       box-shadow: 
@@ -45,11 +46,7 @@
       z-index: 2;
       display: flex;
       flex-direction: column;
-    }
-
-    .header {
-      text-align: center;
-      margin-bottom: 1rem;
+      overflow: hidden;
     }
 
     .back-btn {
@@ -67,7 +64,7 @@
       box-shadow: 
         4px 4px 8px #000000,
         -4px -4px 8px #2a2a2a;
-      transition: all 0.3s;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       z-index: 10;
     }
 
@@ -78,21 +75,26 @@
         -6px -6px 12px #2a2a2a;
     }
 
+    .header {
+      text-align: center;
+      margin-bottom: 0.75rem;
+      flex-shrink: 0;
+    }
+
     .header h1 {
       font-family: 'Space Grotesk', sans-serif;
       font-size: 1.75rem;
       color: #C9A961;
-      margin-bottom: 0.25rem;
+      margin-bottom: 0.15rem;
       font-weight: 700;
       letter-spacing: -0.02em;
     }
 
     .tagline {
-      font-size: 0.8rem;
+      font-size: 0.75rem;
       color: rgba(232, 232, 232, 0.6);
       margin-bottom: 0.75rem;
       font-weight: 500;
-      font-style: italic;
     }
 
     .character-info {
@@ -173,35 +175,68 @@
       font-size: 0.9rem;
     }
 
-    .progress-bar {
-      width: 100%;
-      height: 6px;
-      background: rgba(0, 0, 0, 0.3);
-      border-radius: 10px;
-      overflow: hidden;
-      box-shadow: inset 2px 2px 4px rgba(0, 0, 0, 0.5);
-      margin-bottom: 0.75rem;
+    /* Navigation header */
+    .nav-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.35rem;
+      padding: 0 0.5rem;
+      gap: 1rem;
+      flex-shrink: 0;
     }
 
-    .progress-fill {
-      height: 100%;
-      background: linear-gradient(90deg, #C9A961, #e8d9a8);
-      border-radius: 10px;
-      transition: width 0.5s ease;
-      box-shadow: 0 0 10px rgba(201, 169, 97, 0.5);
+    .card-dots-container {
+      display: flex;
+      gap: 0.75rem;
+      flex: 1;
+      justify-content: flex-start;
+      align-items: center;
+    }
+
+    .card-dot {
+      width: 1rem;
+      height: 1rem;
+      border-radius: 50%;
+      background: rgba(99, 99, 102, 0.3);
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      border: 2px solid rgba(99, 99, 102, 0.2);
+      position: relative;
+    }
+
+    .card-dot:hover {
+      transform: scale(1.3);
+      background: rgba(142, 142, 147, 0.5);
+    }
+
+    .card-dot.current {
+      background: #C9A961;
+      box-shadow: 0 0 0 3px rgba(201, 169, 97, 0.4);
+      transform: scale(1.5);
+    }
+
+    .card-dot.completed {
+      background: linear-gradient(135deg, #84cc16 0%, #65a30d 100%);
+      box-shadow: 0 0 8px rgba(132, 204, 22, 0.4);
+    }
+
+    .card-dot.completed.current {
+      background: linear-gradient(135deg, #84cc16 0%, #65a30d 100%);
+      box-shadow: 0 0 0 3px rgba(201, 169, 97, 0.6);
+      transform: scale(1.5);
     }
 
     .mode-toggle-container {
       display: flex;
       align-items: center;
-      justify-content: center;
       gap: 0.625rem;
-      margin-bottom: 0.75rem;
       font-size: 0.6875rem;
       font-weight: 500;
       color: #636366;
       letter-spacing: 0.02em;
       text-transform: uppercase;
+      flex-shrink: 0;
     }
 
     .mode-toggle-label {
@@ -251,182 +286,161 @@
       background: #C9A961;
     }
 
+    /* Match navigation dots - 20 small dots for all matches */
+    .match-nav-dots-container {
+      display: flex;
+      justify-content: flex-start;
+      gap: 0.35rem;
+      margin-bottom: 0.35rem;
+      flex-wrap: nowrap;
+      padding: 0 0.5rem;
+      flex-shrink: 0;
+      opacity: 0.5;
+      align-items: center;
+    }
+
+    .match-nav-dots-container.hidden-single {
+      display: none;
+    }
+
+    .match-nav-dot {
+      width: 0.5rem;
+      height: 0.5rem;
+      border-radius: 50%;
+      background: rgba(99, 99, 102, 0.3);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      border: 1px solid rgba(99, 99, 102, 0.2);
+      cursor: pointer;
+    }
+
+    .match-nav-dot:hover {
+      transform: scale(1.2);
+      background: rgba(142, 142, 147, 0.5);
+      opacity: 1;
+    }
+
+    .match-nav-dot.completed {
+      background: linear-gradient(135deg, #84cc16 0%, #65a30d 100%);
+      box-shadow: 0 0 4px rgba(132, 204, 22, 0.3);
+      opacity: 1;
+    }
+
     .score-display {
       text-align: center;
-      margin-bottom: 0.75rem;
-      font-size: 0.95rem;
-      color: #e8e8e8;
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 1rem;
-      flex-wrap: wrap;
-      padding: 0 1rem;
+      margin-bottom: 0.5rem;
+      font-size: 0.8rem;
+      color: rgba(232, 232, 232, 0.7);
+      font-weight: 500;
+      flex-shrink: 0;
     }
 
     .score-number {
       color: #C9A961;
-      font-size: 1.1rem;
+      font-size: 1rem;
       font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
     }
 
-    .score-dots {
-      display: flex;
-      gap: 0.4rem;
-      position: absolute;
-      left: 50%;
-      transform: translateX(-50%);
-    }
-
-    .score-left {
-      flex: 1;
-      text-align: left;
-      font-size: 0.85rem;
-    }
-
-    .score-right {
-      flex: 1;
-      text-align: right;
-      font-size: 0.85rem;
-    }
-
-    .carousel-wrapper {
-      flex: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-      overflow: visible;
-      margin: 0 -1.5rem;
-      padding: 0 1.5rem;
-      touch-action: pan-y;
-      pointer-events: none;
-      min-height: 0;
-    }
-
-    /* Single Card Mode - Compact contained view */
-    .carousel-wrapper.single-mode {
+    .progress-bar {
+      width: 100%;
+      height: 4px;
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 10px;
       overflow: hidden;
-      margin: 0;
-      padding: 0;
-      pointer-events: all;
+      box-shadow: inset 2px 2px 4px rgba(0, 0, 0, 0.5);
+      margin-bottom: 0.5rem;
+      flex-shrink: 0;
     }
 
-    .carousel-wrapper.single-mode .carousel-track {
-      width: 100%;
+    .progress-fill {
       height: 100%;
+      background: linear-gradient(90deg, #C9A961, #e8d9a8);
+      border-radius: 10px;
+      transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 0 10px rgba(201, 169, 97, 0.5);
+    }
+
+    /* Content container */
+    .content-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      position: relative;
+    }
+
+    /* FULL MODE - Vertical scrolling list */
+    .cards-list {
+      display: flex;
+      flex-direction: column;
       gap: 0;
-      pointer-events: all;
-    }
-
-    .carousel-wrapper.single-mode .card-wrapper {
-      min-height: 100%;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .carousel-wrapper.single-mode .matching-card {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      min-height: 0;
-      gap: 1rem;
-    }
-
-    .carousel-wrapper.single-mode .matching-area {
+      overflow-y: auto;
+      padding: 0.5rem;
       flex: 1;
       min-height: 0;
-      overflow-y: auto;
     }
 
-    /* Full Mode - Scrollable list */
-    .carousel-wrapper.full-mode {
-      overflow-y: auto;
-      overflow-x: hidden;
-      align-items: flex-start;
-      padding: 1rem;
-      pointer-events: all;
-    }
-
-    .carousel-wrapper.full-mode .carousel-track {
-      flex-direction: column;
-      transform: none !important;
-      gap: 2rem;
-      width: 100%;
-      pointer-events: all;
-    }
-
-    .carousel-wrapper.full-mode .card-wrapper {
-      min-width: 100%;
-      width: 100%;
-      opacity: 1;
-      transform: scale(1);
-      pointer-events: all;
-    }
-
-    .carousel-wrapper.full-mode .nav-arrows {
-      display: none;
-    }
-
-    .carousel-wrapper::-webkit-scrollbar { width: 6px; }
-    .carousel-wrapper::-webkit-scrollbar-track { 
+    .cards-list::-webkit-scrollbar { width: 6px; }
+    .cards-list::-webkit-scrollbar-track { 
       background: rgba(0, 0, 0, 0.3);
       border-radius: 10px;
     }
-    .carousel-wrapper::-webkit-scrollbar-thumb {
+    .cards-list::-webkit-scrollbar-thumb {
       background: rgba(201, 169, 97, 0.4);
       border-radius: 10px;
     }
 
-    .carousel-track {
+    /* SINGLE MODE - One card at a time */
+    .single-card-container {
+      flex: 1;
       display: flex;
-      gap: 2rem;
-      transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-      will-change: transform;
-      pointer-events: none;
-    }
-
-    .card-wrapper {
-      min-width: 100%;
-      display: flex;
-      justify-content: center;
+      flex-direction: column;
+      min-height: 0;
+      overflow-y: auto;
       padding: 0.5rem;
-      opacity: 0.4;
-      transform: scale(0.95);
-      transition: all 0.5s ease;
-      pointer-events: none;
     }
-
-    .card-wrapper.active {
-      opacity: 1;
-      transform: scale(1);
-      pointer-events: all;
+    
+    .single-card-container .matching-card {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+    
+    .single-card-container .matching-area {
+      flex: 1;
+      overflow-y: auto;
+      min-height: 0;
     }
 
     .matching-card {
-      width: 100%;
-      max-width: 800px;
       display: flex;
       flex-direction: column;
-      gap: 1.5rem;
-      pointer-events: all;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .matching-card:last-child {
+      margin-bottom: 0;
     }
 
     .card-title {
       font-family: 'Space Grotesk', sans-serif;
-      font-size: 1.1rem;
-      color: #C9A961;
+      font-size: 0.8rem;
+      color: rgba(201, 169, 97, 0.7);
       text-align: center;
       font-weight: 600;
       text-transform: uppercase;
       letter-spacing: 0.05em;
+      flex-shrink: 0;
+      margin-bottom: 0.25rem;
     }
 
     .matching-area {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 1rem;
+      gap: 0.65rem;
+      padding: 0;
     }
 
     .matching-area::-webkit-scrollbar { width: 6px; }
@@ -442,18 +456,18 @@
     .column {
       display: flex;
       flex-direction: column;
-      gap: 0.75rem;
+      gap: 0.6rem;
     }
 
     .match-item {
       background: #1a1a1a;
-      border-radius: 12px;
-      padding: 0.85rem 1.1rem;
+      border-radius: 10px;
+      padding: 0.6rem 0.75rem;
       color: rgba(232, 232, 232, 0.9);
-      font-size: 0.9rem;
-      font-weight: 400;
+      font-size: 0.85rem;
+      font-weight: 500;
       cursor: pointer;
-      transition: all 0.3s;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       box-shadow: 
         4px 4px 8px #000000,
         -4px -4px 8px #2a2a2a;
@@ -462,8 +476,8 @@
       align-items: center;
       justify-content: space-between;
       border: 2px solid transparent;
-      line-height: 1.3;
-      min-height: 44px;
+      min-height: 38px;
+      line-height: 1.2;
     }
 
     .match-item:hover {
@@ -481,7 +495,7 @@
       font-weight: 600;
     }
 
-    /* ⭐ NEW: Blue "locked" state for confirmed matches BEFORE submit */
+    /* ⭐ ANTI-CHEAT: Blue "locked" state for confirmed matches BEFORE submit */
     .match-item.locked {
       background: rgba(96, 165, 250, 0.2);
       border: 2px solid #60a5fa;
@@ -493,9 +507,10 @@
     .match-item.locked:hover {
       background: rgba(96, 165, 250, 0.3);
       border-color: #60a5fa;
+      transform: translateY(-2px);
     }
 
-    /* ⭐ AFTER submit: show green/red */
+    /* ⭐ AFTER submit: show green/red validation */
     .match-item.correct {
       background: rgba(74, 222, 128, 0.2);
       border: 2px solid #4ade80;
@@ -513,8 +528,9 @@
     }
 
     .emoji {
-      font-size: 1.25rem;
-      margin-left: 0.5rem;
+      font-size: 1rem;
+      margin-left: 0.4rem;
+      line-height: 1;
     }
 
     @keyframes shake {
@@ -528,180 +544,84 @@
       50% { transform: scale(1.05); }
     }
 
-    .controls {
-      display: flex;
-      gap: 0.75rem;
+    /* Submit button */
+    .submit-container {
+      display: none;
       justify-content: center;
-      flex-wrap: wrap;
-      margin-top: 1rem;
+      margin-top: 0.75rem;
+      flex-shrink: 0;
     }
 
+    .submit-container.active {
+      display: flex;
+    }
+
+    .submit-btn {
+      background: rgba(96, 165, 250, 0.2);
+      border: 2px solid #60a5fa;
+      border-radius: 12px;
+      padding: 0.75rem 2rem;
+      color: #60a5fa;
+      font-size: 0.875rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 
+        4px 4px 8px #000000,
+        -4px -4px 8px #2a2a2a;
+      font-family: 'Inter', sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .submit-btn:hover {
+      background: rgba(96, 165, 250, 0.3);
+      transform: translateY(-2px) scale(1.05);
+      box-shadow: 
+        6px 6px 12px #000000,
+        -6px -6px 12px #2a2a2a,
+        0 0 20px rgba(96, 165, 250, 0.3);
+    }
+
+    /* External navigation for single mode */
     .external-nav {
       display: none;
       align-items: center;
       justify-content: center;
-      gap: 1rem;
+      gap: 1.5rem;
       margin-top: 1rem;
+      flex-shrink: 0;
     }
 
     .external-nav.active {
       display: flex;
     }
 
-    .external-nav-btn {
-      background: #1a1a1a;
-      border: none;
-      border-radius: 12px;
-      padding: 0.65rem 1.25rem;
-      color: #C9A961;
-      font-size: 0.8rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      box-shadow: 
-        4px 4px 8px #000000,
-        -4px -4px 8px #2a2a2a;
-      font-family: 'Inter', sans-serif;
-    }
-
-    .external-nav-btn:hover:not(:disabled) {
-      transform: translateY(-2px);
-      box-shadow: 
-        6px 6px 12px #000000,
-        -6px -6px 12px #2a2a2a;
-    }
-
-    .external-nav-btn:disabled {
-      opacity: 0.3;
-      cursor: not-allowed;
-    }
-
-    .btn {
-      background: #1a1a1a;
-      border: none;
-      border-radius: 12px;
+    .external-nav-arrow {
+      background: rgba(99, 99, 102, 0.25);
+      border: 1px solid rgba(99, 99, 102, 0.2);
+      color: #aeaeb2;
       padding: 0.75rem 1.5rem;
-      color: #e8e8e8;
-      font-size: 0.8rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.03em;
+      border-radius: 0.75rem;
       cursor: pointer;
-      transition: all 0.3s ease;
-      box-shadow: 
-        4px 4px 8px #000000,
-        -4px -4px 8px #2a2a2a;
-      font-family: 'Inter', sans-serif;
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      letter-spacing: -0.01em;
+      min-width: 140px;
     }
 
-    .btn:hover:not(:disabled) {
-      transform: translateY(-2px);
-      box-shadow: 
-        6px 6px 12px #000000,
-        -6px -6px 12px #2a2a2a;
-    }
-
-    .btn.primary {
-      background: rgba(201, 169, 97, 0.2);
+    .external-nav-arrow:hover:not(:disabled) {
+      background: rgba(201, 169, 97, 0.25);
+      border-color: rgba(201, 169, 97, 0.3);
       color: #C9A961;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(201, 169, 97, 0.2);
     }
 
-    /* ⭐ NEW: Submit button styling */
-    .btn.submit {
-      background: rgba(96, 165, 250, 0.2);
-      border: 2px solid #60a5fa;
-      color: #60a5fa;
-      font-weight: 700;
-    }
-
-    .btn.submit:hover {
-      background: rgba(96, 165, 250, 0.3);
-      transform: translateY(-2px) scale(1.05);
-    }
-
-    .btn:disabled {
-      opacity: 0.4;
-      cursor: not-allowed;
-    }
-
-    .btn.hidden {
-      display: none;
-    }
-
-    .nav-arrows {
-      position: absolute;
-      top: 50%;
-      left: 0;
-      right: 0;
-      transform: translateY(-50%);
-      display: flex;
-      justify-content: space-between;
-      pointer-events: none;
-      padding: 0 0.5rem;
-      z-index: 10;
-    }
-
-    .arrow {
-      width: 45px;
-      height: 45px;
-      border-radius: 50%;
-      background: #1a1a1a;
-      border: none;
-      box-shadow: 
-        4px 4px 8px #000000,
-        -4px -4px 8px #2a2a2a;
-      color: #C9A961;
-      font-size: 1.3rem;
-      cursor: pointer;
-      pointer-events: all;
-      transition: all 0.2s;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .arrow:hover:not(:disabled) {
-      box-shadow: 
-        6px 6px 12px #000000,
-        -6px -6px 12px #2a2a2a;
-      transform: scale(1.05);
-    }
-
-    .arrow:disabled {
+    .external-nav-arrow:disabled {
       opacity: 0.3;
       cursor: not-allowed;
-    }
-
-    .nav-dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background: rgba(201, 169, 97, 0.3);
-      cursor: pointer;
-      transition: all 0.3s;
-      box-shadow: 
-        2px 2px 4px #000000,
-        -2px -2px 4px #2a2a2a;
-      position: relative;
-    }
-
-    .nav-dot:hover {
-      background: rgba(201, 169, 97, 0.6);
-      transform: scale(1.2);
-    }
-
-    .nav-dot.active {
-      background: #C9A961;
-      transform: scale(1.3);
-      transform-origin: center center;
-      box-shadow: 
-        0 0 10px rgba(201, 169, 97, 0.5),
-        2px 2px 4px #000000,
-        -2px -2px 4px #2a2a2a;
-    }
-
-    .nav-dot.completed {
-      background: #4ade80;
     }
 
     .celebration {
@@ -723,29 +643,30 @@
     }
 
     .footer {
-      display: flex;
-      gap: 0.75rem;
+      display: none;
+      gap: 0.5rem;
       justify-content: center;
-      margin-top: 1rem;
-      padding-top: 1rem;
+      margin-top: 0.5rem;
+      padding-top: 0.5rem;
       border-top: 2px solid rgba(201, 169, 97, 0.2);
       flex-wrap: wrap;
+      flex-shrink: 0;
     }
 
-    .footer.hidden {
-      display: none;
+    .footer.active {
+      display: flex;
     }
 
     .footer-btn {
       background: #1a1a1a;
       border: none;
-      border-radius: 12px;
-      padding: 0.75rem 1.25rem;
+      border-radius: 10px;
+      padding: 0.6rem 1rem;
       color: #e8e8e8;
-      font-size: 0.8rem;
+      font-size: 0.75rem;
       font-weight: 600;
       cursor: pointer;
-      transition: all 0.3s ease;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       box-shadow: 
         4px 4px 8px #000000,
         -4px -4px 8px #2a2a2a;
@@ -759,31 +680,35 @@
         -6px -6px 12px #2a2a2a;
     }
 
-    .footer-btn.practice {
+    .footer-btn.primary {
+      background: rgba(201, 169, 97, 0.2);
+      color: #C9A961;
+    }
+
+    .footer-btn.quiz {
       background: rgba(74, 222, 128, 0.2);
       border: 2px solid #4ade80;
       color: #4ade80;
       font-weight: 700;
     }
 
-    .footer-btn.primary {
-      background: rgba(201, 169, 97, 0.2);
-      color: #C9A961;
-    }
+    .hidden { display: none !important; }
 
+    /* Mobile Optimizations */
     @media (max-width: 768px) {
       .game-container {
         padding: 1rem 0.75rem;
-        height: 95vh;
+        max-height: 100vh;
+        height: 100vh;
         border-radius: 16px;
       }
 
       .header h1 {
-        font-size: 1.4rem;
+        font-size: 1.3rem;
       }
 
       .tagline {
-        font-size: 0.7rem;
+        display: none;
       }
 
       .character-display {
@@ -799,43 +724,40 @@
       }
 
       .category-pills {
-        gap: 0.35rem;
+        display: none;
       }
 
-      .category-pill {
-        padding: 0.4rem 0.6rem;
-        font-size: 0.7rem;
-      }
-
-      .mode-toggle-container {
-        font-size: 0.625rem;
-      }
-
-      .score-display {
-        font-size: 0.8rem;
-        padding: 0 0.5rem;
-      }
-
-      .score-number {
-        font-size: 0.95rem;
-      }
-
-      .score-left, .score-right {
-        font-size: 0.75rem;
-      }
-
-      .carousel-wrapper {
-        margin: 0;
-        padding: 0;
-      }
-
-      .carousel-wrapper.single-mode .matching-card {
+      .nav-header {
+        padding: 0 0.25rem;
         gap: 0.75rem;
       }
 
-      .card-title {
-        font-size: 0.9rem;
-        margin-bottom: 0.5rem;
+      .card-dot {
+        width: 0.875rem;
+        height: 0.875rem;
+      }
+
+      .mode-toggle-label {
+        font-size: 0.625rem;
+      }
+
+      .mode-toggle-switch {
+        width: 2.5rem;
+        height: 1.25rem;
+      }
+
+      .mode-toggle-switch::after {
+        width: 0.95rem;
+        height: 0.95rem;
+      }
+
+      .mode-toggle-switch.active::after {
+        left: 1.35rem;
+      }
+
+      .match-nav-dot {
+        width: 0.5rem;
+        height: 0.5rem;
       }
 
       .matching-area {
@@ -843,62 +765,35 @@
       }
 
       .match-item {
-        padding: 0.75rem 0.9rem;
+        padding: 0.7rem 0.85rem;
         font-size: 0.85rem;
-        border-radius: 10px;
-        min-height: 42px;
+        min-height: 44px;
       }
 
       .emoji {
-        font-size: 1.1rem;
+        font-size: 0.95rem;
       }
 
-      .arrow {
-        width: 36px;
-        height: 36px;
-        font-size: 1.15rem;
+      .external-nav-arrow {
+        padding: 0.65rem 1.25rem;
+        font-size: 0.8rem;
+        min-width: 120px;
       }
 
-      .nav-dot {
-        width: 8px;
-        height: 8px;
-      }
-
-      .controls {
-        gap: 0.5rem;
-        margin-top: 0.75rem;
-      }
-
-      .btn {
-        padding: 0.65rem 1.2rem;
-        font-size: 0.75rem;
-      }
-
-      .external-nav {
-        gap: 0.75rem;
-        margin-top: 0.75rem;
-      }
-
-      .external-nav-btn {
-        padding: 0.6rem 1rem;
-        font-size: 0.75rem;
-      }
-
-      .footer {
-        gap: 0.5rem;
-        margin-top: 0.75rem;
-        padding-top: 0.75rem;
-      }
-
-      .footer-btn {
-        padding: 0.65rem 1rem;
-        font-size: 0.75rem;
+      .submit-btn {
+        padding: 0.65rem 1.5rem;
+        font-size: 0.8rem;
       }
 
       .back-btn {
         top: 1rem;
         left: 1rem;
         padding: 0.5rem 0.8rem;
+        font-size: 0.75rem;
+      }
+
+      .footer-btn {
+        padding: 0.65rem 1rem;
         font-size: 0.75rem;
       }
     }
@@ -917,51 +812,55 @@
       </div>
 
       <div class="category-pills" id="categoryPills">
+        <!-- Pills inserted by JavaScript -->
       </div>
+    </div>
 
+    <div class="nav-header">
+      <div class="card-dots-container" id="cardDotsContainer">
+        <!-- Card navigation dots (4) -->
+      </div>
       <div class="mode-toggle-container">
         <span class="mode-toggle-label">Full</span>
-        <div class="mode-toggle-switch" id="modeToggleSwitch" onclick="toggleViewMode()" role="switch" aria-checked="false" aria-label="Toggle between full view and single card mode"></div>
+        <div class="mode-toggle-switch" id="modeToggleSwitch" onclick="toggleMode()"></div>
         <span class="mode-toggle-label">Single</span>
       </div>
+    </div>
+
+    <div class="match-nav-dots-container" id="matchNavDotsContainer">
+      <!-- Match navigation dots (20) -->
+    </div>
+
+    <div class="score-display">
+      Score: <span class="score-number" id="scoreDisplay">0/20</span>
     </div>
 
     <div class="progress-bar">
       <div class="progress-fill" id="progressFill" style="width: 0%"></div>
     </div>
 
-    <div class="score-display">
-      <div class="score-left">Card <span id="cardNumber">1</span>/4</div>
-      <div class="score-dots" id="scoreDots"></div>
-      <div class="score-right">Matches: <span class="score-number" id="scoreDisplay">0/20</span></div>
+    <div class="content-container" id="contentContainer">
+      <div style="display: flex; justify-content: center; align-items: center; height: 100%; color: rgba(232, 232, 232, 0.5); font-size: 0.9rem;">
+        <div style="text-align: center;">
+          <div style="font-size: 2rem; margin-bottom: 0.5rem;">⏳</div>
+          <div>Loading matching game...</div>
+        </div>
+      </div>
     </div>
 
-    <div class="carousel-wrapper" id="carouselWrapper">
-      <div class="nav-arrows" id="navArrows">
-        <button class="arrow" id="prevArrow" onclick="prevCard()">‹</button>
-        <button class="arrow" id="nextArrow" onclick="nextCard()">›</button>
-      </div>
-      
-      <div class="carousel-track" id="carouselTrack">
-        <!-- Cards will be inserted here by JavaScript -->
-      </div>
+    <div class="submit-container" id="submitContainer">
+      <button class="submit-btn" onclick="submitAnswers()">✓ Submit Answers</button>
     </div>
 
     <div class="external-nav" id="externalNav">
-      <button class="external-nav-btn" id="prevCardBtn" onclick="prevCard()">← Previous Card</button>
-      <button class="external-nav-btn" id="nextCardBtn2" onclick="nextCard()">Next Card →</button>
+      <button class="external-nav-arrow" id="prevCardBtn" onclick="prevCard()">← Previous Card</button>
+      <button class="external-nav-arrow" id="nextCardBtn" onclick="nextCard()">Next Card →</button>
     </div>
 
-    <div class="controls">
-      <button class="btn" onclick="showHint()">💡 Hint</button>
-      <button class="btn submit hidden" id="submitBtn" onclick="submitAnswers()">✓ Submit Answers</button>
-      <button class="btn primary" id="nextCardBtn" onclick="nextCard()" disabled>Next Card →</button>
-    </div>
-
-    <div class="footer hidden" id="footer">
+    <div class="footer" id="footer">
       <button class="footer-btn" onclick="retryGame()">🔄 Repeat</button>
       <button class="footer-btn" onclick="checkAnswers()">📋 Check Answers</button>
-      <button class="footer-btn practice" onclick="goToQuiz()">🎯 Practice Quiz →</button>
+      <button class="footer-btn quiz" onclick="goToQuiz()">🎯 Take Quiz →</button>
       <button class="footer-btn primary" onclick="goHome()">🏠 Home</button>
     </div>
   </div>
@@ -976,14 +875,14 @@
     let selectionData = null;
     let grammarData = null;
     let characterData = null;
+    let currentMode = 'full'; // 'full' or 'single'
     
     let currentCardIndex = 0;
-    let userMatches = {}; // Store matches with matchIdx as key
+    let userMatches = {}; // Store all matches by index: { idx: { verb, object, correctVerb, isCorrect } }
     let cardVerbs = [];
     let selectedVerb = null;
     let selectedObject = null;
-    let isSubmitted = false; // Track if answers have been submitted
-    let viewMode = 'single'; // 'full' or 'single'
+    let isSubmitted = false; // ⭐ NEW: Track if answers have been submitted
 
     // ============================================
     // LOAD DATA
@@ -1041,6 +940,7 @@
           verbs: verbs
         };
 
+        // Update character display
         document.getElementById('characterInfo').innerHTML = `
           <div class="character-display">
             <span class="character-emoji">${characterData.emoji}</span>
@@ -1092,12 +992,13 @@
       `;
     }
 
+    // ============================================
+    // CATEGORY PILLS
+    // ============================================
+
     function renderCategoryPills() {
       const pillsContainer = document.getElementById('categoryPills');
-      const categories = typeof ProgressTracker !== 'undefined' ? ProgressTracker.CATEGORIES : null;
-      
-      if (!categories) return;
-      
+      const categories = ProgressTracker.CATEGORIES;
       const charKey = selectionData.characterKey;
       const currentCat = selectionData.category;
 
@@ -1137,72 +1038,184 @@
     }
 
     // ============================================
-    // RENDER ALL CARDS
+    // PREPARE CARD DATA
     // ============================================
     
-    function renderAllCards() {
-      // Split 20 verbs into 4 cards of 5 each
+    function prepareCardData() {
       cardVerbs = [
         characterData.verbs.slice(0, 5),
         characterData.verbs.slice(5, 10),
         characterData.verbs.slice(10, 15),
         characterData.verbs.slice(15, 20)
       ];
-
-      const track = document.getElementById('carouselTrack');
-      track.innerHTML = '';
-
-      for (let cardIndex = 0; cardIndex < 4; cardIndex++) {
-        const cardWrapper = document.createElement('div');
-        cardWrapper.className = cardIndex === 0 ? 'card-wrapper active' : 'card-wrapper';
-        
-        const verbs = cardVerbs[cardIndex];
-        const startIdx = cardIndex * 5;
-        
-        // CRITICAL: Shuffle objects column to prevent position-based matching
-        const shuffledObjects = verbs.map((v, i) => ({
-          object: v.object,
-          emoji: v.emoji,
-          correctVerb: v.verb,
-          matchIdx: startIdx + i
-        })).sort(() => Math.random() - 0.5);
-
-        const verbsHTML = verbs.map((v, i) => {
-          const matchIdx = startIdx + i;
-          return `
-            <div class="match-item" data-type="verb" data-value="${v.verb}" data-card="${cardIndex}" data-match-idx="${matchIdx}">
-              ${v.verb}
-            </div>
-          `;
-        }).join('');
-
-        const objectsHTML = shuffledObjects.map((obj) => `
-          <div class="match-item" data-type="object" data-value="${obj.object}" data-correct="${obj.correctVerb}" data-card="${cardIndex}" data-match-idx="${obj.matchIdx}">
-            ${obj.object} <span class="emoji">${obj.emoji}</span>
-          </div>
-        `).join('');
-
-        cardWrapper.innerHTML = `
-          <div class="matching-card">
-            <div class="card-title">Match ${cardIndex + 1}/4: Verbs & Objects</div>
-            <div class="matching-area">
-              <div class="column">${verbsHTML}</div>
-              <div class="column">${objectsHTML}</div>
-            </div>
-          </div>
-        `;
-        
-        track.appendChild(cardWrapper);
-      }
-
-      attachMatchingListeners();
-      renderNavigation();
-      updateCarouselPosition();
-      updateMatchStates();
     }
 
     // ============================================
-    // MATCHING LOGIC
+    // MODE TOGGLE
+    // ============================================
+
+    function toggleMode() {
+      const toggleSwitch = document.getElementById('modeToggleSwitch');
+      
+      if (currentMode === 'full') {
+        currentMode = 'single';
+        toggleSwitch.classList.add('active');
+      } else {
+        currentMode = 'full';
+        toggleSwitch.classList.remove('active');
+      }
+      
+      renderContent();
+      updateExternalNav();
+    }
+
+    // ============================================
+    // RENDER NAVIGATION DOTS
+    // ============================================
+
+    function renderCardDots() {
+      const container = document.getElementById('cardDotsContainer');
+      container.innerHTML = '';
+      
+      for (let i = 0; i < 4; i++) {
+        const dot = document.createElement('div');
+        dot.className = 'card-dot';
+        
+        if (i === currentCardIndex) {
+          dot.classList.add('current');
+        }
+        
+        const cardComplete = isCardComplete(i);
+        if (cardComplete) {
+          dot.classList.add('completed');
+        }
+        
+        dot.addEventListener('click', () => goToCard(i));
+        container.appendChild(dot);
+      }
+    }
+
+    function renderMatchNavDots() {
+      const container = document.getElementById('matchNavDotsContainer');
+      
+      if (currentMode === 'single') {
+        container.classList.add('hidden-single');
+      } else {
+        container.classList.remove('hidden-single');
+      }
+      
+      container.innerHTML = '';
+      
+      for (let i = 0; i < 20; i++) {
+        const dot = document.createElement('div');
+        dot.className = 'match-nav-dot';
+        
+        if (userMatches[i]) {
+          dot.classList.add('completed');
+        }
+        
+        dot.addEventListener('click', () => jumpToMatch(i));
+        container.appendChild(dot);
+      }
+    }
+
+    function jumpToMatch(matchIndex) {
+      const cardIdx = Math.floor(matchIndex / 5);
+      goToCard(cardIdx);
+    }
+
+    function isCardComplete(cardIndex) {
+      const startIdx = cardIndex * 5;
+      for (let i = 0; i < 5; i++) {
+        if (!userMatches[startIdx + i]) return false;
+      }
+      return true;
+    }
+
+    // ============================================
+    // RENDER CONTENT (UNIFIED)
+    // ============================================
+    
+    function renderContent() {
+      const container = document.getElementById('contentContainer');
+      
+      if (currentMode === 'full') {
+        renderFullMode(container);
+      } else {
+        renderSingleMode(container);
+      }
+      
+      attachMatchingListeners();
+      updateMatchStates();
+    }
+
+    function renderFullMode(container) {
+      container.innerHTML = '<div class="cards-list"></div>';
+      const list = container.querySelector('.cards-list');
+      
+      for (let cardIndex = 0; cardIndex < 4; cardIndex++) {
+        const card = createCardElement(cardIndex);
+        if (cardIndex === currentCardIndex) {
+          card.classList.add('current-card');
+        }
+        list.appendChild(card);
+      }
+    }
+
+    function renderSingleMode(container) {
+      container.innerHTML = '<div class="single-card-container"></div>';
+      const singleContainer = container.querySelector('.single-card-container');
+      
+      const card = createCardElement(currentCardIndex);
+      card.classList.add('current-card');
+      singleContainer.appendChild(card);
+    }
+
+    function createCardElement(cardIndex) {
+      const card = document.createElement('div');
+      card.className = 'matching-card';
+      
+      const verbs = cardVerbs[cardIndex];
+      const startIdx = cardIndex * 5;
+      
+      const shuffledObjects = verbs.map((v, i) => ({
+        object: v.object,
+        emoji: v.emoji,
+        correctVerb: v.verb,
+        matchIdx: startIdx + i
+      })).sort(() => Math.random() - 0.5);
+
+      const verbsHTML = verbs.map((v, i) => {
+        const matchIdx = startIdx + i;
+        
+        return `
+          <div class="match-item" data-type="verb" data-value="${v.verb}" data-match-idx="${matchIdx}">
+            ${v.verb}
+          </div>
+        `;
+      }).join('');
+
+      const objectsHTML = shuffledObjects.map((obj) => {
+        return `
+          <div class="match-item" data-type="object" data-value="${obj.object}" data-correct="${obj.correctVerb}" data-match-idx="${obj.matchIdx}">
+            ${obj.object} <span class="emoji">${obj.emoji}</span>
+          </div>
+        `;
+      }).join('');
+
+      card.innerHTML = `
+        <div class="card-title">Match ${cardIndex + 1}/4: Verbs & Objects</div>
+        <div class="matching-area">
+          <div class="column">${verbsHTML}</div>
+          <div class="column">${objectsHTML}</div>
+        </div>
+      `;
+      
+      return card;
+    }
+
+    // ============================================
+    // MATCHING LOGIC (⭐ ANTI-CHEAT SYSTEM)
     // ============================================
     
     function attachMatchingListeners() {
@@ -1213,14 +1226,13 @@
 
     function handleItemClick(e) {
       const item = e.currentTarget;
-      const cardIndex = parseInt(item.dataset.card);
+      const matchIdx = parseInt(item.dataset.matchIdx);
+      const cardIdx = Math.floor(matchIdx / 5);
       
-      // Only interact with current card
-      if (cardIndex !== currentCardIndex) return;
+      if (currentMode === 'single' && cardIdx !== currentCardIndex) return;
       
-      // After submit, allow clicking locked/wrong items to deselect
+      // ⭐ After submit: allow deselecting wrong/locked, but not correct
       if (isSubmitted) {
-        const matchIdx = parseInt(item.dataset.matchIdx);
         const match = userMatches[matchIdx];
         
         if (item.classList.contains('correct')) {
@@ -1236,15 +1248,16 @@
             updateMatchStates();
             updateScore();
             updateProgress();
-            updateSubmitButton();
+            renderMatchNavDots();
+            renderCardDots();
+            checkSubmitReady();
           }
           return;
         }
       }
       
-      // Can't interact with locked items before submit
+      // ⭐ Before submit: allow deselecting locked pairs
       if (item.classList.contains('locked') && !isSubmitted) {
-        const matchIdx = parseInt(item.dataset.matchIdx);
         const match = userMatches[matchIdx];
         
         if (match) {
@@ -1254,7 +1267,9 @@
           updateMatchStates();
           updateScore();
           updateProgress();
-          updateSubmitButton();
+          renderMatchNavDots();
+          renderCardDots();
+          checkSubmitReady();
         }
         return;
       }
@@ -1262,35 +1277,37 @@
       const type = item.dataset.type;
       
       if (type === 'verb') {
-        // Deselect other verbs in this card
-        document.querySelectorAll(`.match-item[data-type="verb"][data-card="${cardIndex}"]`).forEach(v => {
-          v.classList.remove('selected');
+        document.querySelectorAll(`.match-item[data-type="verb"]`).forEach(v => {
+          const vIdx = parseInt(v.dataset.matchIdx);
+          const vCard = Math.floor(vIdx / 5);
+          if (vCard === cardIdx) {
+            v.classList.remove('selected');
+          }
         });
         item.classList.add('selected');
-        selectedVerb = { 
-          value: item.dataset.value, 
-          matchIdx: parseInt(item.dataset.matchIdx)
-        };
+        selectedVerb = { value: item.dataset.value, matchIdx };
       } else {
-        // Deselect other objects in this card
-        document.querySelectorAll(`.match-item[data-type="object"][data-card="${cardIndex}"]`).forEach(o => {
-          o.classList.remove('selected');
+        document.querySelectorAll(`.match-item[data-type="object"]`).forEach(o => {
+          const oIdx = parseInt(o.dataset.matchIdx);
+          const oCard = Math.floor(oIdx / 5);
+          if (oCard === cardIdx) {
+            o.classList.remove('selected');
+          }
         });
         item.classList.add('selected');
-        selectedObject = { 
-          value: item.dataset.value, 
-          correct: item.dataset.correct,
-          matchIdx: parseInt(item.dataset.matchIdx)
-        };
+        selectedObject = { value: item.dataset.value, correct: item.dataset.correct, matchIdx };
       }
       
-      // Try to match if both selected
       if (selectedVerb && selectedObject) {
-        confirmMatch();
+        const sameCard = Math.floor(selectedVerb.matchIdx / 5) === Math.floor(selectedObject.matchIdx / 5);
+        if (sameCard) {
+          confirmMatch();
+        }
       }
     }
 
     function confirmMatch() {
+      // ⭐ Store match data with correctness info
       const matchData = {
         verb: selectedVerb.value,
         object: selectedObject.value,
@@ -1307,16 +1324,18 @@
       selectedVerb = null;
       selectedObject = null;
       
+      if (navigator.vibrate) navigator.vibrate(50);
+      showCelebration('✨');
+      
       updateMatchStates();
+      renderMatchNavDots();
+      renderCardDots();
       updateScore();
       updateProgress();
-      updateSubmitButton();
-      updateNavDots();
-      
-      // Gentle feedback
-      showCelebration('✨');
+      checkSubmitReady();
     }
 
+    // ⭐ NEW: Update visual states based on submit status
     function updateMatchStates() {
       document.querySelectorAll('.match-item').forEach(item => {
         const matchIdx = parseInt(item.dataset.matchIdx);
@@ -1341,10 +1360,7 @@
       });
     }
 
-    // ============================================
-    // SUBMIT ANSWERS
-    // ============================================
-    
+    // ⭐ NEW: Submit answers and validate
     function submitAnswers() {
       if (isSubmitted) return;
       
@@ -1362,22 +1378,20 @@
       correctCount = correctCount / 2;
       
       // Hide submit button
-      document.getElementById('submitBtn').classList.add('hidden');
+      document.getElementById('submitContainer').classList.remove('active');
       
       // Show footer
-      document.getElementById('footer').classList.remove('hidden');
+      document.getElementById('externalNav').style.display = 'none';
+      document.getElementById('footer').classList.add('active');
       
-      // Celebration based on score
+      // Save score
       if (correctCount === 20) {
         showCelebration('🏆');
-        // Save perfect score
-        if (typeof ProgressTracker !== 'undefined') {
-          ProgressTracker.saveMatchingScore(
-            selectionData.characterKey,
-            selectionData.category,
-            20
-          );
-        }
+        ProgressTracker.saveMatchingScore(
+          selectionData.characterKey,
+          selectionData.category,
+          20
+        );
       } else if (correctCount >= 15) {
         showCelebration('🎉');
       } else {
@@ -1387,201 +1401,19 @@
       console.log(`✅ Submitted: ${correctCount}/20 correct`);
     }
 
-    // ============================================
-    // UPDATE UI
-    // ============================================
-    
-    function updateSubmitButton() {
+    // ⭐ NEW: Check if ready to show submit button
+    function checkSubmitReady() {
       const totalMatches = Object.keys(userMatches).length / 2;
-      const submitBtn = document.getElementById('submitBtn');
+      const submitContainer = document.getElementById('submitContainer');
       
       if (totalMatches === 20 && !isSubmitted) {
-        submitBtn.classList.remove('hidden');
+        submitContainer.classList.add('active');
       } else {
-        submitBtn.classList.add('hidden');
+        submitContainer.classList.remove('active');
       }
     }
 
-    function updateScore() {
-      const totalMatches = Object.keys(userMatches).length / 2;
-      document.getElementById('scoreDisplay').textContent = `${Math.floor(totalMatches)}/20`;
-    }
-
-    function updateProgress() {
-      const totalMatches = Object.keys(userMatches).length / 2;
-      const percentage = Math.round((totalMatches / 20) * 100);
-      document.getElementById('progressFill').style.width = percentage + '%';
-    }
-
-    function updateNavDots() {
-      const dots = document.querySelectorAll('.nav-dot');
-      
-      for (let i = 0; i < 4; i++) {
-        const startIdx = i * 5;
-        let cardComplete = true;
-        
-        for (let j = 0; j < 5; j++) {
-          if (!userMatches[startIdx + j]) {
-            cardComplete = false;
-            break;
-          }
-        }
-        
-        if (dots[i] && cardComplete) {
-          dots[i].classList.add('completed');
-        } else if (dots[i]) {
-          dots[i].classList.remove('completed');
-        }
-      }
-    }
-
-    // ============================================
-    // VIEW MODE TOGGLE
-    // ============================================
-    
-    function toggleViewMode() {
-      const toggleSwitch = document.getElementById('modeToggleSwitch');
-      const wrapper = document.getElementById('carouselWrapper');
-      const externalNav = document.getElementById('externalNav');
-      const navArrows = document.getElementById('navArrows');
-      
-      if (viewMode === 'single') {
-        viewMode = 'full';
-        toggleSwitch.classList.remove('active');
-        toggleSwitch.setAttribute('aria-checked', 'false');
-        wrapper.classList.remove('single-mode');
-        wrapper.classList.add('full-mode');
-        externalNav.classList.remove('active');
-        
-        // In full mode, show all cards
-        document.querySelectorAll('.card-wrapper').forEach(card => {
-          card.classList.add('active');
-        });
-      } else {
-        viewMode = 'single';
-        toggleSwitch.classList.add('active');
-        toggleSwitch.setAttribute('aria-checked', 'true');
-        wrapper.classList.remove('full-mode');
-        wrapper.classList.add('single-mode');
-        externalNav.classList.add('active');
-        
-        // In single mode, only show current card
-        updateCarouselPosition();
-      }
-    }
-
-    // ============================================
-    // NAVIGATION
-    // ============================================
-    
-    function nextCard() {
-      if (currentCardIndex < 3) {
-        currentCardIndex++;
-        updateCarouselPosition();
-        document.getElementById('nextCardBtn').disabled = true;
-      }
-    }
-
-    function prevCard() {
-      if (currentCardIndex > 0) {
-        currentCardIndex--;
-        updateCarouselPosition();
-      }
-    }
-
-    function updateCarouselPosition() {
-      const track = document.getElementById('carouselTrack');
-      const externalNav = document.getElementById('externalNav');
-      const prevCardBtn = document.getElementById('prevCardBtn');
-      const nextCardBtn2 = document.getElementById('nextCardBtn2');
-      
-      if (viewMode === 'single') {
-        // Carousel mode - slide animation
-        const offset = -currentCardIndex * 100;
-        track.style.transform = `translateX(${offset}%)`;
-        
-        document.querySelectorAll('.card-wrapper').forEach((card, index) => {
-          card.classList.toggle('active', index === currentCardIndex);
-        });
-        
-        // Update external nav buttons
-        prevCardBtn.disabled = currentCardIndex === 0;
-        nextCardBtn2.disabled = currentCardIndex === 3;
-      } else {
-        // Full mode - no transform needed
-        track.style.transform = 'none';
-        
-        document.querySelectorAll('.card-wrapper').forEach(card => {
-          card.classList.add('active');
-        });
-      }
-      
-      document.getElementById('cardNumber').textContent = currentCardIndex + 1;
-      document.getElementById('prevArrow').disabled = currentCardIndex === 0;
-      document.getElementById('nextArrow').disabled = currentCardIndex === 3;
-      
-      const dots = document.querySelectorAll('.nav-dot');
-      dots.forEach((dot, i) => {
-        dot.classList.toggle('active', i === currentCardIndex);
-      });
-      
-      // Enable next card button if current card is complete
-      const startIdx = currentCardIndex * 5;
-      let cardComplete = true;
-      for (let i = 0; i < 5; i++) {
-        if (!userMatches[startIdx + i]) {
-          cardComplete = false;
-          break;
-        }
-      }
-      document.getElementById('nextCardBtn').disabled = !cardComplete || currentCardIndex === 3;
-    }
-
-    function renderNavigation() {
-      const nav = document.getElementById('scoreDots');
-      nav.innerHTML = '';
-      
-      for (let i = 0; i < 4; i++) {
-        const dot = document.createElement('div');
-        dot.className = 'nav-dot';
-        if (i === currentCardIndex) dot.classList.add('active');
-        dot.addEventListener('click', () => goToCard(i));
-        nav.appendChild(dot);
-      }
-    }
-
-    function goToCard(index) {
-      currentCardIndex = index;
-      updateCarouselPosition();
-    }
-
-    // ============================================
-    // HELPER FUNCTIONS
-    // ============================================
-    
-    function showHint() {
-      if (isSubmitted) {
-        alert('💡 Answers already submitted! Use "Check Answers" to review.');
-        return;
-      }
-      
-      const startIdx = currentCardIndex * 5;
-      let hasUnmatched = false;
-      
-      for (let i = 0; i < 5; i++) {
-        if (!userMatches[startIdx + i]) {
-          hasUnmatched = true;
-          break;
-        }
-      }
-      
-      if (!hasUnmatched) {
-        alert('💡 This card is complete! Try another card or submit your answers.');
-      } else {
-        alert('💡 Tip: Click a verb, then click its matching object. They will lock together in blue until you submit.');
-      }
-    }
-
+    // ⭐ NEW: Check answers (show answer key)
     function checkAnswers() {
       if (!isSubmitted) {
         alert('⚠️ Please submit your answers first!');
@@ -1612,6 +1444,91 @@
       alert(report);
     }
 
+    // ============================================
+    // NAVIGATION
+    // ============================================
+    
+    function nextCard() {
+      if (currentCardIndex < 3) {
+        currentCardIndex++;
+        renderContent();
+        renderCardDots();
+        renderMatchNavDots();
+        updateScore();
+        updateExternalNav();
+        
+        if (currentMode === 'full') {
+          scrollToCurrentCard();
+        }
+      }
+    }
+
+    function prevCard() {
+      if (currentCardIndex > 0) {
+        currentCardIndex--;
+        renderContent();
+        renderCardDots();
+        renderMatchNavDots();
+        updateScore();
+        updateExternalNav();
+        
+        if (currentMode === 'full') {
+          scrollToCurrentCard();
+        }
+      }
+    }
+
+    function goToCard(index) {
+      currentCardIndex = index;
+      renderContent();
+      renderCardDots();
+      renderMatchNavDots();
+      updateScore();
+      updateExternalNav();
+      
+      if (currentMode === 'full') {
+        scrollToCurrentCard();
+      }
+    }
+
+    function scrollToCurrentCard() {
+      setTimeout(() => {
+        const cards = document.querySelectorAll('.matching-card');
+        if (cards[currentCardIndex]) {
+          cards[currentCardIndex].scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }, 100);
+    }
+
+    function updateExternalNav() {
+      const externalNav = document.getElementById('externalNav');
+      const prevBtn = document.getElementById('prevCardBtn');
+      const nextBtn = document.getElementById('nextCardBtn');
+      
+      if (currentMode === 'single' && !isSubmitted) {
+        externalNav.classList.add('active');
+        prevBtn.disabled = currentCardIndex === 0;
+        nextBtn.disabled = currentCardIndex === 3;
+      } else {
+        externalNav.classList.remove('active');
+      }
+    }
+
+    // ============================================
+    // SCORE & PROGRESS
+    // ============================================
+
+    function updateScore() {
+      const totalMatches = Object.keys(userMatches).length / 2;
+      document.getElementById('scoreDisplay').textContent = `${Math.floor(totalMatches)}/20`;
+    }
+
+    function updateProgress() {
+      const totalMatches = Object.keys(userMatches).length / 2;
+      const percentage = Math.round((totalMatches / 20) * 100);
+      document.getElementById('progressFill').style.width = percentage + '%';
+    }
+
     function showCelebration(emoji) {
       const celebration = document.createElement('div');
       celebration.className = 'celebration';
@@ -1623,6 +1540,10 @@
       }, 1000);
     }
 
+    // ============================================
+    // FOOTER ACTIONS
+    // ============================================
+    
     function retryGame() {
       location.reload();
     }
@@ -1641,39 +1562,14 @@
     }
 
     // ============================================
-    // TOUCH & KEYBOARD NAVIGATION
+    // KEYBOARD NAVIGATION
     // ============================================
     
-    let startX = 0, startY = 0, isDragging = false;
-    const carouselTrack = document.getElementById('carouselTrack');
-
-    carouselTrack.addEventListener('touchstart', (e) => {
-      startX = e.touches[0].clientX;
-      startY = e.touches[0].clientY;
-      isDragging = true;
-    }, { passive: true });
-
-    carouselTrack.addEventListener('touchmove', (e) => {
-      if (!isDragging) return;
-      const diffX = Math.abs(startX - e.touches[0].clientX);
-      const diffY = Math.abs(startY - e.touches[0].clientY);
-      isDragging = diffX > diffY && diffX > 10;
-    }, { passive: true });
-
-    carouselTrack.addEventListener('touchend', (e) => {
-      if (!isDragging) return;
-      const diffX = startX - e.changedTouches[0].clientX;
-      if (Math.abs(diffX) > 50) {
-        if (diffX > 0 && currentCardIndex < 3) nextCard();
-        else if (diffX < 0 && currentCardIndex > 0) prevCard();
-      }
-      isDragging = false;
-    }, { passive: true });
-
     document.addEventListener('keydown', (e) => {
+      if (isSubmitted) return;
       if (e.key === 'ArrowRight' && currentCardIndex < 3) nextCard();
       else if (e.key === 'ArrowLeft' && currentCardIndex > 0) prevCard();
-      else if (e.key === 'Enter' && Object.keys(userMatches).length === 40 && !isSubmitted) submitAnswers();
+      else if (e.key === 'Enter' && Object.keys(userMatches).length === 40) submitAnswers();
     });
 
     // ============================================
@@ -1687,11 +1583,12 @@
       
       if (!loaded) return;
 
-      renderAllCards();
+      prepareCardData();
+      renderContent();
+      renderCardDots();
+      renderMatchNavDots();
       updateScore();
-      
-      // Initialize to Single mode by default (better for mobile)
-      toggleViewMode();
+      updateExternalNav();
       
       console.log('✅ Matching Game Ready!');
     }
