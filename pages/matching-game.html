@@ -495,22 +495,6 @@
       font-weight: 600;
     }
 
-    /* ⭐ ANTI-CHEAT: Blue "locked" state for confirmed matches BEFORE submit */
-    .match-item.locked {
-      background: rgba(96, 165, 250, 0.2);
-      border: 2px solid #60a5fa;
-      color: #60a5fa;
-      font-weight: 600;
-      cursor: pointer;
-    }
-
-    .match-item.locked:hover {
-      background: rgba(96, 165, 250, 0.3);
-      border-color: #60a5fa;
-      transform: translateY(-2px);
-    }
-
-    /* ⭐ AFTER submit: show green/red validation */
     .match-item.correct {
       background: rgba(74, 222, 128, 0.2);
       border: 2px solid #4ade80;
@@ -524,7 +508,6 @@
       border: 2px solid #fb923c;
       color: #fb923c;
       animation: shake 0.5s ease;
-      cursor: pointer;
     }
 
     .emoji {
@@ -542,45 +525,6 @@
     @keyframes correctPulse {
       0%, 100% { transform: scale(1); }
       50% { transform: scale(1.05); }
-    }
-
-    /* Submit button */
-    .submit-container {
-      display: none;
-      justify-content: center;
-      margin-top: 0.75rem;
-      flex-shrink: 0;
-    }
-
-    .submit-container.active {
-      display: flex;
-    }
-
-    .submit-btn {
-      background: rgba(96, 165, 250, 0.2);
-      border: 2px solid #60a5fa;
-      border-radius: 12px;
-      padding: 0.75rem 2rem;
-      color: #60a5fa;
-      font-size: 0.875rem;
-      font-weight: 700;
-      cursor: pointer;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      box-shadow: 
-        4px 4px 8px #000000,
-        -4px -4px 8px #2a2a2a;
-      font-family: 'Inter', sans-serif;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-
-    .submit-btn:hover {
-      background: rgba(96, 165, 250, 0.3);
-      transform: translateY(-2px) scale(1.05);
-      box-shadow: 
-        6px 6px 12px #000000,
-        -6px -6px 12px #2a2a2a,
-        0 0 20px rgba(96, 165, 250, 0.3);
     }
 
     /* External navigation for single mode */
@@ -780,11 +724,6 @@
         min-width: 120px;
       }
 
-      .submit-btn {
-        padding: 0.65rem 1.5rem;
-        font-size: 0.8rem;
-      }
-
       .back-btn {
         top: 1rem;
         left: 1rem;
@@ -848,10 +787,6 @@
       </div>
     </div>
 
-    <div class="submit-container" id="submitContainer">
-      <button class="submit-btn" onclick="submitAnswers()">✓ Submit Answers</button>
-    </div>
-
     <div class="external-nav" id="externalNav">
       <button class="external-nav-arrow" id="prevCardBtn" onclick="prevCard()">← Previous Card</button>
       <button class="external-nav-arrow" id="nextCardBtn" onclick="nextCard()">Next Card →</button>
@@ -859,7 +794,6 @@
 
     <div class="footer" id="footer">
       <button class="footer-btn" onclick="retryGame()">🔄 Repeat</button>
-      <button class="footer-btn" onclick="checkAnswers()">📋 Check Answers</button>
       <button class="footer-btn quiz" onclick="goToQuiz()">🎯 Take Quiz →</button>
       <button class="footer-btn primary" onclick="goHome()">🏠 Home</button>
     </div>
@@ -878,11 +812,10 @@
     let currentMode = 'full'; // 'full' or 'single'
     
     let currentCardIndex = 0;
-    let userMatches = {}; // Store all matches by index: { idx: { verb, object, correctVerb, isCorrect } }
+    let userMatches = {}; // Store all matches by index
     let cardVerbs = [];
     let selectedVerb = null;
     let selectedObject = null;
-    let isSubmitted = false; // ⭐ NEW: Track if answers have been submitted
 
     // ============================================
     // LOAD DATA
@@ -1146,7 +1079,6 @@
       }
       
       attachMatchingListeners();
-      updateMatchStates();
     }
 
     function renderFullMode(container) {
@@ -1187,17 +1119,22 @@
 
       const verbsHTML = verbs.map((v, i) => {
         const matchIdx = startIdx + i;
+        const isMatched = userMatches[matchIdx];
+        const classes = `match-item ${isMatched ? 'correct' : ''}`;
         
         return `
-          <div class="match-item" data-type="verb" data-value="${v.verb}" data-match-idx="${matchIdx}">
+          <div class="${classes}" data-type="verb" data-value="${v.verb}" data-match-idx="${matchIdx}">
             ${v.verb}
           </div>
         `;
       }).join('');
 
       const objectsHTML = shuffledObjects.map((obj) => {
+        const isMatched = userMatches[obj.matchIdx];
+        const classes = `match-item ${isMatched ? 'correct' : ''}`;
+        
         return `
-          <div class="match-item" data-type="object" data-value="${obj.object}" data-correct="${obj.correctVerb}" data-match-idx="${obj.matchIdx}">
+          <div class="${classes}" data-type="object" data-value="${obj.object}" data-correct="${obj.correctVerb}" data-match-idx="${obj.matchIdx}">
             ${obj.object} <span class="emoji">${obj.emoji}</span>
           </div>
         `;
@@ -1215,7 +1152,7 @@
     }
 
     // ============================================
-    // MATCHING LOGIC (⭐ ANTI-CHEAT SYSTEM)
+    // MATCHING LOGIC
     // ============================================
     
     function attachMatchingListeners() {
@@ -1230,49 +1167,7 @@
       const cardIdx = Math.floor(matchIdx / 5);
       
       if (currentMode === 'single' && cardIdx !== currentCardIndex) return;
-      
-      // ⭐ After submit: allow deselecting wrong/locked, but not correct
-      if (isSubmitted) {
-        const match = userMatches[matchIdx];
-        
-        if (item.classList.contains('correct')) {
-          // Can't change correct answers
-          return;
-        }
-        
-        if (item.classList.contains('wrong') || item.classList.contains('locked')) {
-          // Deselect this match
-          if (match) {
-            delete userMatches[match.verbIdx];
-            delete userMatches[match.objIdx];
-            updateMatchStates();
-            updateScore();
-            updateProgress();
-            renderMatchNavDots();
-            renderCardDots();
-            checkSubmitReady();
-          }
-          return;
-        }
-      }
-      
-      // ⭐ Before submit: allow deselecting locked pairs
-      if (item.classList.contains('locked') && !isSubmitted) {
-        const match = userMatches[matchIdx];
-        
-        if (match) {
-          // Deselect this locked match
-          delete userMatches[match.verbIdx];
-          delete userMatches[match.objIdx];
-          updateMatchStates();
-          updateScore();
-          updateProgress();
-          renderMatchNavDots();
-          renderCardDots();
-          checkSubmitReady();
-        }
-        return;
-      }
+      if (item.classList.contains('correct')) return;
       
       const type = item.dataset.type;
       
@@ -1301,147 +1196,61 @@
       if (selectedVerb && selectedObject) {
         const sameCard = Math.floor(selectedVerb.matchIdx / 5) === Math.floor(selectedObject.matchIdx / 5);
         if (sameCard) {
-          confirmMatch();
+          attemptMatch();
         }
       }
     }
 
-    function confirmMatch() {
-      // ⭐ Store match data with correctness info
-      const matchData = {
-        verb: selectedVerb.value,
-        object: selectedObject.value,
-        correctVerb: selectedObject.correct,
-        isCorrect: selectedVerb.value === selectedObject.correct,
-        verbIdx: selectedVerb.matchIdx,
-        objIdx: selectedObject.matchIdx
-      };
-      
-      // Store in both indices
-      userMatches[selectedVerb.matchIdx] = { ...matchData };
-      userMatches[selectedObject.matchIdx] = { ...matchData };
+    function attemptMatch() {
+      if (selectedVerb.value === selectedObject.correct) {
+        const verbItems = document.querySelectorAll(`.match-item[data-type="verb"][data-match-idx="${selectedVerb.matchIdx}"]`);
+        const objItems = document.querySelectorAll(`.match-item[data-type="object"][data-match-idx="${selectedObject.matchIdx}"]`);
+        
+        verbItems.forEach(v => {
+          v.classList.remove('selected');
+          v.classList.add('correct');
+        });
+        
+        objItems.forEach(o => {
+          o.classList.remove('selected');
+          o.classList.add('correct');
+        });
+        
+        userMatches[selectedVerb.matchIdx] = true;
+        userMatches[selectedObject.matchIdx] = true;
+        
+        if (navigator.vibrate) navigator.vibrate(50);
+        showCelebration('✨');
+        
+        renderMatchNavDots();
+        renderCardDots();
+        updateScore();
+        updateProgress();
+        checkAllComplete();
+        
+      } else {
+        const verbItems = document.querySelectorAll(`.match-item[data-type="verb"][data-match-idx="${selectedVerb.matchIdx}"]`);
+        const objItems = document.querySelectorAll(`.match-item[data-type="object"][data-match-idx="${selectedObject.matchIdx}"]`);
+        
+        verbItems.forEach(v => {
+          v.classList.add('wrong');
+          setTimeout(() => {
+            v.classList.remove('wrong', 'selected');
+          }, 500);
+        });
+        
+        objItems.forEach(o => {
+          o.classList.add('wrong');
+          setTimeout(() => {
+            o.classList.remove('wrong', 'selected');
+          }, 500);
+        });
+
+        if (navigator.vibrate) navigator.vibrate(200);
+      }
       
       selectedVerb = null;
       selectedObject = null;
-      
-      if (navigator.vibrate) navigator.vibrate(50);
-      showCelebration('✨');
-      
-      updateMatchStates();
-      renderMatchNavDots();
-      renderCardDots();
-      updateScore();
-      updateProgress();
-      checkSubmitReady();
-    }
-
-    // ⭐ NEW: Update visual states based on submit status
-    function updateMatchStates() {
-      document.querySelectorAll('.match-item').forEach(item => {
-        const matchIdx = parseInt(item.dataset.matchIdx);
-        const match = userMatches[matchIdx];
-        
-        // Remove all state classes
-        item.classList.remove('locked', 'correct', 'wrong', 'selected');
-        
-        if (!match) return;
-        
-        if (isSubmitted) {
-          // Show correct/wrong after submit
-          if (match.isCorrect) {
-            item.classList.add('correct');
-          } else {
-            item.classList.add('wrong');
-          }
-        } else {
-          // Show locked before submit
-          item.classList.add('locked');
-        }
-      });
-    }
-
-    // ⭐ NEW: Submit answers and validate
-    function submitAnswers() {
-      if (isSubmitted) return;
-      
-      isSubmitted = true;
-      
-      updateMatchStates();
-      
-      // Count correct (divide by 2 since each match is stored twice)
-      let correctCount = 0;
-      Object.keys(userMatches).forEach(idx => {
-        if (userMatches[idx].isCorrect) {
-          correctCount++;
-        }
-      });
-      correctCount = correctCount / 2;
-      
-      // Hide submit button
-      document.getElementById('submitContainer').classList.remove('active');
-      
-      // Show footer
-      document.getElementById('externalNav').style.display = 'none';
-      document.getElementById('footer').classList.add('active');
-      
-      // Save score
-      if (correctCount === 20) {
-        showCelebration('🏆');
-        ProgressTracker.saveMatchingScore(
-          selectionData.characterKey,
-          selectionData.category,
-          20
-        );
-      } else if (correctCount >= 15) {
-        showCelebration('🎉');
-      } else {
-        showCelebration('📝');
-      }
-      
-      console.log(`✅ Submitted: ${correctCount}/20 correct`);
-    }
-
-    // ⭐ NEW: Check if ready to show submit button
-    function checkSubmitReady() {
-      const totalMatches = Object.keys(userMatches).length / 2;
-      const submitContainer = document.getElementById('submitContainer');
-      
-      if (totalMatches === 20 && !isSubmitted) {
-        submitContainer.classList.add('active');
-      } else {
-        submitContainer.classList.remove('active');
-      }
-    }
-
-    // ⭐ NEW: Check answers (show answer key)
-    function checkAnswers() {
-      if (!isSubmitted) {
-        alert('⚠️ Please submit your answers first!');
-        return;
-      }
-      
-      let report = '📋 ANSWER KEY:\n\n';
-      
-      for (let cardIdx = 0; cardIdx < 4; cardIdx++) {
-        report += `Card ${cardIdx + 1}:\n`;
-        const verbs = cardVerbs[cardIdx];
-        
-        verbs.forEach((v, i) => {
-          const matchIdx = cardIdx * 5 + i;
-          const match = userMatches[matchIdx];
-          const status = match && match.isCorrect ? '✅' : '❌';
-          
-          report += `  ${status} ${v.verb} → ${v.object}\n`;
-          
-          if (match && !match.isCorrect) {
-            report += `     (You chose: ${match.object})\n`;
-          }
-        });
-        
-        report += '\n';
-      }
-      
-      alert(report);
     }
 
     // ============================================
@@ -1505,7 +1314,7 @@
       const prevBtn = document.getElementById('prevCardBtn');
       const nextBtn = document.getElementById('nextCardBtn');
       
-      if (currentMode === 'single' && !isSubmitted) {
+      if (currentMode === 'single') {
         externalNav.classList.add('active');
         prevBtn.disabled = currentCardIndex === 0;
         nextBtn.disabled = currentCardIndex === 3;
@@ -1519,12 +1328,12 @@
     // ============================================
 
     function updateScore() {
-      const totalMatches = Object.keys(userMatches).length / 2;
-      document.getElementById('scoreDisplay').textContent = `${Math.floor(totalMatches)}/20`;
+      const totalMatches = Object.keys(userMatches).length;
+      document.getElementById('scoreDisplay').textContent = `${totalMatches}/20`;
     }
 
     function updateProgress() {
-      const totalMatches = Object.keys(userMatches).length / 2;
+      const totalMatches = Object.keys(userMatches).length;
       const percentage = Math.round((totalMatches / 20) * 100);
       document.getElementById('progressFill').style.width = percentage + '%';
     }
@@ -1538,6 +1347,24 @@
       setTimeout(() => {
         document.body.removeChild(celebration);
       }, 1000);
+    }
+
+    function checkAllComplete() {
+      const totalMatches = Object.keys(userMatches).length;
+      
+      if (totalMatches === 20) {
+        ProgressTracker.saveMatchingScore(
+          selectionData.characterKey, 
+          selectionData.category, 
+          20
+        );
+
+        document.getElementById('externalNav').style.display = 'none';
+        document.getElementById('footer').classList.add('active');
+        showCelebration('🏆');
+
+        console.log('✅ Matching complete: 20/20 saved');
+      }
     }
 
     // ============================================
@@ -1566,10 +1393,8 @@
     // ============================================
     
     document.addEventListener('keydown', (e) => {
-      if (isSubmitted) return;
       if (e.key === 'ArrowRight' && currentCardIndex < 3) nextCard();
       else if (e.key === 'ArrowLeft' && currentCardIndex > 0) prevCard();
-      else if (e.key === 'Enter' && Object.keys(userMatches).length === 40) submitAnswers();
     });
 
     // ============================================
@@ -1579,6 +1404,7 @@
     async function initialize() {
       console.log('🎮 Initializing Matching Game...');
       
+      // Load the full data
       const loaded = await loadData();
       
       if (!loaded) return;
