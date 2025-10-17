@@ -1,377 +1,1429 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>INTUITY – Quiz Battle Arena</title>
-<style>
-:root{
-  --bg:#060606; --muted:#dfeee0; --lime1:#9be56a; --lime2:#5dd26b;
-  --blue1:#4a9eff; --blue2:#2563eb;
-  --accent-bezier:cubic-bezier(.4,0,.2,1);
-  font-family: -apple-system, 'SF Pro Text', 'Helvetica Neue', Arial, sans-serif;
-}
-*{box-sizing:border-box}
-html,body{height:100%;margin:0;background:linear-gradient(180deg,#050606 0%, #071113 100%);color:var(--muted);-webkit-font-smoothing:antialiased}
-.container{max-width:980px;margin:22px auto;padding:18px;display:flex;flex-direction:column;gap:18px}
-.header{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
-.brand{display:flex;flex-direction:column}
-.brand h1{margin:0;font-size:20px;color:whitesmoke;font-weight:600;letter-spacing:1px}
-.brand .sub{font-size:12px;color:rgba(255,255,255,0.7)}
-.brand .author{font-size:12px;color:rgba(255,255,255,0.45)}
-.statusBar{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
-.player{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:12px;background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);border:1px solid rgba(255,255,255,0.03);transition:all 0.3s var(--accent-bezier)}
-.player.active{border-color:rgba(255,255,255,0.15);box-shadow:0 0 20px rgba(155,229,106,0.2)}
-.player .icon{font-size:18px}
-.player .meta{font-size:13px}
-.boardWrap{display:flex;flex-direction:column;align-items:center;gap:12px}
-.board{width:460px;max-width:94vw;padding:18px;border-radius:16px;background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(0,0,0,0.45));border:1px solid rgba(255,255,255,0.03);box-shadow:20px 30px 60px rgba(0,0,0,0.7);position:relative;transition:opacity 0.3s var(--accent-bezier)}
-.boardHeader{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
-.small{font-size:13px;color:rgba(255,255,255,0.7)}
-.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-.cell{aspect-ratio:1/1;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;cursor:pointer;background:linear-gradient(180deg,rgba(255,255,255,0.01),rgba(0,0,0,0.3));border:1px solid rgba(255,255,255,0.03);transition:transform .25s var(--accent-bezier),box-shadow .18s;overflow:hidden}
-.cell:hover:not(.claimed-X):not(.claimed-O){transform:translateY(-8px) rotateX(2deg);box-shadow:0 14px 30px rgba(0,0,0,0.6)}
-.cell .label{position:absolute;top:10px;left:12px;font-size:12px;color:rgba(255,255,255,0.75);font-weight:500}
-.cell .symbol{font-size:48px;transition:transform 0.3s var(--accent-bezier);font-weight:bold}
-.cell.claimed-X{background:linear-gradient(180deg,var(--blue1),var(--blue2));color:#ffffff;box-shadow:0 6px 20px rgba(74,158,255,0.3)}
-.cell.claimed-O{background:linear-gradient(180deg,var(--lime1),var(--lime2));color:#04270b;box-shadow:0 6px 20px rgba(155,229,106,0.3)}
-.cell.perfect{animation:perfectPulse 0.6s ease-out}
-.cell.activeEdge{box-shadow:0 0 24px rgba(155,229,106,0.12);border:1px solid rgba(155,229,106,0.18)}
-@keyframes perfectPulse{
-  0%{transform:scale(1)}
-  50%{transform:scale(1.08);box-shadow:0 10px 40px rgba(155,229,106,0.5)}
-  100%{transform:scale(1)}
-}
-@keyframes shake{0%{transform:translateX(0)}25%{transform:translateX(-6px)}50%{transform:translateX(6px)}75%{transform:translateX(-4px)}100%{transform:translateX(0)}}
-.modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;padding:12px;z-index:60;background:rgba(0,0,0,0.8);backdrop-filter:blur(8px)}
-.modal.show{display:flex;animation:fadeIn 0.2s ease-out}
-@keyframes fadeIn{from{opacity:0}to{opacity:1}}
-.panel{width:100%;max-width:520px;border-radius:12px;padding:20px;background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(0,0,0,0.5));border:1px solid rgba(255,255,255,0.04);box-shadow:0 30px 60px rgba(0,0,0,0.7);backdrop-filter:blur(6px);position:relative;overflow:hidden;animation:slideUp 0.3s var(--accent-bezier)}
-@keyframes slideUp{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
-.panelHeader{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
-.panelBody{display:flex;flex-direction:column;gap:18px;max-height:60vh;overflow-y:auto;padding-right:8px}
-.panelBody::-webkit-scrollbar{width:6px}
-.panelBody::-webkit-scrollbar-track{background:rgba(255,255,255,0.02);border-radius:3px}
-.panelBody::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.1);border-radius:3px}
-.q{margin-bottom:0}
-.q h4{margin:0 0 12px 0;font-size:14px;color:rgba(255,255,255,0.90);font-weight:500;line-height:1.5}
-.choices{display:flex;flex-wrap:wrap;gap:10px}
-.matchContainer{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start}
-.matchLeft,.matchRight{display:flex;flex-direction:column;gap:8px}
-.choice{
-  padding:12px 16px;border-radius:10px;border:1px solid rgba(255,255,255,0.08);cursor:pointer;
-  background:rgba(255,255,255,0.02);font-size:14px;color:rgba(255,255,255,0.85);
-  transition:all .2s var(--accent-bezier);box-shadow:0 2px 8px rgba(255,140,40,0.08);
-  min-height:44px;display:flex;align-items:center;justify-content:center;user-select:none;
-}
-.choice:hover{background:rgba(255,255,255,0.04);border-color:rgba(255,255,255,0.12);transform:translateY(-1px)}
-.choice.selected{background:rgba(59,130,246,0.25);border-color:rgba(59,130,246,0.4);box-shadow:0 4px 16px rgba(59,130,246,0.3);transform:scale(1.02)}
-.choice.matched{background:rgba(155,229,106,0.15);border-color:rgba(155,229,106,0.3);opacity:0.7;pointer-events:none}
-.choice.correct{background:linear-gradient(180deg,var(--lime1),var(--lime2));color:#04270b;border-color:var(--lime2);box-shadow:0 6px 20px rgba(155,229,106,0.35);animation:correctBounce 0.4s ease-out}
-@keyframes correctBounce{0%{transform:scale(1)}50%{transform:scale(1.05)}100%{transform:scale(1)}}
-.choice.wrong{background:rgba(255,80,80,0.15);border-color:rgba(255,80,80,0.25);box-shadow:0 4px 12px rgba(255,80,80,0.2);animation:shake 0.3s ease-out}
-.panelFooter{display:flex;justify-content:space-between;align-items:center;margin-top:16px;flex-wrap:wrap;gap:10px}
-.btn{padding:10px 16px;border-radius:10px;border:0;cursor:pointer;font-size:14px;font-weight:500;transition:all .2s var(--accent-bezier)}
-.btn.ghost{background:transparent;border:1px solid rgba(255,255,255,0.08);color:var(--muted)}
-.btn.ghost:hover{background:rgba(255,255,255,0.04);border-color:rgba(255,255,255,0.12)}
-.btn.primary{background:linear-gradient(180deg,var(--lime1),var(--lime2));color:#04270b}
-.btn.primary:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(155,229,106,0.3)}
-.svgOverlay{position:absolute;inset:0;pointer-events:none}
-.line{stroke:var(--lime2);stroke-width:8;stroke-linecap:round;fill:none;stroke-dasharray:600;stroke-dashoffset:600;transition:stroke-dashoffset .9s var(--accent-bezier)}
-.trophy{position:absolute;left:50%;top:30%;transform:translate(-50%,-50%) scale(0);opacity:0;transition:transform .6s var(--accent-bezier),opacity .4s}
-.trophy.show{transform:translate(-50%,-50%) scale(1);opacity:1}
-.trophy .cup{font-size:56px}
-.board.hidden{opacity:0;pointer-events:none}
-@media(max-width:900px){.panel{width:94vw;padding:18px}.choice{padding:10px 14px;font-size:13px;min-height:42px}.q h4{font-size:13px}.matchContainer{grid-template-columns:1fr;gap:12px}}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>INTUITY - Matching Game</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #000000;
+      font-family: 'Inter', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      overflow: hidden;
+      position: relative;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' /%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .game-container {
+      background: #1a1a1a;
+      width: 95%;
+      max-width: 1000px;
+      height: 95vh;
+      max-height: 900px;
+      border-radius: 24px;
+      padding: 1.5rem;
+      box-shadow: 
+        12px 12px 24px #000000,
+        -12px -12px 24px #2a2a2a;
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .back-btn {
+      position: absolute;
+      top: 1.5rem;
+      left: 1.5rem;
+      background: #1a1a1a;
+      border: none;
+      border-radius: 12px;
+      padding: 0.6rem 1rem;
+      color: #C9A961;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 
+        4px 4px 8px #000000,
+        -4px -4px 8px #2a2a2a;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 10;
+    }
+
+    .back-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 
+        6px 6px 12px #000000,
+        -6px -6px 12px #2a2a2a;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 0.75rem;
+      flex-shrink: 0;
+    }
+
+    .header h1 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.75rem;
+      color: #C9A961;
+      margin-bottom: 0.15rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .tagline {
+      font-size: 0.75rem;
+      color: rgba(232, 232, 232, 0.6);
+      margin-bottom: 0.75rem;
+      font-weight: 500;
+    }
+
+    .character-info {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .character-display {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(201, 169, 97, 0.1);
+      padding: 0.5rem 1rem;
+      border-radius: 12px;
+      border: 2px solid rgba(201, 169, 97, 0.3);
+    }
+
+    .character-emoji {
+      font-size: 1.5rem;
+    }
+
+    .character-name {
+      font-size: 1rem;
+      color: #C9A961;
+      font-weight: 600;
+      font-family: 'Space Grotesk', sans-serif;
+    }
+
+    .category-pills {
+      display: flex;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-bottom: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .category-pill {
+      background: #1a1a1a;
+      border: 2px solid rgba(201, 169, 97, 0.3);
+      border-radius: 12px;
+      padding: 0.5rem 0.75rem;
+      font-size: 0.8rem;
+      color: rgba(232, 232, 232, 0.7);
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      box-shadow: 
+        3px 3px 6px #000000,
+        -3px -3px 6px #2a2a2a;
+    }
+
+    .category-pill:hover {
+      border-color: #C9A961;
+      color: #C9A961;
+      transform: translateY(-2px);
+    }
+
+    .category-pill.active {
+      background: rgba(201, 169, 97, 0.2);
+      border-color: #C9A961;
+      color: #C9A961;
+      font-weight: 600;
+    }
+
+    .category-pill.completed {
+      border-color: #4ade80;
+      color: #4ade80;
+    }
+
+    .category-pill.completed::after {
+      content: '✓';
+      font-size: 0.9rem;
+    }
+
+    /* Navigation header */
+    .nav-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.35rem;
+      padding: 0 0.5rem;
+      gap: 1rem;
+      flex-shrink: 0;
+    }
+
+    .card-dots-container {
+      display: flex;
+      gap: 0.75rem;
+      flex: 1;
+      justify-content: flex-start;
+      align-items: center;
+    }
+
+    .card-dot {
+      width: 1rem;
+      height: 1rem;
+      border-radius: 50%;
+      background: rgba(99, 99, 102, 0.3);
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      border: 2px solid rgba(99, 99, 102, 0.2);
+      position: relative;
+    }
+
+    .card-dot:hover {
+      transform: scale(1.3);
+      background: rgba(142, 142, 147, 0.5);
+    }
+
+    .card-dot.current {
+      background: #C9A961;
+      box-shadow: 0 0 0 3px rgba(201, 169, 97, 0.4);
+      transform: scale(1.5);
+    }
+
+    .card-dot.completed {
+      background: linear-gradient(135deg, #84cc16 0%, #65a30d 100%);
+      box-shadow: 0 0 8px rgba(132, 204, 22, 0.4);
+    }
+
+    .card-dot.completed.current {
+      background: linear-gradient(135deg, #84cc16 0%, #65a30d 100%);
+      box-shadow: 0 0 0 3px rgba(201, 169, 97, 0.6);
+      transform: scale(1.5);
+    }
+
+    .mode-toggle-container {
+      display: flex;
+      align-items: center;
+      gap: 0.625rem;
+      font-size: 0.6875rem;
+      font-weight: 500;
+      color: #636366;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      flex-shrink: 0;
+    }
+
+    .mode-toggle-label {
+      opacity: 0.6;
+      transition: opacity 0.3s;
+    }
+
+    .mode-toggle-container:hover .mode-toggle-label {
+      opacity: 0.85;
+    }
+
+    .mode-toggle-switch {
+      position: relative;
+      width: 3rem;
+      height: 1.5rem;
+      background: rgba(99, 99, 102, 0.25);
+      border-radius: 0.75rem;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      border: 1px solid rgba(99, 99, 102, 0.2);
+    }
+
+    .mode-toggle-switch:hover {
+      background: rgba(99, 99, 102, 0.35);
+    }
+
+    .mode-toggle-switch::after {
+      content: '';
+      position: absolute;
+      top: 0.125rem;
+      left: 0.125rem;
+      width: 1.125rem;
+      height: 1.125rem;
+      background: #8e8e93;
+      border-radius: 50%;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    .mode-toggle-switch.active {
+      background: rgba(201, 169, 97, 0.25);
+      border-color: rgba(201, 169, 97, 0.3);
+    }
+
+    .mode-toggle-switch.active::after {
+      left: 1.625rem;
+      background: #C9A961;
+    }
+
+    /* Match navigation dots - 20 small dots for all matches */
+    .match-nav-dots-container {
+      display: flex;
+      justify-content: flex-start;
+      gap: 0.35rem;
+      margin-bottom: 0.35rem;
+      flex-wrap: nowrap;
+      padding: 0 0.5rem;
+      flex-shrink: 0;
+      opacity: 0.5;
+      align-items: center;
+    }
+
+    .match-nav-dots-container.hidden-single {
+      display: none;
+    }
+
+    .match-nav-dot {
+      width: 0.5rem;
+      height: 0.5rem;
+      border-radius: 50%;
+      background: rgba(99, 99, 102, 0.3);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      border: 1px solid rgba(99, 99, 102, 0.2);
+      cursor: pointer;
+    }
+
+    .match-nav-dot:hover {
+      transform: scale(1.2);
+      background: rgba(142, 142, 147, 0.5);
+      opacity: 1;
+    }
+
+    .match-nav-dot.completed {
+      background: linear-gradient(135deg, #84cc16 0%, #65a30d 100%);
+      box-shadow: 0 0 4px rgba(132, 204, 22, 0.3);
+      opacity: 1;
+    }
+
+    .score-display {
+      text-align: center;
+      margin-bottom: 0.5rem;
+      font-size: 0.8rem;
+      color: rgba(232, 232, 232, 0.7);
+      font-weight: 500;
+      flex-shrink: 0;
+    }
+
+    .score-number {
+      color: #C9A961;
+      font-size: 1rem;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 4px;
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: inset 2px 2px 4px rgba(0, 0, 0, 0.5);
+      margin-bottom: 0.5rem;
+      flex-shrink: 0;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #C9A961, #e8d9a8);
+      border-radius: 10px;
+      transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 0 10px rgba(201, 169, 97, 0.5);
+    }
+
+    /* Content container */
+    .content-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      position: relative;
+    }
+
+    /* FULL MODE - Vertical scrolling list */
+    .cards-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      overflow-y: auto;
+      padding: 0.5rem;
+      flex: 1;
+      min-height: 0;
+    }
+
+    .cards-list::-webkit-scrollbar { width: 6px; }
+    .cards-list::-webkit-scrollbar-track { 
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 10px;
+    }
+    .cards-list::-webkit-scrollbar-thumb {
+      background: rgba(201, 169, 97, 0.4);
+      border-radius: 10px;
+    }
+
+    /* SINGLE MODE - One card at a time */
+    .single-card-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      overflow-y: auto;
+      padding: 0.5rem;
+    }
+    
+    .single-card-container .matching-card {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+    
+    .single-card-container .matching-area {
+      flex: 1;
+      overflow-y: auto;
+      min-height: 0;
+    }
+
+    .matching-card {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .matching-card:last-child {
+      margin-bottom: 0;
+    }
+
+    .card-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.8rem;
+      color: rgba(201, 169, 97, 0.7);
+      text-align: center;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      flex-shrink: 0;
+      margin-bottom: 0.25rem;
+    }
+
+    .matching-area {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.65rem;
+      padding: 0;
+    }
+
+    .matching-area::-webkit-scrollbar { width: 6px; }
+    .matching-area::-webkit-scrollbar-track { 
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 10px;
+    }
+    .matching-area::-webkit-scrollbar-thumb {
+      background: rgba(201, 169, 97, 0.4);
+      border-radius: 10px;
+    }
+
+    .column {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+
+    .match-item {
+      background: #1a1a1a;
+      border-radius: 10px;
+      padding: 0.6rem 0.75rem;
+      color: rgba(232, 232, 232, 0.9);
+      font-size: 0.85rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 
+        4px 4px 8px #000000,
+        -4px -4px 8px #2a2a2a;
+      user-select: none;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border: 2px solid transparent;
+      min-height: 38px;
+      line-height: 1.2;
+    }
+
+    .match-item:hover {
+      transform: translateY(-2px);
+      box-shadow: 
+        6px 6px 12px #000000,
+        -6px -6px 12px #2a2a2a;
+      border-color: rgba(201, 169, 97, 0.3);
+    }
+
+    .match-item.selected {
+      background: rgba(201, 169, 97, 0.2);
+      border: 2px solid #C9A961;
+      color: #C9A961;
+      font-weight: 600;
+    }
+
+    .match-item.correct {
+      background: rgba(74, 222, 128, 0.2);
+      border: 2px solid #4ade80;
+      color: #4ade80;
+      animation: correctPulse 0.5s ease;
+      cursor: default;
+    }
+
+    .match-item.wrong {
+      background: rgba(251, 146, 60, 0.2);
+      border: 2px solid #fb923c;
+      color: #fb923c;
+      animation: shake 0.5s ease;
+    }
+
+    .emoji {
+      font-size: 1rem;
+      margin-left: 0.4rem;
+      line-height: 1;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      75% { transform: translateX(5px); }
+    }
+
+    @keyframes correctPulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    /* External navigation for single mode */
+    .external-nav {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      gap: 1.5rem;
+      margin-top: 1rem;
+      flex-shrink: 0;
+    }
+
+    .external-nav.active {
+      display: flex;
+    }
+
+    .external-nav-arrow {
+      background: rgba(99, 99, 102, 0.25);
+      border: 1px solid rgba(99, 99, 102, 0.2);
+      color: #aeaeb2;
+      padding: 0.75rem 1.5rem;
+      border-radius: 0.75rem;
+      cursor: pointer;
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      letter-spacing: -0.01em;
+      min-width: 140px;
+    }
+
+    .external-nav-arrow:hover:not(:disabled) {
+      background: rgba(201, 169, 97, 0.25);
+      border-color: rgba(201, 169, 97, 0.3);
+      color: #C9A961;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(201, 169, 97, 0.2);
+    }
+
+    .external-nav-arrow:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+
+    .celebration {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 4rem;
+      opacity: 0;
+      pointer-events: none;
+      z-index: 1000;
+      animation: celebrate 1s ease;
+    }
+
+    @keyframes celebrate {
+      0% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
+      50% { opacity: 1; transform: translate(-50%, -50%) scale(1.2); }
+      100% { opacity: 0; transform: translate(-50%, -50%) scale(1); }
+    }
+
+    .footer {
+      display: none;
+      gap: 0.5rem;
+      justify-content: center;
+      margin-top: 0.5rem;
+      padding-top: 0.5rem;
+      border-top: 2px solid rgba(201, 169, 97, 0.2);
+      flex-wrap: wrap;
+      flex-shrink: 0;
+    }
+
+    .footer.active {
+      display: flex;
+    }
+
+    .footer-btn {
+      background: #1a1a1a;
+      border: none;
+      border-radius: 10px;
+      padding: 0.6rem 1rem;
+      color: #e8e8e8;
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 
+        4px 4px 8px #000000,
+        -4px -4px 8px #2a2a2a;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .footer-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 
+        6px 6px 12px #000000,
+        -6px -6px 12px #2a2a2a;
+    }
+
+    .footer-btn.primary {
+      background: rgba(201, 169, 97, 0.2);
+      color: #C9A961;
+    }
+
+    .footer-btn.quiz {
+      background: rgba(74, 222, 128, 0.2);
+      border: 2px solid #4ade80;
+      color: #4ade80;
+      font-weight: 700;
+    }
+
+    .hidden { display: none !important; }
+
+    /* Mobile Optimizations */
+    @media (max-width: 768px) {
+      .game-container {
+        padding: 1rem 0.75rem;
+        max-height: 100vh;
+        height: 100vh;
+        border-radius: 16px;
+      }
+
+      .header h1 {
+        font-size: 1.3rem;
+      }
+
+      .tagline {
+        display: none;
+      }
+
+      .character-display {
+        padding: 0.4rem 0.75rem;
+      }
+
+      .character-emoji {
+        font-size: 1.2rem;
+      }
+
+      .character-name {
+        font-size: 0.85rem;
+      }
+
+      .category-pills {
+        display: none;
+      }
+
+      .nav-header {
+        padding: 0 0.25rem;
+        gap: 0.75rem;
+      }
+
+      .card-dot {
+        width: 0.875rem;
+        height: 0.875rem;
+      }
+
+      .mode-toggle-label {
+        font-size: 0.625rem;
+      }
+
+      .mode-toggle-switch {
+        width: 2.5rem;
+        height: 1.25rem;
+      }
+
+      .mode-toggle-switch::after {
+        width: 0.95rem;
+        height: 0.95rem;
+      }
+
+      .mode-toggle-switch.active::after {
+        left: 1.35rem;
+      }
+
+      .match-nav-dot {
+        width: 0.5rem;
+        height: 0.5rem;
+      }
+
+      .matching-area {
+        gap: 0.65rem;
+      }
+
+      .match-item {
+        padding: 0.7rem 0.85rem;
+        font-size: 0.85rem;
+        min-height: 44px;
+      }
+
+      .emoji {
+        font-size: 0.95rem;
+      }
+
+      .external-nav-arrow {
+        padding: 0.65rem 1.25rem;
+        font-size: 0.8rem;
+        min-width: 120px;
+      }
+
+      .back-btn {
+        top: 1rem;
+        left: 1rem;
+        padding: 0.5rem 0.8rem;
+        font-size: 0.75rem;
+      }
+
+      .footer-btn {
+        padding: 0.65rem 1rem;
+        font-size: 0.75rem;
+      }
+    }
+  </style>
 </head>
 <body>
-<div class="container">
-  <div class="header">
-    <div class="brand">
+  <div class="game-container">
+    <button class="back-btn" onclick="goBack()">← Back</button>
+    
+    <div class="header">
       <h1>INTUITY</h1>
-      <div class="sub">Quiz Battle Arena</div>
-      <div class="author">Majid Nashtai</div>
-    </div>
-    <div class="statusBar">
-      <div class="player" id="playerX"><div class="icon">✖</div><div class="meta">Player X – <strong id="scoreX">0</strong></div></div>
-      <div class="player" id="playerO"><div class="icon">⭕</div><div class="meta">Player O – <strong id="scoreO">0</strong></div></div>
-    </div>
-  </div>
+      <p class="tagline">Matching Game</p>
+      
+      <div class="character-info" id="characterInfo">
+        <div style="color: rgba(232, 232, 232, 0.3); font-size: 0.85rem;">Loading...</div>
+      </div>
 
-  <div class="boardWrap">
-    <div class="board" id="board">
-      <div class="boardHeader"><div class="small">Challenge Mode</div><div class="small">Turn: <strong id="turnLabel">X</strong></div></div>
-      <div class="grid" id="grid"></div>
-      <svg class="svgOverlay" viewBox="0 0 300 300" preserveAspectRatio="none"></svg>
-      <div class="trophy" id="trophy"><div class="cup">🏆</div></div>
-    </div>
-    <div style="display:flex;align-items:center;gap:10px;margin-top:10px">
-      <button class="btn ghost" id="resetBtn">Reset Game</button>
-    </div>
-  </div>
-</div>
-
-<div class="modal" id="modal">
-  <div class="panel">
-    <div class="panelHeader">
-      <div>
-        <div class="small" id="modalTopic">Topic</div>
-        <div style="font-size:13px;color:rgba(255,255,255,0.85)" id="modalSub">5 questions</div>
+      <div class="category-pills" id="categoryPills">
+        <!-- Pills inserted by JavaScript -->
       </div>
     </div>
-    <div class="panelBody" id="panelBody"></div>
-    <div class="panelFooter">
-      <div class="small">Get all correct to claim tile!</div>
-      <div style="display:flex;gap:8px">
-        <button class="btn ghost" id="showAnswersBtn">Show Answers</button>
-        <button class="btn ghost" id="closeBtn">Close</button>
-        <button class="btn primary" id="submitBtn">Submit</button>
+
+    <div class="nav-header">
+      <div class="card-dots-container" id="cardDotsContainer">
+        <!-- Card navigation dots (4) -->
+      </div>
+      <div class="mode-toggle-container">
+        <span class="mode-toggle-label">Full</span>
+        <div class="mode-toggle-switch" id="modeToggleSwitch" onclick="toggleMode()"></div>
+        <span class="mode-toggle-label">Single</span>
       </div>
     </div>
+
+    <div class="match-nav-dots-container" id="matchNavDotsContainer">
+      <!-- Match navigation dots (20) -->
+    </div>
+
+    <div class="score-display">
+      Score: <span class="score-number" id="scoreDisplay">0/20</span>
+    </div>
+
+    <div class="progress-bar">
+      <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+    </div>
+
+    <div class="content-container" id="contentContainer">
+      <div style="display: flex; justify-content: center; align-items: center; height: 100%; color: rgba(232, 232, 232, 0.5); font-size: 0.9rem;">
+        <div style="text-align: center;">
+          <div style="font-size: 2rem; margin-bottom: 0.5rem;">⏳</div>
+          <div>Loading matching game...</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="external-nav" id="externalNav">
+      <button class="external-nav-arrow" id="prevCardBtn" onclick="prevCard()">← Previous Card</button>
+      <button class="external-nav-arrow" id="nextCardBtn" onclick="nextCard()">Next Card →</button>
+    </div>
+
+    <div class="footer" id="footer">
+      <button class="footer-btn" onclick="retryGame()">🔄 Repeat</button>
+      <button class="footer-btn quiz" onclick="goToQuiz()">🎯 Take Quiz →</button>
+      <button class="footer-btn primary" onclick="goHome()">🏠 Home</button>
+    </div>
   </div>
-</div>
-<script>
-const GRID_TOPICS=['Sport','English','Cities','English','Famous People','English','Countries','English','Music'];
-const POOL={Sport:[[{type:'mcq',q:'Which sport uses a shuttlecock?',opts:['Tennis','Badminton','Squash','Table Tennis'],a:1},{type:'mcq',q:'How many players on a basketball court per team?',opts:['5','6','7','8'],a:0},{type:'match',q:'Match sport to equipment',pairs:[['Football','Goal'],['Cricket','Stumps'],['Tennis','Net'],['Golf','Hole']]},{type:'mcq',q:'In which sport do you slam dunk?',opts:['Volleyball','Basketball','Handball','Netball'],a:1},{type:'mcq',q:'Red card in football means?',opts:['Warning','Ejection','Penalty','Timeout'],a:1}],[{type:'mcq',q:'How many Olympic rings?',opts:['4','5','6','7'],a:1},{type:'match',q:'Match athlete to sport',pairs:[['Usain Bolt','Sprinting'],['Serena Williams','Tennis'],['Michael Phelps','Swimming'],['Messi','Football']]},{type:'mcq',q:'Stumps in cricket per end?',opts:['2','3','4','5'],a:1},{type:'mcq',q:'Sport played at Wimbledon?',opts:['Football','Cricket','Tennis','Rugby'],a:2},{type:'mcq',q:'Rugby try points?',opts:['3','4','5','6'],a:2}],[{type:'mcq',q:'Maximum break in snooker?',opts:['137','147','157','167'],a:1},{type:'mcq',q:'Butterfly stroke in which sport?',opts:['Diving','Gymnastics','Swimming','Surfing'],a:2},{type:'match',q:'Match sport to venue',pairs:[['Cricket','Oval'],['Tennis','Court'],['Swimming','Pool'],['Football','Stadium']]},{type:'mcq',q:'Holes in standard golf?',opts:['9','12','18','24'],a:2},{type:'mcq',q:'Which country invented baseball?',opts:['Canada','USA','Cuba','Japan'],a:1}],[{type:'mcq',q:'KO in boxing means?',opts:['Knockout','Technical knockout','Disqualified','Decision'],a:0},{type:'mcq',q:'Sets to win Wimbledon men?',opts:['2','3','4','5'],a:1},{type:'match',q:'Match term to sport',pairs:[['Ace','Tennis'],['Hat-trick','Football'],['Eagle','Golf'],['Strike','Bowling']]},{type:'mcq',q:'Basketball hoop height (feet)?',opts:['8','9','10','11'],a:2},{type:'mcq',q:'"Love" means zero in?',opts:['Badminton','Squash','Tennis','Table Tennis'],a:2}],[{type:'mcq',q:'Rugby union team players?',opts:['13','15','17','19'],a:1},{type:'mcq',q:'Longest track race?',opts:['5000m','10000m','15000m','Marathon'],a:1},{type:'match',q:'Match sport to surface',pairs:[['Ice Hockey','Ice'],['Volleyball','Court'],['Hockey','Grass'],['Basketball','Wood']]},{type:'mcq',q:'FIFA stands for?',opts:['Football International Federation','Fédération Internationale de Football','Federal Football Academy','Football Institute'],a:1},{type:'mcq',q:'Stanley Cup sport?',opts:['Basketball','Ice Hockey','Baseball','American Football'],a:1}]],Music:[[{type:'mcq',q:'Who sang "Shape of You"?',opts:['Ed Sheeran','Shawn Mendes','Justin Bieber','Harry Styles'],a:0},{type:'mcq',q:'Artist of "Bad Guy"?',opts:['Ariana Grande','Billie Eilish','Dua Lipa','Taylor Swift'],a:1},{type:'match',q:'Match artist to song',pairs:[['Taylor Swift','Anti-Hero'],['The Weeknd','Blinding Lights'],['Dua Lipa','Levitating'],['Harry Styles','As It Was']]},{type:'mcq',q:'Coldplay lead singer?',opts:['Chris Martin','Adam Levine','Bruno Mars','John Legend'],a:0},{type:'mcq',q:'K-pop group "Dynamite"?',opts:['BTS','Blackpink','EXO','Twice'],a:0}],[{type:'mcq',q:'Guitar strings?',opts:['4','5','6','7'],a:2},{type:'mcq',q:'88 keys instrument?',opts:['Keyboard','Organ','Piano','Synth'],a:2},{type:'match',q:'Match instrument family',pairs:[['Trumpet','Brass'],['Flute','Woodwind'],['Violin','String'],['Drums','Percussion']]},{type:'mcq',q:'Orchestra biggest instrument?',opts:['Tuba','Double Bass','Harp','Organ'],a:1},{type:'mcq',q:'Mouth organ is?',opts:['Flute','Harmonica','Piccolo','Recorder'],a:1}],[{type:'mcq',q:'Who sang "Uptown Funk"?',opts:['Bruno Mars','Jason Derulo','Pharrell','Usher'],a:0},{type:'match',q:'Match band to genre',pairs:[['Imagine Dragons','Alt Rock'],['One Direction','Boy Band'],['Twenty One Pilots','Alternative'],['Maroon 5','Pop Rock']]},{type:'mcq',q:'"Midnights" album artist?',opts:['Ariana Grande','Selena Gomez','Taylor Swift','Miley Cyrus'],a:2},{type:'mcq',q:'Queen of Pop?',opts:['Beyoncé','Madonna','Lady Gaga','Rihanna'],a:1},{type:'mcq',q:'Rapper married to Beyoncé?',opts:['Drake','Jay-Z','Kanye West','Travis Scott'],a:1}],[{type:'mcq',q:'"Tempo" means?',opts:['Volume','Speed','Pitch','Rhythm'],a:1},{type:'mcq',q:'Group of singers called?',opts:['Band','Choir','Orchestra','Ensemble'],a:1},{type:'match',q:'Match term to meaning',pairs:[['Solo','One performer'],['Duet','Two performers'],['Trio','Three performers'],['Quartet','Four performers']]},{type:'mcq',q:'Longest note duration?',opts:['Whole','Half','Quarter','Eighth'],a:0},{type:'mcq',q:'Lines music is written on?',opts:['Bar','Staff','Clef','Measure'],a:1}],[{type:'mcq',q:'Who sang "Flowers" 2023?',opts:['Miley Cyrus','Selena Gomez','Dua Lipa','Ariana Grande'],a:0},{type:'match',q:'Match artist nationality',pairs:[['Adele','British'],['Drake','Canadian'],['Bad Bunny','Puerto Rican'],['Post Malone','American']]},{type:'mcq',q:'Most popular music streaming?',opts:['Apple Music','Spotify','YouTube Music','Amazon Music'],a:1},{type:'mcq',q:'Shawn Mendes plays?',opts:['Piano','Drums','Guitar','Keyboard'],a:2},{type:'mcq',q:'Elvis helped popularize?',opts:['Jazz','Rock and Roll','Blues','Country'],a:1}]],Cities:[[{type:'mcq',q:'Capital of Kazakhstan?',opts:['Almaty','Nur-Sultan','Astana','Tashkent'],a:2},{type:'mcq',q:'Capital of Myanmar?',opts:['Yangon','Bangkok','Naypyidaw','Mandalay'],a:2},{type:'match',q:'Match capital to country',pairs:[['Canberra','Australia'],['Pretoria','South Africa'],['Ottawa','Canada'],['Bern','Switzerland']]},{type:'mcq',q:'Capital of Sri Lanka?',opts:['Colombo','Kandy','Sri Jayawardenepura Kotte','Galle'],a:2},{type:'mcq',q:'Capital of Nigeria?',opts:['Lagos','Abuja','Kano','Ibadan'],a:1}],[{type:'mcq',q:'City on two continents?',opts:['Cairo','Istanbul','Athens','Dubai'],a:1},{type:'match',q:'City features',pairs:[['Venice','Canals'],['Dubai','Desert towers'],['Singapore','Island'],['Amsterdam','Below sea']]},{type:'mcq',q:'Highest capital city?',opts:['Quito','Kathmandu','La Paz','Bogotá'],a:2},{type:'mcq',q:'City on 14 islands?',opts:['Venice','Stockholm','Amsterdam','Copenhagen'],a:1},{type:'mcq',q:'Most populous African city?',opts:['Cairo','Lagos','Kinshasa','Johannesburg'],a:1}],[{type:'mcq',q:'"Pearl of Adriatic"?',opts:['Venice','Split','Dubrovnik','Trieste'],a:2},{type:'match',q:'City nicknames',pairs:[['New Orleans','Big Easy'],['Seattle','Emerald City'],['Detroit','Motor City'],['Las Vegas','Sin City']]},{type:'mcq',q:'"City of Hundred Spires"?',opts:['Prague','Budapest','Vienna','Krakow'],a:0},{type:'mcq',q:'"Granite City" UK?',opts:['Edinburgh','Glasgow','Aberdeen','Dundee'],a:2},{type:'mcq',q:'"Lion City" is?',opts:['Bangkok','Singapore','Hong Kong','Kuala Lumpur'],a:1}],[{type:'mcq',q:'Constantinople is now?',opts:['Athens','Istanbul','Damascus','Baghdad'],a:1},{type:'mcq',q:'Inca Empire capital?',opts:['Lima','Cusco','Machu Picchu','Quito'],a:1},{type:'match',q:'Ancient cities',pairs:[['Rome','Romans'],['Athens','Greeks'],['Cairo','Egyptians'],['Beijing','Chinese']]},{type:'mcq',q:'Oldest continuously inhabited?',opts:['Damascus','Jerusalem','Jericho','Athens'],a:0},{type:'mcq',q:'Pompeii destroyed by?',opts:['Earthquake','Vesuvius','Flood','War'],a:1}],[{type:'mcq',q:'Most visited city?',opts:['Paris','London','Bangkok','Dubai'],a:2},{type:'match',q:'City to river',pairs:[['London','Thames'],['Paris','Seine'],['Cairo','Nile'],['New York','Hudson']]},{type:'mcq',q:'Venice built on?',opts:['Mountains','Islands','Desert','Cliffs'],a:1},{type:'mcq',q:'Machu Picchu country?',opts:['Peru','Bolivia','Chile','Ecuador'],a:0},{type:'mcq',q:'Tallest building city?',opts:['Dubai','New York','Shanghai','Kuala Lumpur'],a:0}]],Countries:[[{type:'mcq',q:'Largest country by area?',opts:['Canada','China','Russia','USA'],a:2},{type:'mcq',q:'Most populous country?',opts:['India','China','USA','Indonesia'],a:0},{type:'match',q:'Country to continent',pairs:[['Brazil','S America'],['Egypt','Africa'],['Thailand','Asia'],['Germany','Europe']]},{type:'mcq',q:'Smallest country?',opts:['Monaco','Vatican City','Liechtenstein','San Marino'],a:1},{type:'mcq',q:'Country with most islands?',opts:['Philippines','Indonesia','Sweden','Japan'],a:2}],[{type:'mcq',q:'Which has no capital?',opts:['Vatican','Nauru','Monaco','Liechtenstein'],a:1},{type:'match',q:'Country currencies',pairs:[['Japan','Yen'],['UK','Pound'],['Mexico','Peso'],['India','Rupee']]},{type:'mcq',q:'Landlocked in Asia?',opts:['Mongolia','Myanmar','Vietnam','Pakistan'],a:0},{type:'mcq',q:'Longest coastline?',opts:['Russia','Canada','Indonesia','USA'],a:1},{type:'mcq',q:'African countries count?',opts:['44','54','64','74'],a:1}],[{type:'mcq',q:'Amazon rainforest mainly?',opts:['Colombia','Peru','Brazil','Venezuela'],a:2},{type:'mcq',q:'Mount Everest border?',opts:['India-China','Nepal-China','Pakistan-China','Bhutan-China'],a:1},{type:'match',q:'Landmark to country',pairs:[['Taj Mahal','India'],['Great Wall','China'],['Eiffel Tower','France'],['Statue of Liberty','USA']]},{type:'mcq',q:'Sahara Desert mainly in?',opts:['Egypt','Algeria','Libya','Morocco'],a:1},{type:'mcq',q:'Country in 4 hemispheres?',opts:['Indonesia','Ecuador','Kiribati','Kenya'],a:2}],[{type:'mcq',q:'Language in Brazil?',opts:['Spanish','Portuguese','French','English'],a:1},{type:'match',q:'Country shapes',pairs:[['Italy','Boot'],['Chile','Thin strip'],['Japan','Archipelago'],['Greece','Peninsula']]},{type:'mcq',q:'Home of kangaroos?',opts:['New Zealand','Australia','Papua New Guinea','Indonesia'],a:1},{type:'mcq',q:'Pyramids of Giza in?',opts:['Egypt','Sudan','Mexico','Guatemala'],a:0},{type:'mcq',q:'Largest island country?',opts:['Indonesia','Madagascar','Philippines','Japan'],a:0}],[{type:'mcq',q:'Neutral in both World Wars?',opts:['Sweden','Switzerland','Spain','Portugal'],a:1},{type:'mcq',q:'Youngest country (2011)?',opts:['Kosovo','South Sudan','East Timor','Montenegro'],a:1},{type:'match',q:'Country to flag colors',pairs:[['France','Blue-White-Red'],['Italy','Green-White-Red'],['Germany','Black-Red-Yellow'],['Spain','Red-Yellow-Red']]},{type:'mcq',q:'Land of rising sun?',opts:['China','Japan','South Korea','Thailand'],a:1},{type:'mcq',q:'Down Under refers to?',opts:['Australia','New Zealand','South Africa','Argentina'],a:0}]],'Famous People':[[{type:'mcq',q:'First man on moon?',opts:['Buzz Aldrin','Neil Armstrong','Yuri Gagarin','John Glenn'],a:1},{type:'mcq',q:'Painted Mona Lisa?',opts:['Michelangelo','Leonardo da Vinci','Raphael','Donatello'],a:1},{type:'match',q:'Person to achievement',pairs:[['Einstein','Relativity'],['Newton','Gravity'],['Darwin','Evolution'],['Galileo','Telescope']]},{type:'mcq',q:'Invented telephone?',opts:['Edison','Bell','Tesla','Marconi'],a:1},{type:'mcq',q:'Wrote Romeo & Juliet?',opts:['Dickens','Shakespeare','Austen','Twain'],a:1}],[{type:'mcq',q:'Youngest Nobel Peace Prize?',opts:['Malala','Obama','Mother Teresa','MLK'],a:0},{type:'match',q:'Leader to country',pairs:[['Churchill','UK'],['Gandhi','India'],['Mandela','S Africa'],['Lincoln','USA']]},{type:'mcq',q:'I have a dream speech?',opts:['Malcolm X','MLK','JFK','Obama'],a:1},{type:'mcq',q:'First female PM UK?',opts:['May','Thatcher','Truss','Merkel'],a:1},{type:'mcq',q:'Apple founder?',opts:['Gates','Jobs','Zuckerberg','Bezos'],a:1}],[{type:'mcq',q:'Harry Potter author?',opts:['Rowling','Tolkien','Lewis','Dahl'],a:0},{type:'mcq',q:'Facebook founder?',opts:['Musk','Zuckerberg','Dorsey','Bezos'],a:1},{type:'match',q:'Inventor to invention',pairs:[['Wright Bros','Airplane'],['Edison','Light bulb'],['Ford','Assembly line'],['Bell','Telephone']]},{type:'mcq',q:'Theory of evolution?',opts:['Darwin','Mendel','Lamarck','Wallace'],a:0},{type:'mcq',q:'Discovered penicillin?',opts:['Pasteur','Fleming','Curie','Jenner'],a:1}],[{type:'mcq',q:'Basketball icon 23?',opts:['LeBron','Kobe','Jordan','Magic'],a:2},{type:'match',q:'Artist to masterpiece',pairs:[['Van Gogh','Starry Night'],['Picasso','Guernica'],['Monet','Water Lilies'],['Da Vinci','Mona Lisa']]},{type:'mcq',q:'First woman in space?',opts:['Sally Ride','Valentina Tereshkova','Svetlana Savitskaya','Mae Jemison'],a:1},{type:'mcq',q:'Microsoft founder?',opts:['Jobs','Gates','Zuckerberg','Musk'],a:1},{type:'mcq',q:'Youngest self-made billionaire?',opts:['Zuckerberg','Kylie Jenner','Bezos','Musk'],a:1}],[{type:'mcq',q:'First Black US President?',opts:['Obama','Biden','Clinton','Bush'],a:0},{type:'mcq',q:'Titanic director?',opts:['Spielberg','Cameron','Nolan','Tarantino'],a:1},{type:'match',q:'Scientist to field',pairs:[['Hawking','Physics'],['Curie','Chemistry'],['Freud','Psychology'],['Turing','Computing']]},{type:'mcq',q:'Wrote 1984?',opts:['Huxley','Orwell','Bradbury','Atwood'],a:1},{type:'mcq',q:'Most Olympic golds?',opts:['Bolt','Phelps','Biles','Ohno'],a:1}]],English:[[{type:'mcq',q:'The committee ___ yet to reach a consensus on the proposal.',opts:['has','have','are','is being'],a:0},{type:'mcq',q:'Which sentence demonstrates correct subjunctive mood?',opts:['If I was you, I would reconsider','Were he to arrive, we could proceed','If she was here, things would differ','I wish I was able to attend'],a:1},{type:'match',q:'Match advanced vocabulary',pairs:[['Egregious','Outstandingly bad'],['Insidious','Proceeding harmfully but subtly'],['Obfuscate','Make unclear'],['Taciturn','Reserved in speech']]},{type:'mcq',q:'The discovery ___ profound implications for theoretical physics.',opts:['rises','raises','arises','has arose'],a:1},{type:'mcq',q:'Select the sentence with correct parallel structure:',opts:['She enjoys reading, writing, and to paint','The report was thorough, detailed, and coherence','He likes hiking, swimming, and to cycle','The solution was innovative, cost-effective, and practical'],a:3}],[{type:'mcq',q:'"To take umbrage at" means to:',opts:['Seek shelter from','Feel offended by','Take advantage of','Provide protection for'],a:1},{type:'match',q:'Match idiomatic expressions',pairs:[['Red herring','Misleading clue'],['Devil\'s advocate','Contrarian position'],['Catch-22','Paradoxical situation'],['Achilles heel','Critical weakness']]},{type:'mcq',q:'"His arguments were specious." This means they were:',opts:['Particularly insightful','Superficially plausible but false','Well-researched','Extremely controversial'],a:1},{type:'mcq',q:'To "belabor the point" is to:',opts:['Work hard on an argument','Excessively repeat or dwell on something','Strengthen one\'s position','Delegate the argument'],a:1},{type:'mcq',q:'"The decision was arbitrary and capricious." This suggests it was:',opts:['Well-considered and fair','Random and unpredictable','Legally binding','Carefully documented'],a:1}],[{type:'mcq',q:'Identify the zeugma: ',opts:['She broke his car and his heart','Time flies like an arrow','The pen is mightier than the sword','All that glitters is not gold'],a:0},{type:'mcq',q:'Which demonstrates effective use of chiasmus?',opts:['Ask not what your country can do for you—ask what you can do for your country','The more things change, the more they stay the same','To be or not to be','It was the best of times, it was the worst of times'],a:0},{type:'match',q:'Match rhetorical devices',pairs:[['Anadiplosis','End-to-beginning repetition'],['Anaphora','Repetition at start'],['Epistrophe','Repetition at end'],['Polysyndeton','Excess conjunctions']]},{type:'mcq',q:'"The report evinced a bias." "Evinced" means:',opts:['Concealed','Revealed clearly','Criticized','Eliminated'],a:1},{type:'mcq',q:'A "prolix" writing style is:',opts:['Concise and clear','Unnecessarily wordy','Highly technical','Emotionally evocative'],a:1}],[{type:'mcq',q:'Which word means "using few words"?',opts:['Verbose','Loquacious','Laconic','Garrulous'],a:2},{type:'match',q:'Match nuanced synonyms',pairs:[['Ameliorate','Improve/make better'],['Exacerbate','Worsen/aggravate'],['Mitigate','Reduce severity'],['Obviate','Eliminate/prevent']]},{type:'mcq',q:'"Verisimilitude" refers to:',opts:['Truth itself','Appearance of truth','Complete falsehood','Statistical probability'],a:1},{type:'mcq',q:'Something "ineffable" is:',opts:['Highly efficient','Too great to describe in words','Completely useless','Easily understood'],a:1},{type:'mcq',q:'"To prevaricate" means to:',opts:['Prepare in advance','Speak evasively','Prevent occurrence','Value highly'],a:1}],[{type:'mcq',q:'The correct form: "Neither the director nor the actors ___ satisfied."',opts:['was','were','is','has been'],a:1},{type:'mcq',q:'Which uses the conditional perfect correctly?',opts:['If I would have known, I would come','Had I known, I would have come','If I knew, I would have come','Should I have known, I would come'],a:1},{type:'match',q:'Match grammatical terms',pairs:[['Appositive','Noun phrase renaming another'],['Gerund','Verb form as noun'],['Participle','Verb form as adjective'],['Infinitive','Base verb form']]},{type:'mcq',q:'"Scarcely had we arrived ___ it started raining."',opts:['than','when','then','as'],a:1},{type:'mcq',q:'The proper construction: "I would rather ___ at home."',opts:['to stay','staying','stay','stayed'],a:2}],[{type:'mcq',q:'A "sanguine" outlook is:',opts:['Pessimistic','Optimistic and confident','Bloody','Realistic'],a:1},{type:'match',q:'Match tone descriptors',pairs:[['Sardonic','Scornfully mocking'],['Didactic','Instructive/preachy'],['Elegiac','Mournfully reflective'],['Pedantic','Ostentatiously learned']]},{type:'mcq',q:'"His mendacious testimony" means it was:',opts:['Truthful','Untruthful/false','Unclear','Brief'],a:1},{type:'mcq',q:'"She was nonplussed by the question." She was:',opts:['Unimpressed','Puzzled/confused','Angry','Delighted'],a:1},{type:'mcq',q:'Something "quotidian" is:',opts:['Rare and special','Daily and ordinary','Ancient','Numerical'],a:1}],[{type:'mcq',q:'Which is correct?',opts:['The data is conclusive','The data are conclusive','The datas are conclusive','The data be conclusive'],a:1},{type:'mcq',q:'"Not only did he fail ___ he refused to try again."',opts:['but also','and','however','yet'],a:0},{type:'match',q:'Match complex constructions',pairs:[['Subjunctive','Hypothetical mood'],['Pluperfect','Past before past'],['Future perfect','Completed future action'],['Present perfect continuous','Ongoing to now']]},{type:'mcq',q:'"The committee ___ their decision next week."',opts:['will announce','will be announcing','are to announce','Both A and C correct'],a:3},{type:'mcq',q:'Correct usage: "The number of complaints ___ increased."',opts:['have','has','are','were'],a:1}]]};
-let playerTurn='X',scores=JSON.parse(localStorage.getItem('intuity_scores')||'{}');if(!scores.X)scores={X:0,O:0};
-let boardState=Array(9).fill(null),winsDrawn=false,matchingState={firstClick:null,pairs:[],answered:false};
-let cellAttempts={},currentLoadedSetId=null,activeIndex=null;
-const grid=document.getElementById('grid'),modal=document.getElementById('modal'),panelBody=document.getElementById('panelBody');
-const modalTopic=document.getElementById('modalTopic'),modalSub=document.getElementById('modalSub');
 
-for(let i=0;i<9;i++){
-  const cell=document.createElement('div');
-  cell.className='cell';cell.dataset.index=i;cell.dataset.topic=GRID_TOPICS[i];
-  const lab=document.createElement('div');lab.className='label';lab.textContent=GRID_TOPICS[i];
-  const sym=document.createElement('div');sym.className='symbol';sym.textContent='+';
-  cell.append(lab,sym);grid.appendChild(cell);
-}
+  <script src="../assets/js/progress-tracker.js"></script>
 
-function updatePlayerHighlight(){
-  document.getElementById('playerX').classList.toggle('active',playerTurn==='X');
-  document.getElementById('playerO').classList.toggle('active',playerTurn==='O');
-}
+  <script>
+    // ============================================
+    // GLOBAL STATE
+    // ============================================
+    
+    let selectionData = null;
+    let grammarData = null;
+    let characterData = null;
+    let currentMode = 'full'; // 'full' or 'single'
+    
+    let currentCardIndex = 0;
+    let userMatches = {}; // Store all matches by index
+    let cardVerbs = [];
+    let selectedVerb = null;
+    let selectedObject = null;
 
-function getRandomQuestionSet(cellIndex){
-  const topic=GRID_TOPICS[cellIndex],questionSets=POOL[topic]||[];
-  if(questionSets.length===0)return null;
-  if(!cellAttempts[cellIndex])cellAttempts[cellIndex]=[];
-  const usedIds=cellAttempts[cellIndex],availableIds=[];
-  for(let i=0;i<questionSets.length;i++)if(!usedIds.includes(i))availableIds.push(i);
-  if(availableIds.length===0){cellAttempts[cellIndex]=[];for(let i=0;i<questionSets.length;i++)availableIds.push(i);}
-  const randomId=availableIds[Math.floor(Math.random()*availableIds.length)];
-  cellAttempts[cellIndex].push(randomId);
-  return{id:randomId,questions:questionSets[randomId]};
-}
+    // ============================================
+    // LOAD DATA
+    // ============================================
+    
+    async function loadData() {
+      try {
+        const stored = sessionStorage.getItem('selectionData');
+        
+        if (!stored) {
+          showError('No selection found. Please start from the home page.');
+          return false;
+        }
 
-function openModal(index){
-  if(boardState[index]&&boardState[index].perfect)return;
-  activeIndex=index;matchingState={firstClick:null,pairs:[],answered:false};
-  const topic=GRID_TOPICS[index];modalTopic.textContent=topic;
-  const questionSet=getRandomQuestionSet(index);
-  if(!questionSet){alert('No questions available!');return;}
-  currentLoadedSetId=questionSet.id;modalSub.textContent=`${questionSet.questions.length} questions`;
-  renderQuestions(questionSet.questions);modal.classList.add('show');
-  document.getElementById('board').classList.add('hidden');
-  document.querySelector(`.cell[data-index='${index}']`).classList.add('activeEdge');
-}
+        selectionData = JSON.parse(stored);
+        console.log('📥 Selection loaded:', selectionData);
 
-function closeModal(){
-  modal.classList.remove('show');document.getElementById('board').classList.remove('hidden');
-  if(activeIndex!==null)document.querySelector(`.cell[data-index='${activeIndex}']`).classList.remove('activeEdge');
-  activeIndex=null;currentLoadedSetId=null;matchingState={firstClick:null,pairs:[],answered:false};
-}
+        console.log('📥 Fetching grammar-modes.json...');
+        const response = await fetch('../data/grammar-modes.json');
+        
+        if (!response.ok) {
+          throw new Error(`Failed to load grammar-modes.json: ${response.status}`);
+        }
 
-function showAnswers(){
-  if(activeIndex===null)return;
-  const topic=GRID_TOPICS[activeIndex],questionSets=POOL[topic]||[],qset=questionSets[currentLoadedSetId]||[];
-  const qDivs=Array.from(panelBody.querySelectorAll('.q'));
-  qset.forEach((q,i)=>{
-    const qdiv=qDivs[i];if(!qdiv)return;
-    if(q.type==='mcq'){
-      const all=qdiv.querySelectorAll('.choice');
-      all.forEach(ch=>{ch.classList.remove('selected','wrong');if(Number(ch.dataset.sel)===q.a)ch.classList.add('correct');});
-    }else if(q.type==='match'){
-      const choices=qdiv.querySelectorAll('.choice');
-      choices.forEach(ch=>ch.classList.remove('selected','matched','wrong'));
-      q.pairs.forEach(pair=>choices.forEach(ch=>{if(ch.dataset.value===pair[0]||ch.dataset.value===pair[1])ch.classList.add('correct');}));
-      qdiv.dataset.pairs=JSON.stringify(q.pairs.map(p=>[p[0],p[1]]));
+        grammarData = await response.json();
+        console.log('✅ Grammar data loaded');
+
+        const charKey = selectionData.characterKey;
+        const category = selectionData.category;
+
+        if (!grammarData[charKey]) {
+          throw new Error(`Character '${charKey}' not found`);
+        }
+
+        if (!grammarData[charKey].categories[category]) {
+          throw new Error(`Category '${category}' not found for ${charKey}`);
+        }
+
+        const categoryData = grammarData[charKey].categories[category];
+        
+        if (!categoryData.sets || !categoryData.sets[0] || !categoryData.sets[0].verbs) {
+          throw new Error(`No verbs found in ${category} for ${charKey}`);
+        }
+
+        const verbs = categoryData.sets[0].verbs.slice(0, 20);
+
+        if (verbs.length < 20) {
+          throw new Error(`Not enough verbs (found ${verbs.length}, need 20)`);
+        }
+
+        characterData = {
+          name: selectionData.characterName,
+          emoji: selectionData.characterEmoji,
+          category: selectionData.categoryTitle,
+          verbs: verbs
+        };
+
+        // Update character display
+        document.getElementById('characterInfo').innerHTML = `
+          <div class="character-display">
+            <span class="character-emoji">${characterData.emoji}</span>
+            <span class="character-name">${characterData.name}</span>
+          </div>
+        `;
+       
+        renderCategoryPills();
+
+        console.log('✅ Matching game ready with', characterData.verbs.length, 'verbs');
+        return true;
+
+      } catch (error) {
+        console.error('❌ Error loading data:', error);
+        showError(`Failed to load data: ${error.message}`);
+        return false;
+      }
     }
-  });
-}
 
-function renderQuestions(qset){
-  panelBody.innerHTML='';
-  qset.forEach((q,i)=>{
-    const qdiv=document.createElement('div');qdiv.className='q';qdiv.dataset.qindex=i;
-    const h=document.createElement('h4');h.textContent=`Q${i+1}. ${q.q}`;qdiv.appendChild(h);
-    if(q.type==='mcq'){
-      const ch=document.createElement('div');ch.className='choices';
-      q.opts.forEach((opt,oi)=>{
-        const b=document.createElement('button');b.className='choice';b.textContent=opt;b.dataset.sel=oi;
-        b.addEventListener('click',()=>onSelectChoice(b,q,i));ch.appendChild(b);
+    function showError(message) {
+      document.body.innerHTML = `
+        <div style="
+          position: fixed;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          background: #1a1a1a;
+          padding: 2rem;
+          border-radius: 16px;
+          box-shadow: 16px 16px 32px #000000;
+          text-align: center;
+          max-width: 400px;
+          z-index: 10000;
+        ">
+          <h2 style="color: #fb923c; margin-bottom: 1rem; font-family: 'Space Grotesk', sans-serif;">⚠️ Error</h2>
+          <p style="color: rgba(232, 232, 232, 0.8); margin-bottom: 1.5rem; font-size: 0.9rem;">${message}</p>
+          <button onclick="window.location.href='../index.html'" style="
+            background: rgba(201, 169, 97, 0.2);
+            border: none;
+            border-radius: 12px;
+            padding: 0.875rem 1.5rem;
+            color: #C9A961;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 6px 6px 12px #000000;
+          ">🏠 Return to Home</button>
+        </div>
+      `;
+    }
+
+    // ============================================
+    // CATEGORY PILLS
+    // ============================================
+
+    function renderCategoryPills() {
+      const pillsContainer = document.getElementById('categoryPills');
+      const categories = ProgressTracker.CATEGORIES;
+      const charKey = selectionData.characterKey;
+      const currentCat = selectionData.category;
+
+      pillsContainer.innerHTML = '';
+
+      Object.keys(categories).forEach(catKey => {
+        const cat = categories[catKey];
+        const progress = ProgressTracker.getCategoryProgress(charKey, catKey);
+
+        const pill = document.createElement('div');
+        pill.className = 'category-pill';
+        if (catKey === currentCat) pill.classList.add('active');
+        if (progress.trophy) pill.classList.add('completed');
+
+        pill.innerHTML = `<span>${cat.icon}</span><span>${cat.name}</span>`;
+        
+        pill.addEventListener('click', () => switchCategory(catKey));
+        pillsContainer.appendChild(pill);
       });
-      qdiv.appendChild(ch);
-    }else if(q.type==='match'){
-      const container=document.createElement('div');container.className='matchContainer';
-      const left=document.createElement('div');left.className='matchLeft';
-      const shuffledLeft=q.pairs.slice().sort(()=>0.5-Math.random());
-      shuffledLeft.forEach((p,pi)=>{
-        const item=document.createElement('button');item.className='choice';item.textContent=p[0];
-        item.dataset.value=p[0];item.dataset.side='left';item.dataset.leftindex=pi;
-        item.addEventListener('click',()=>onMatchClick(item,qdiv,q));left.appendChild(item);
+    }
+
+    function switchCategory(newCategory) {
+      if (newCategory === selectionData.category) return;
+
+      const categoryInfo = ProgressTracker.CATEGORIES[newCategory];
+      
+      selectionData.category = newCategory;
+      selectionData.categoryTitle = categoryInfo.name;
+      selectionData.categoryIcon = categoryInfo.icon;
+
+      sessionStorage.setItem('selectionData', JSON.stringify(selectionData));
+      
+      showCelebration('🔄');
+      setTimeout(() => {
+        location.reload();
+      }, 500);
+    }
+
+    // ============================================
+    // PREPARE CARD DATA
+    // ============================================
+    
+    function prepareCardData() {
+      cardVerbs = [
+        characterData.verbs.slice(0, 5),
+        characterData.verbs.slice(5, 10),
+        characterData.verbs.slice(10, 15),
+        characterData.verbs.slice(15, 20)
+      ];
+    }
+
+    // ============================================
+    // MODE TOGGLE
+    // ============================================
+
+    function toggleMode() {
+      const toggleSwitch = document.getElementById('modeToggleSwitch');
+      
+      if (currentMode === 'full') {
+        currentMode = 'single';
+        toggleSwitch.classList.add('active');
+      } else {
+        currentMode = 'full';
+        toggleSwitch.classList.remove('active');
+      }
+      
+      renderContent();
+      updateExternalNav();
+    }
+
+    // ============================================
+    // RENDER NAVIGATION DOTS
+    // ============================================
+
+    function renderCardDots() {
+      const container = document.getElementById('cardDotsContainer');
+      container.innerHTML = '';
+      
+      for (let i = 0; i < 4; i++) {
+        const dot = document.createElement('div');
+        dot.className = 'card-dot';
+        
+        if (i === currentCardIndex) {
+          dot.classList.add('current');
+        }
+        
+        const cardComplete = isCardComplete(i);
+        if (cardComplete) {
+          dot.classList.add('completed');
+        }
+        
+        dot.addEventListener('click', () => goToCard(i));
+        container.appendChild(dot);
+      }
+    }
+
+    function renderMatchNavDots() {
+      const container = document.getElementById('matchNavDotsContainer');
+      
+      if (currentMode === 'single') {
+        container.classList.add('hidden-single');
+      } else {
+        container.classList.remove('hidden-single');
+      }
+      
+      container.innerHTML = '';
+      
+      for (let i = 0; i < 20; i++) {
+        const dot = document.createElement('div');
+        dot.className = 'match-nav-dot';
+        
+        if (userMatches[i]) {
+          dot.classList.add('completed');
+        }
+        
+        dot.addEventListener('click', () => jumpToMatch(i));
+        container.appendChild(dot);
+      }
+    }
+
+    function jumpToMatch(matchIndex) {
+      const cardIdx = Math.floor(matchIndex / 5);
+      goToCard(cardIdx);
+    }
+
+    function isCardComplete(cardIndex) {
+      const startIdx = cardIndex * 5;
+      for (let i = 0; i < 5; i++) {
+        if (!userMatches[startIdx + i]) return false;
+      }
+      return true;
+    }
+
+    // ============================================
+    // RENDER CONTENT (UNIFIED)
+    // ============================================
+    
+    function renderContent() {
+      const container = document.getElementById('contentContainer');
+      
+      if (currentMode === 'full') {
+        renderFullMode(container);
+      } else {
+        renderSingleMode(container);
+      }
+      
+      attachMatchingListeners();
+    }
+
+    function renderFullMode(container) {
+      container.innerHTML = '<div class="cards-list"></div>';
+      const list = container.querySelector('.cards-list');
+      
+      for (let cardIndex = 0; cardIndex < 4; cardIndex++) {
+        const card = createCardElement(cardIndex);
+        if (cardIndex === currentCardIndex) {
+          card.classList.add('current-card');
+        }
+        list.appendChild(card);
+      }
+    }
+
+    function renderSingleMode(container) {
+      container.innerHTML = '<div class="single-card-container"></div>';
+      const singleContainer = container.querySelector('.single-card-container');
+      
+      const card = createCardElement(currentCardIndex);
+      card.classList.add('current-card');
+      singleContainer.appendChild(card);
+    }
+
+    function createCardElement(cardIndex) {
+      const card = document.createElement('div');
+      card.className = 'matching-card';
+      
+      const verbs = cardVerbs[cardIndex];
+      const startIdx = cardIndex * 5;
+      
+      const shuffledObjects = verbs.map((v, i) => ({
+        object: v.object,
+        emoji: v.emoji,
+        correctVerb: v.verb,
+        matchIdx: startIdx + i
+      })).sort(() => Math.random() - 0.5);
+
+      const verbsHTML = verbs.map((v, i) => {
+        const matchIdx = startIdx + i;
+        const isMatched = userMatches[matchIdx];
+        const classes = `match-item ${isMatched ? 'correct' : ''}`;
+        
+        return `
+          <div class="${classes}" data-type="verb" data-value="${v.verb}" data-match-idx="${matchIdx}">
+            ${v.verb}
+          </div>
+        `;
+      }).join('');
+
+      const objectsHTML = shuffledObjects.map((obj) => {
+        const isMatched = userMatches[obj.matchIdx];
+        const classes = `match-item ${isMatched ? 'correct' : ''}`;
+        
+        return `
+          <div class="${classes}" data-type="object" data-value="${obj.object}" data-correct="${obj.correctVerb}" data-match-idx="${obj.matchIdx}">
+            ${obj.object} <span class="emoji">${obj.emoji}</span>
+          </div>
+        `;
+      }).join('');
+
+      card.innerHTML = `
+        <div class="card-title">Match ${cardIndex + 1}/4: Verbs & Objects</div>
+        <div class="matching-area">
+          <div class="column">${verbsHTML}</div>
+          <div class="column">${objectsHTML}</div>
+        </div>
+      `;
+      
+      return card;
+    }
+
+    // ============================================
+    // MATCHING LOGIC
+    // ============================================
+    
+    function attachMatchingListeners() {
+      document.querySelectorAll('.match-item').forEach(item => {
+        item.addEventListener('click', handleItemClick);
       });
-      const right=document.createElement('div');right.className='matchRight';
-      const shuffledRight=q.pairs.slice().sort(()=>0.5-Math.random());
-      shuffledRight.forEach((p,pi)=>{
-        const b=document.createElement('button');b.className='choice';b.textContent=p[1];
-        b.dataset.value=p[1];b.dataset.side='right';b.dataset.rightindex=pi;
-        b.addEventListener('click',()=>onMatchClick(b,qdiv,q));right.appendChild(b);
-      });
-      container.append(left,right);qdiv.appendChild(container);
     }
-    panelBody.appendChild(qdiv);
-  });
-}
 
-function onSelectChoice(btn,q,i){
-  const parent=btn.parentElement;
-  parent.querySelectorAll('.choice').forEach(x=>x.classList.remove('selected'));
-  btn.classList.add('selected');btn.closest('.q').dataset.selected=btn.dataset.sel;
-}
-
-function onMatchClick(btn,qdiv,q){
-  if(btn.classList.contains('matched'))return;
-  if(!matchingState.firstClick){btn.classList.add('selected');matchingState.firstClick=btn;}
-  else if(btn===matchingState.firstClick){btn.classList.remove('selected');matchingState.firstClick=null;}
-  else if(btn.dataset.side===matchingState.firstClick.dataset.side){
-    matchingState.firstClick.classList.remove('selected');btn.classList.add('selected');matchingState.firstClick=btn;
-  }else{
-    const first=matchingState.firstClick,second=btn;
-    first.classList.remove('selected');first.classList.add('matched');second.classList.add('matched');
-    matchingState.pairs.push([first.dataset.value,second.dataset.value]);matchingState.firstClick=null;
-    qdiv.dataset.pairs=JSON.stringify(matchingState.pairs);
-  }
-}
-
-function submitAnswers(){
-  if(activeIndex===null)return;
-  const topic=GRID_TOPICS[activeIndex],questionSets=POOL[topic]||[],qset=questionSets[currentLoadedSetId]||[];
-  const qDivs=Array.from(panelBody.querySelectorAll('.q'));let correctCount=0;
-  qset.forEach((q,i)=>{
-    const qdiv=qDivs[i];if(!qdiv)return;
-    if(q.type==='mcq'){
-      const sel=qdiv.querySelector('.choice.selected');
-      if(sel&&Number(sel.dataset.sel)===q.a){correctCount++;sel.classList.add('correct');}
-      else{if(sel)sel.classList.add('wrong');
-        qdiv.querySelectorAll('.choice').forEach(ch=>{if(Number(ch.dataset.sel)===q.a)ch.classList.add('correct');});}
-    }else if(q.type==='match'){
-      const pairs=JSON.parse(qdiv.dataset.pairs||'[]');let allCorrect=true;
-      if(pairs.length!==q.pairs.length)allCorrect=false;
-      else pairs.forEach(userPair=>{if(!q.pairs.some(correctPair=>userPair.includes(correctPair[0])&&userPair.includes(correctPair[1])))allCorrect=false;});
-      const choices=qdiv.querySelectorAll('.choice');
-      if(allCorrect){correctCount++;choices.forEach(ch=>ch.classList.add('correct'));}
-      else choices.forEach(ch=>{if(ch.classList.contains('matched'))ch.classList.add('wrong');});
+    function handleItemClick(e) {
+      const item = e.currentTarget;
+      const matchIdx = parseInt(item.dataset.matchIdx);
+      const cardIdx = Math.floor(matchIdx / 5);
+      
+      if (currentMode === 'single' && cardIdx !== currentCardIndex) return;
+      if (item.classList.contains('correct')) return;
+      
+      const type = item.dataset.type;
+      
+      if (type === 'verb') {
+        document.querySelectorAll(`.match-item[data-type="verb"]`).forEach(v => {
+          const vIdx = parseInt(v.dataset.matchIdx);
+          const vCard = Math.floor(vIdx / 5);
+          if (vCard === cardIdx) {
+            v.classList.remove('selected');
+          }
+        });
+        item.classList.add('selected');
+        selectedVerb = { value: item.dataset.value, matchIdx };
+      } else {
+        document.querySelectorAll(`.match-item[data-type="object"]`).forEach(o => {
+          const oIdx = parseInt(o.dataset.matchIdx);
+          const oCard = Math.floor(oIdx / 5);
+          if (oCard === cardIdx) {
+            o.classList.remove('selected');
+          }
+        });
+        item.classList.add('selected');
+        selectedObject = { value: item.dataset.value, correct: item.dataset.correct, matchIdx };
+      }
+      
+      if (selectedVerb && selectedObject) {
+        const sameCard = Math.floor(selectedVerb.matchIdx / 5) === Math.floor(selectedObject.matchIdx / 5);
+        if (sameCard) {
+          attemptMatch();
+        }
+      }
     }
-  });
-  const perfect=correctCount===qset.length;
-  if(perfect)awardTile(activeIndex);
-  setTimeout(()=>{clearPanelVisuals();closeModal();if(perfect)flashCellPerfect(activeIndex);},1800);
-}
 
-function clearPanelVisuals(){
-  panelBody.querySelectorAll('.q').forEach(q=>{
-    q.querySelectorAll('.choice').forEach(ch=>ch.classList.remove('wrong','correct','selected','matched'));
-    q.dataset.pairs='';
-  });
-  matchingState={firstClick:null,pairs:[],answered:false};
-}
+    function attemptMatch() {
+      if (selectedVerb.value === selectedObject.correct) {
+        const verbItems = document.querySelectorAll(`.match-item[data-type="verb"][data-match-idx="${selectedVerb.matchIdx}"]`);
+        const objItems = document.querySelectorAll(`.match-item[data-type="object"][data-match-idx="${selectedObject.matchIdx}"]`);
+        
+        verbItems.forEach(v => {
+          v.classList.remove('selected');
+          v.classList.add('correct');
+        });
+        
+        objItems.forEach(o => {
+          o.classList.remove('selected');
+          o.classList.add('correct');
+        });
+        
+        userMatches[selectedVerb.matchIdx] = true;
+        userMatches[selectedObject.matchIdx] = true;
+        
+        if (navigator.vibrate) navigator.vibrate(50);
+        showCelebration('✨');
+        
+        renderMatchNavDots();
+        renderCardDots();
+        updateScore();
+        updateProgress();
+        checkAllComplete();
+        
+      } else {
+        const verbItems = document.querySelectorAll(`.match-item[data-type="verb"][data-match-idx="${selectedVerb.matchIdx}"]`);
+        const objItems = document.querySelectorAll(`.match-item[data-type="object"][data-match-idx="${selectedObject.matchIdx}"]`);
+        
+        verbItems.forEach(v => {
+          v.classList.add('wrong');
+          setTimeout(() => {
+            v.classList.remove('wrong', 'selected');
+          }, 500);
+        });
+        
+        objItems.forEach(o => {
+          o.classList.add('wrong');
+          setTimeout(() => {
+            o.classList.remove('wrong', 'selected');
+          }, 500);
+        });
 
-function flashCellPerfect(idx){
-  const cell=document.querySelector(`.cell[data-index='${idx}']`);
-  cell.classList.add('perfect');setTimeout(()=>cell.classList.remove('perfect'),600);
-}
-
-function awardTile(idx){
-  boardState[idx]={owner:playerTurn,perfect:true};renderBoard();
-  scores[playerTurn]=(scores[playerTurn]||0)+1;
-  document.getElementById(playerTurn==='X'?'scoreX':'scoreO').textContent=scores[playerTurn];
-  localStorage.setItem('intuity_scores',JSON.stringify(scores));playCorrect();checkWin();
-  playerTurn=playerTurn==='X'?'O':'X';document.getElementById('turnLabel').textContent=playerTurn;
-  updatePlayerHighlight();
-}
-
-function renderBoard(){
-  document.querySelectorAll('.cell').forEach((cell,i)=>{
-    const s=boardState[i],sym=cell.querySelector('.symbol');
-    cell.classList.remove('claimed-X','claimed-O');
-    if(s && s.perfect){
-      cell.classList.add('claimed-'+s.owner);
-      sym.textContent=s.owner==='X'?'✖':'⭕';
-      sym.style.opacity='1';
-    }else{
-      sym.textContent='+';
-      sym.style.opacity='0.3';
+        if (navigator.vibrate) navigator.vibrate(200);
+      }
+      
+      selectedVerb = null;
+      selectedObject = null;
     }
-  });
-}
 
-const WINS=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
-function checkWin(){
-  const owners=boardState.map(v=>v?v.owner:null);
-  for(const line of WINS){
-    if(line.every(i=>owners[i]===owners[line[0]]&&owners[i]!==null)){drawLine(line);showTrophy();break;}
-  }
-}
+    // ============================================
+    // NAVIGATION
+    // ============================================
+    
+    function nextCard() {
+      if (currentCardIndex < 3) {
+        currentCardIndex++;
+        renderContent();
+        renderCardDots();
+        renderMatchNavDots();
+        updateScore();
+        updateExternalNav();
+        
+        if (currentMode === 'full') {
+          scrollToCurrentCard();
+        }
+      }
+    }
 
-function drawLine(line){
-  const svg=document.querySelector('.svgOverlay');svg.innerHTML='';
-  const cells=Array.from(document.querySelectorAll('.cell'));
-  const p1=centerOf(cells[line[0]]),p3=centerOf(cells[line[2]]);
-  const gridRect=grid.getBoundingClientRect(),scaleX=300/gridRect.width,scaleY=300/gridRect.height;
-  const x1=(p1.x-gridRect.left)*scaleX,y1=(p1.y-gridRect.top)*scaleY;
-  const x2=(p3.x-gridRect.left)*scaleX,y2=(p3.y-gridRect.top)*scaleY;
-  const ln=document.createElementNS('http://www.w3.org/2000/svg','line');
-  ln.setAttribute('x1',x1);ln.setAttribute('y1',y1);ln.setAttribute('x2',x2);ln.setAttribute('y2',y2);
-  ln.classList.add('line');svg.appendChild(ln);setTimeout(()=>ln.style.strokeDashoffset='0',60);winsDrawn=true;
-}
+    function prevCard() {
+      if (currentCardIndex > 0) {
+        currentCardIndex--;
+        renderContent();
+        renderCardDots();
+        renderMatchNavDots();
+        updateScore();
+        updateExternalNav();
+        
+        if (currentMode === 'full') {
+          scrollToCurrentCard();
+        }
+      }
+    }
 
-function centerOf(el){const r=el.getBoundingClientRect();return{x:(r.left+r.right)/2,y:(r.top+r.bottom)/2};}
-function showTrophy(){
-  const t=document.getElementById('trophy');t.classList.add('show');playWin();
-  setTimeout(()=>t.classList.remove('show'),3800);
-}
+    function goToCard(index) {
+      currentCardIndex = index;
+      renderContent();
+      renderCardDots();
+      renderMatchNavDots();
+      updateScore();
+      updateExternalNav();
+      
+      if (currentMode === 'full') {
+        scrollToCurrentCard();
+      }
+    }
 
-document.getElementById('resetBtn').addEventListener('click',()=>{
-  boardState=Array(9).fill(null);playerTurn='X';cellAttempts={};scores={X:0,O:0};
-  localStorage.setItem('intuity_scores',JSON.stringify(scores));
-  document.getElementById('scoreX').textContent='0';document.getElementById('scoreO').textContent='0';
-  document.getElementById('turnLabel').textContent='X';document.querySelector('.svgOverlay').innerHTML='';
-  updatePlayerHighlight();renderBoard();
-});
+    function scrollToCurrentCard() {
+      setTimeout(() => {
+        const cards = document.querySelectorAll('.matching-card');
+        if (cards[currentCardIndex]) {
+          cards[currentCardIndex].scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }, 100);
+    }
 
-const audioCtx=(window.AudioContext||window.webkitAudioContext)?new(window.AudioContext||window.webkitAudioContext)():null;
-function playTone(freq,dur){
-  if(!audioCtx)return;const o=audioCtx.createOscillator(),g=audioCtx.createGain();
-  o.type='sine';o.frequency.value=freq;g.gain.value=0.02;o.connect(g);g.connect(audioCtx.destination);
-  o.start();o.stop(audioCtx.currentTime+dur);
-}
-function playCorrect(){playTone(1100,0.09);setTimeout(()=>playTone(1300,0.09),100);}
-function playWin(){playTone(1200,0.12);setTimeout(()=>playTone(1400,0.12),140);setTimeout(()=>playTone(1600,0.15),280);}
-function vibrate(ms){if(navigator.vibrate)navigator.vibrate(ms);}
+    function updateExternalNav() {
+      const externalNav = document.getElementById('externalNav');
+      const prevBtn = document.getElementById('prevCardBtn');
+      const nextBtn = document.getElementById('nextCardBtn');
+      
+      if (currentMode === 'single') {
+        externalNav.classList.add('active');
+        prevBtn.disabled = currentCardIndex === 0;
+        nextBtn.disabled = currentCardIndex === 3;
+      } else {
+        externalNav.classList.remove('active');
+      }
+    }
 
-document.getElementById('closeBtn').addEventListener('click',closeModal);
-document.getElementById('showAnswersBtn').addEventListener('click',showAnswers);
-document.getElementById('submitBtn').addEventListener('click',submitAnswers);
-document.querySelectorAll('.cell').forEach(c=>c.addEventListener('click',()=>{
-  const idx=+c.dataset.index;if(boardState[idx]&&boardState[idx].perfect)return;
-  vibrate(10);playTone(800,0.03);openModal(idx);
-}));
+    // ============================================
+    // SCORE & PROGRESS
+    // ============================================
 
-updatePlayerHighlight();renderBoard();
-document.getElementById('scoreX').textContent=scores.X;
-document.getElementById('scoreO').textContent=scores.O;
-</script>
+    function updateScore() {
+      const totalMatches = Object.keys(userMatches).length;
+      document.getElementById('scoreDisplay').textContent = `${totalMatches}/20`;
+    }
+
+    function updateProgress() {
+      const totalMatches = Object.keys(userMatches).length;
+      const percentage = Math.round((totalMatches / 20) * 100);
+      document.getElementById('progressFill').style.width = percentage + '%';
+    }
+
+    function showCelebration(emoji) {
+      const celebration = document.createElement('div');
+      celebration.className = 'celebration';
+      celebration.textContent = emoji;
+      document.body.appendChild(celebration);
+      
+      setTimeout(() => {
+        document.body.removeChild(celebration);
+      }, 1000);
+    }
+
+    function checkAllComplete() {
+      const totalMatches = Object.keys(userMatches).length;
+      
+      if (totalMatches === 20) {
+        ProgressTracker.saveMatchingScore(
+          selectionData.characterKey, 
+          selectionData.category, 
+          20
+        );
+
+        document.getElementById('externalNav').style.display = 'none';
+        document.getElementById('footer').classList.add('active');
+        showCelebration('🏆');
+
+        console.log('✅ Matching complete: 20/20 saved');
+      }
+    }
+
+    // ============================================
+    // FOOTER ACTIONS
+    // ============================================
+    
+    function retryGame() {
+      location.reload();
+    }
+
+    function goToQuiz() {
+      window.location.href = 'quiz-interface.html';
+    }
+
+    function goHome() {
+      sessionStorage.removeItem('selectionData');
+      window.location.href = '../index.html';
+    }
+
+    function goBack() {
+      window.history.back();
+    }
+
+    // ============================================
+    // KEYBOARD NAVIGATION
+    // ============================================
+    
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' && currentCardIndex < 3) nextCard();
+      else if (e.key === 'ArrowLeft' && currentCardIndex > 0) prevCard();
+    });
+
+    // ============================================
+    // INITIALIZE
+    // ============================================
+    
+    async function initialize() {
+      console.log('🎮 Initializing Matching Game...');
+      
+      // Load the full data
+      const loaded = await loadData();
+      
+      if (!loaded) return;
+
+      prepareCardData();
+      renderContent();
+      renderCardDots();
+      renderMatchNavDots();
+      updateScore();
+      updateExternalNav();
+      
+      console.log('✅ Matching Game Ready!');
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initialize);
+    } else {
+      initialize();
+    }
+  </script>
 </body>
 </html>
