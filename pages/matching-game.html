@@ -1178,9 +1178,14 @@
       
       if (currentMode === 'single' && cardIdx !== currentCardIndex) return;
       
-      // ⭐ NEW: Allow clicking on already-matched items to deselect them
+      // ⭐ FIXED: Deselect the entire match pair (both verb and object indices)
       if (item.classList.contains('selected-match')) {
-        delete userMatches[matchIdx];
+        const match = userMatches[matchIdx];
+        if (match) {
+          // Delete both the verb and object indices
+          delete userMatches[match.verbIdx];
+          delete userMatches[match.objIdx];
+        }
         renderContent();
         updateScore();
         updateProgress();
@@ -1226,11 +1231,14 @@
         verb: selectedVerb.value,
         object: selectedObject.value,
         correctVerb: selectedObject.correct,
-        isCorrect: selectedVerb.value === selectedObject.correct
+        isCorrect: selectedVerb.value === selectedObject.correct,
+        verbIdx: selectedVerb.matchIdx,
+        objIdx: selectedObject.matchIdx
       };
       
-      userMatches[selectedVerb.matchIdx] = matchData;
-      userMatches[selectedObject.matchIdx] = matchData;
+      // Store separate copies for each index (not the same object reference)
+      userMatches[selectedVerb.matchIdx] = { ...matchData };
+      userMatches[selectedObject.matchIdx] = { ...matchData };
       
       selectedVerb = null;
       selectedObject = null;
