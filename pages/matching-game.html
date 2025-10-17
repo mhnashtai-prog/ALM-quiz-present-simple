@@ -191,6 +191,66 @@
       box-shadow: 0 0 10px rgba(201, 169, 97, 0.5);
     }
 
+    .mode-toggle-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.625rem;
+      margin-bottom: 0.75rem;
+      font-size: 0.6875rem;
+      font-weight: 500;
+      color: #636366;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+    }
+
+    .mode-toggle-label {
+      opacity: 0.6;
+      transition: opacity 0.3s;
+    }
+
+    .mode-toggle-container:hover .mode-toggle-label {
+      opacity: 0.85;
+    }
+
+    .mode-toggle-switch {
+      position: relative;
+      width: 3rem;
+      height: 1.5rem;
+      background: rgba(99, 99, 102, 0.25);
+      border-radius: 0.75rem;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      border: 1px solid rgba(99, 99, 102, 0.2);
+    }
+
+    .mode-toggle-switch:hover {
+      background: rgba(99, 99, 102, 0.35);
+    }
+
+    .mode-toggle-switch::after {
+      content: '';
+      position: absolute;
+      top: 0.125rem;
+      left: 0.125rem;
+      width: 1.125rem;
+      height: 1.125rem;
+      background: #8e8e93;
+      border-radius: 50%;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    .mode-toggle-switch.active {
+      background: rgba(201, 169, 97, 0.25);
+      border-color: rgba(201, 169, 97, 0.3);
+    }
+
+    .mode-toggle-switch.active::after {
+      left: 1.625rem;
+      background: #C9A961;
+    }
+
     .score-display {
       text-align: center;
       margin-bottom: 0.75rem;
@@ -242,6 +302,81 @@
       padding: 0 1.5rem;
       touch-action: pan-y;
       pointer-events: none;
+      min-height: 0;
+    }
+
+    /* Single Card Mode - Compact contained view */
+    .carousel-wrapper.single-mode {
+      overflow: hidden;
+      margin: 0;
+      padding: 0;
+      pointer-events: all;
+    }
+
+    .carousel-wrapper.single-mode .carousel-track {
+      width: 100%;
+      height: 100%;
+      gap: 0;
+      pointer-events: all;
+    }
+
+    .carousel-wrapper.single-mode .card-wrapper {
+      min-height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .carousel-wrapper.single-mode .matching-card {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      gap: 1rem;
+    }
+
+    .carousel-wrapper.single-mode .matching-area {
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+    }
+
+    /* Full Mode - Scrollable list */
+    .carousel-wrapper.full-mode {
+      overflow-y: auto;
+      overflow-x: hidden;
+      align-items: flex-start;
+      padding: 1rem;
+      pointer-events: all;
+    }
+
+    .carousel-wrapper.full-mode .carousel-track {
+      flex-direction: column;
+      transform: none !important;
+      gap: 2rem;
+      width: 100%;
+      pointer-events: all;
+    }
+
+    .carousel-wrapper.full-mode .card-wrapper {
+      min-width: 100%;
+      width: 100%;
+      opacity: 1;
+      transform: scale(1);
+      pointer-events: all;
+    }
+
+    .carousel-wrapper.full-mode .nav-arrows {
+      display: none;
+    }
+
+    .carousel-wrapper::-webkit-scrollbar { width: 6px; }
+    .carousel-wrapper::-webkit-scrollbar-track { 
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 10px;
+    }
+    .carousel-wrapper::-webkit-scrollbar-thumb {
+      background: rgba(201, 169, 97, 0.4);
+      border-radius: 10px;
     }
 
     .carousel-track {
@@ -294,6 +429,16 @@
       gap: 1rem;
     }
 
+    .matching-area::-webkit-scrollbar { width: 6px; }
+    .matching-area::-webkit-scrollbar-track { 
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 10px;
+    }
+    .matching-area::-webkit-scrollbar-thumb {
+      background: rgba(201, 169, 97, 0.4);
+      border-radius: 10px;
+    }
+
     .column {
       display: flex;
       flex-direction: column;
@@ -303,9 +448,9 @@
     .match-item {
       background: #1a1a1a;
       border-radius: 12px;
-      padding: 1rem 1.25rem;
+      padding: 0.85rem 1.1rem;
       color: rgba(232, 232, 232, 0.9);
-      font-size: 0.95rem;
+      font-size: 0.9rem;
       font-weight: 400;
       cursor: pointer;
       transition: all 0.3s;
@@ -317,6 +462,8 @@
       align-items: center;
       justify-content: space-between;
       border: 2px solid transparent;
+      line-height: 1.3;
+      min-height: 44px;
     }
 
     .match-item:hover {
@@ -387,6 +534,46 @@
       justify-content: center;
       flex-wrap: wrap;
       margin-top: 1rem;
+    }
+
+    .external-nav {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .external-nav.active {
+      display: flex;
+    }
+
+    .external-nav-btn {
+      background: #1a1a1a;
+      border: none;
+      border-radius: 12px;
+      padding: 0.65rem 1.25rem;
+      color: #C9A961;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 
+        4px 4px 8px #000000,
+        -4px -4px 8px #2a2a2a;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .external-nav-btn:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 
+        6px 6px 12px #000000,
+        -6px -6px 12px #2a2a2a;
+    }
+
+    .external-nav-btn:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
     }
 
     .btn {
@@ -586,26 +773,133 @@
 
     @media (max-width: 768px) {
       .game-container {
-        padding: 1rem;
-        height: 92vh;
+        padding: 1rem 0.75rem;
+        height: 95vh;
+        border-radius: 16px;
       }
 
       .header h1 {
         font-size: 1.4rem;
       }
 
-      .matching-area {
-        grid-template-columns: 1fr;
+      .tagline {
+        font-size: 0.7rem;
       }
 
-      .arrow {
-        width: 35px;
-        height: 35px;
-        font-size: 1.1rem;
+      .character-display {
+        padding: 0.4rem 0.75rem;
+      }
+
+      .character-emoji {
+        font-size: 1.2rem;
+      }
+
+      .character-name {
+        font-size: 0.85rem;
       }
 
       .category-pills {
-        display: none;
+        gap: 0.35rem;
+      }
+
+      .category-pill {
+        padding: 0.4rem 0.6rem;
+        font-size: 0.7rem;
+      }
+
+      .mode-toggle-container {
+        font-size: 0.625rem;
+      }
+
+      .score-display {
+        font-size: 0.8rem;
+        padding: 0 0.5rem;
+      }
+
+      .score-number {
+        font-size: 0.95rem;
+      }
+
+      .score-left, .score-right {
+        font-size: 0.75rem;
+      }
+
+      .carousel-wrapper {
+        margin: 0;
+        padding: 0;
+      }
+
+      .carousel-wrapper.single-mode .matching-card {
+        gap: 0.75rem;
+      }
+
+      .card-title {
+        font-size: 0.9rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .matching-area {
+        gap: 0.65rem;
+      }
+
+      .match-item {
+        padding: 0.75rem 0.9rem;
+        font-size: 0.85rem;
+        border-radius: 10px;
+        min-height: 42px;
+      }
+
+      .emoji {
+        font-size: 1.1rem;
+      }
+
+      .arrow {
+        width: 36px;
+        height: 36px;
+        font-size: 1.15rem;
+      }
+
+      .nav-dot {
+        width: 8px;
+        height: 8px;
+      }
+
+      .controls {
+        gap: 0.5rem;
+        margin-top: 0.75rem;
+      }
+
+      .btn {
+        padding: 0.65rem 1.2rem;
+        font-size: 0.75rem;
+      }
+
+      .external-nav {
+        gap: 0.75rem;
+        margin-top: 0.75rem;
+      }
+
+      .external-nav-btn {
+        padding: 0.6rem 1rem;
+        font-size: 0.75rem;
+      }
+
+      .footer {
+        gap: 0.5rem;
+        margin-top: 0.75rem;
+        padding-top: 0.75rem;
+      }
+
+      .footer-btn {
+        padding: 0.65rem 1rem;
+        font-size: 0.75rem;
+      }
+
+      .back-btn {
+        top: 1rem;
+        left: 1rem;
+        padding: 0.5rem 0.8rem;
+        font-size: 0.75rem;
       }
     }
   </style>
@@ -624,6 +918,12 @@
 
       <div class="category-pills" id="categoryPills">
       </div>
+
+      <div class="mode-toggle-container">
+        <span class="mode-toggle-label">Full</span>
+        <div class="mode-toggle-switch" id="modeToggleSwitch" onclick="toggleViewMode()" role="switch" aria-checked="false" aria-label="Toggle between full view and single card mode"></div>
+        <span class="mode-toggle-label">Single</span>
+      </div>
     </div>
 
     <div class="progress-bar">
@@ -636,8 +936,8 @@
       <div class="score-right">Matches: <span class="score-number" id="scoreDisplay">0/20</span></div>
     </div>
 
-    <div class="carousel-wrapper">
-      <div class="nav-arrows">
+    <div class="carousel-wrapper" id="carouselWrapper">
+      <div class="nav-arrows" id="navArrows">
         <button class="arrow" id="prevArrow" onclick="prevCard()">‹</button>
         <button class="arrow" id="nextArrow" onclick="nextCard()">›</button>
       </div>
@@ -645,6 +945,11 @@
       <div class="carousel-track" id="carouselTrack">
         <!-- Cards will be inserted here by JavaScript -->
       </div>
+    </div>
+
+    <div class="external-nav" id="externalNav">
+      <button class="external-nav-btn" id="prevCardBtn" onclick="prevCard()">← Previous Card</button>
+      <button class="external-nav-btn" id="nextCardBtn2" onclick="nextCard()">Next Card →</button>
     </div>
 
     <div class="controls">
@@ -678,6 +983,7 @@
     let selectedVerb = null;
     let selectedObject = null;
     let isSubmitted = false; // Track if answers have been submitted
+    let viewMode = 'single'; // 'full' or 'single'
 
     // ============================================
     // LOAD DATA
@@ -1130,6 +1436,41 @@
     }
 
     // ============================================
+    // VIEW MODE TOGGLE
+    // ============================================
+    
+    function toggleViewMode() {
+      const toggleSwitch = document.getElementById('modeToggleSwitch');
+      const wrapper = document.getElementById('carouselWrapper');
+      const externalNav = document.getElementById('externalNav');
+      const navArrows = document.getElementById('navArrows');
+      
+      if (viewMode === 'single') {
+        viewMode = 'full';
+        toggleSwitch.classList.remove('active');
+        toggleSwitch.setAttribute('aria-checked', 'false');
+        wrapper.classList.remove('single-mode');
+        wrapper.classList.add('full-mode');
+        externalNav.classList.remove('active');
+        
+        // In full mode, show all cards
+        document.querySelectorAll('.card-wrapper').forEach(card => {
+          card.classList.add('active');
+        });
+      } else {
+        viewMode = 'single';
+        toggleSwitch.classList.add('active');
+        toggleSwitch.setAttribute('aria-checked', 'true');
+        wrapper.classList.remove('full-mode');
+        wrapper.classList.add('single-mode');
+        externalNav.classList.add('active');
+        
+        // In single mode, only show current card
+        updateCarouselPosition();
+      }
+    }
+
+    // ============================================
     // NAVIGATION
     // ============================================
     
@@ -1150,12 +1491,30 @@
 
     function updateCarouselPosition() {
       const track = document.getElementById('carouselTrack');
-      const offset = -currentCardIndex * 100;
-      track.style.transform = `translateX(${offset}%)`;
+      const externalNav = document.getElementById('externalNav');
+      const prevCardBtn = document.getElementById('prevCardBtn');
+      const nextCardBtn2 = document.getElementById('nextCardBtn2');
       
-      document.querySelectorAll('.card-wrapper').forEach((card, index) => {
-        card.classList.toggle('active', index === currentCardIndex);
-      });
+      if (viewMode === 'single') {
+        // Carousel mode - slide animation
+        const offset = -currentCardIndex * 100;
+        track.style.transform = `translateX(${offset}%)`;
+        
+        document.querySelectorAll('.card-wrapper').forEach((card, index) => {
+          card.classList.toggle('active', index === currentCardIndex);
+        });
+        
+        // Update external nav buttons
+        prevCardBtn.disabled = currentCardIndex === 0;
+        nextCardBtn2.disabled = currentCardIndex === 3;
+      } else {
+        // Full mode - no transform needed
+        track.style.transform = 'none';
+        
+        document.querySelectorAll('.card-wrapper').forEach(card => {
+          card.classList.add('active');
+        });
+      }
       
       document.getElementById('cardNumber').textContent = currentCardIndex + 1;
       document.getElementById('prevArrow').disabled = currentCardIndex === 0;
@@ -1330,6 +1689,9 @@
 
       renderAllCards();
       updateScore();
+      
+      // Initialize to Single mode by default (better for mobile)
+      toggleViewMode();
       
       console.log('✅ Matching Game Ready!');
     }
