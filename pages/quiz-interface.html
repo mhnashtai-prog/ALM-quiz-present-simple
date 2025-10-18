@@ -411,7 +411,7 @@
       transition: all 0.3s;
       padding: 0 2px;
       margin: 0 2px;
-      min-width: 80px;
+      min-width: 100px;
     }
 
     .cloze-blank:focus {
@@ -948,9 +948,7 @@
       .cert-btn {
         width: 100%;
       }
-    }
 
-    @media (max-width: 768px) {
       .game-container {
         width: 100%;
         height: 100vh;
@@ -1074,12 +1072,10 @@
     async function initialize() {
       console.log('🎮 Initializing Quiz...');
       
-      // Get character from URL parameter (e.g., ?character=sarah)
       const urlParams = new URLSearchParams(window.location.search);
       characterKey = urlParams.get('character') || 'sarah';
       
       try {
-        // Load character data from JSON
         const response = await fetch('../data/character-data.json');
         if (!response.ok) throw new Error('Failed to load character data');
         
@@ -1090,14 +1086,10 @@
           throw new Error(`Character "${characterKey}" not found`);
         }
         
-        // Set character display
         document.getElementById('displayEmoji').textContent = characterData.emoji;
         document.getElementById('displayName').textContent = characterData.name;
         
-        // Get category data (default to daily_habits)
         categoryData = characterData.categories.daily_habits;
-        
-        // Load exercise data
         clozeTemplate = categoryData.clozeTemplates[0];
         mcQuestions = categoryData.multipleChoiceQuestions.slice(0, 5);
         mistakeSentences = categoryData.mistakeSentences.slice(0, 5);
@@ -1168,22 +1160,25 @@
     function renderClozeExerciseHTML() {
       if (!clozeTemplate) return '<p>Loading...</p>';
       
-      // Convert text with blanks (w_____ -> input field)
       let textWithInputs = clozeTemplate.text;
       let blankIndex = 0;
       
-      textWithInputs = textWithInputs.replace(/\b\w_+\b/g, () => {
-        const input = `<input type="text" class="cloze-blank" data-index="${blankIndex}" placeholder="?" value="">`;
+      // IMPROVED: Better blank detection with first letter hint
+      textWithInputs = textWithInputs.replace(/_____/g, () => {
+        const correctAnswer = clozeTemplate.answers[blankIndex];
+        const firstLetter = correctAnswer ? correctAnswer.charAt(0) : '?';
+        const hint = `${firstLetter}...`;
+        
+        const input = `<input type="text" class="cloze-blank" data-index="${blankIndex}" placeholder="${hint}" value="">`;
         blankIndex++;
         return input;
       });
       
-      // Split by double newlines for paragraphs
       const paragraphs = textWithInputs.split('\n\n').map(p => `<p>${p}</p>`).join('');
       
       return `
         <h2 class="card-title">📝 Exercise 1/4: Fill in the Blanks</h2>
-        <p class="card-subtitle">Type the correct verb form in each blank space</p>
+        <p class="card-subtitle">Complete each blank with the correct verb form (hint: first letter shown)</p>
         <div class="cloze-text">
           ${paragraphs}
         </div>
@@ -1272,66 +1267,44 @@
     }
 
     function attachEventListeners() {
-      // Multiple choice option buttons
       document.querySelectorAll('.option-btn').forEach(btn => {
         btn.addEventListener('click', function() {
           const questionItem = this.closest('.question-item');
           const questionIdx = questionItem.dataset.question;
           const optionIdx = this.dataset.option;
           
-          // Remove selected class from siblings
           questionItem.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
-          
-          // Add selected class to clicked button
           this.classList.add('selected');
-          
-          // Store answer
           userAnswers.mc[questionIdx] = parseInt(optionIdx);
-          
-          // Check if all answers are attempted
           checkIfAllAnswered();
         });
       });
       
-      // Mistake sentences - word selection
       document.querySelectorAll('.word').forEach(word => {
         word.addEventListener('click', function() {
           const sentenceItem = this.closest('.sentence-item');
           const sentenceIdx = sentenceItem.dataset.sentence;
           const wordIdx = this.dataset.word;
           
-          // Remove selected class from siblings
           sentenceItem.querySelectorAll('.word').forEach(w => w.classList.remove('selected'));
-          
-          // Add selected class to clicked word
           this.classList.add('selected');
-          
-          // Store answer
           userAnswers.mistakes[sentenceIdx] = parseInt(wordIdx);
-          
-          // Check if all answers are attempted
           checkIfAllAnswered();
         });
       });
       
-      // Cloze inputs - store on change
       document.querySelectorAll('.cloze-blank').forEach(input => {
         input.addEventListener('input', function() {
           const idx = this.dataset.index;
           userAnswers.cloze[idx] = this.value.trim().toLowerCase();
-          
-          // Check if all answers are attempted
           checkIfAllAnswered();
         });
       });
       
-      // Ordering inputs - store on change
       document.querySelectorAll('.order-input').forEach(input => {
         input.addEventListener('input', function() {
           const idx = this.dataset.order;
           userAnswers.ordering[idx] = parseInt(this.value);
-          
-          // Check if all answers are attempted
           checkIfAllAnswered();
         });
       });
@@ -1340,7 +1313,6 @@
     function checkIfAllAnswered() {
       let allAnswered = true;
       
-      // Check cloze answers (only if we're in full mode or on exercise 0)
       if (currentMode === 'full' || currentExercise === 0) {
         if (clozeTemplate && clozeTemplate.answers) {
           for (let i = 0; i < clozeTemplate.answers.length; i++) {
@@ -1352,7 +1324,6 @@
         }
       }
       
-      // Check multiple choice (only if we're in full mode or on exercise 1)
       if (allAnswered && (currentMode === 'full' || currentExercise === 1)) {
         for (let i = 0; i < mcQuestions.length; i++) {
           if (userAnswers.mc[i] === null || userAnswers.mc[i] === undefined) {
@@ -1362,7 +1333,6 @@
         }
       }
       
-      // Check mistake sentences (only if we're in full mode or on exercise 2)
       if (allAnswered && (currentMode === 'full' || currentExercise === 2)) {
         for (let i = 0; i < mistakeSentences.length; i++) {
           if (userAnswers.mistakes[i] === null || userAnswers.mistakes[i] === undefined) {
@@ -1372,7 +1342,6 @@
         }
       }
       
-      // Check ordering (only if we're in full mode or on exercise 3)
       if (allAnswered && (currentMode === 'full' || currentExercise === 3)) {
         for (let i = 0; i < orderingSentences.length; i++) {
           if (!userAnswers.ordering[i] || isNaN(userAnswers.ordering[i])) {
@@ -1382,7 +1351,6 @@
         }
       }
       
-      // Show/hide check button
       const checkBtn = document.getElementById('checkBtn');
       if (allAnswered) {
         checkBtn.style.display = 'block';
@@ -1447,14 +1415,14 @@
       let score = 0;
       let total = 0;
       
-      // Check cloze answers
+      // IMPROVED: Better answer comparison for cloze
       if (clozeTemplate && clozeTemplate.answers) {
         clozeTemplate.answers.forEach((answer, idx) => {
           total++;
           const input = document.querySelector(`.cloze-blank[data-index="${idx}"]`);
           if (input) {
-            const userAnswer = (userAnswers.cloze[idx] || '').toLowerCase();
-            const correctAnswer = answer.toLowerCase();
+            const userAnswer = (userAnswers.cloze[idx] || '').toLowerCase().trim();
+            const correctAnswer = answer.toLowerCase().trim();
             
             if (userAnswer === correctAnswer) {
               input.classList.add('correct');
@@ -1468,7 +1436,6 @@
         });
       }
       
-      // Check multiple choice
       mcQuestions.forEach((q, idx) => {
         total++;
         const correctIdx = q.options.indexOf(q.correct);
@@ -1492,7 +1459,6 @@
         }
       });
       
-      // Check mistake sentences
       mistakeSentences.forEach((item, idx) => {
         total++;
         const userWordIdx = userAnswers.mistakes[idx];
@@ -1516,7 +1482,6 @@
         }
       });
       
-      // Check ordering
       orderingSentences.forEach((item, idx) => {
         total++;
         const userOrder = userAnswers.ordering[idx];
@@ -1535,14 +1500,11 @@
         }
       });
       
-      // Update score display
       document.getElementById('scoreDisplay').textContent = `${score}/${total}`;
       
-      // Calculate percentage
       const percentage = Math.round((score / total) * 100);
       const isExcellent = percentage >= 90;
       
-      // Show certificate
       showCertificate(score, total, percentage, isExcellent);
     }
 
@@ -1556,23 +1518,18 @@
       const charEmoji = document.getElementById('certCharEmoji');
       const charName = document.getElementById('certCharName');
       
-      // Set character info
       charEmoji.textContent = document.getElementById('displayEmoji').textContent;
       charName.textContent = document.getElementById('displayName').textContent;
       
-      // Set score
       scoreValue.textContent = `${score}/${total}`;
       scorePercent.textContent = `${percentage}%`;
       
-      // Determine trophy and message based on score
       if (isExcellent) {
         trophy.textContent = '🏆';
         title.textContent = 'Outstanding!';
         message.textContent = '🌟 Excellent work! You\'ve earned a trophy! You have mastered this topic!';
         message.classList.add('excellent');
         scoreValue.classList.add('excellent');
-        
-        // Add confetti effect
         createConfetti();
       } else if (percentage >= 75) {
         trophy.textContent = '🎖️';
@@ -1594,7 +1551,6 @@
         scoreValue.classList.remove('excellent');
       }
       
-      // Show overlay
       overlay.classList.add('show');
     }
 
@@ -1638,16 +1594,13 @@
       `;
       
       container.appendChild(toast);
-      
       setTimeout(() => toast.classList.add('show'), 10);
-      
       setTimeout(() => {
         toast.classList.remove('show');
         setTimeout(() => toast.remove(), 400);
       }, 3000);
     }
 
-    // Initialize on load
     initialize();
   </script>
 </body>
