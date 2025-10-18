@@ -806,6 +806,13 @@
     // GLOBAL STATE
     // ============================================
     
+   <script src="../assets/js/progress-tracker.js"></script>
+
+  <script>
+    // ============================================
+    // GLOBAL STATE
+    // ============================================
+    
     let selectionData = null;
     let grammarData = null;
     let characterData = null;
@@ -816,6 +823,23 @@
     let cardVerbs = [];
     let selectedVerb = null;
     let selectedObject = null;
+
+    // ============================================
+    // UTILITY FUNCTIONS
+    // ============================================
+    
+    /**
+     * Fisher-Yates shuffle algorithm for proper randomization
+     * This ensures truly random shuffling with no bias
+     */
+    function shuffleArray(array) {
+      const shuffled = [...array];
+      for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+      }
+      return shuffled;
+    }
 
     // ============================================
     // LOAD DATA
@@ -1107,15 +1131,18 @@
       const card = document.createElement('div');
       card.className = 'matching-card';
       
-      const verbs = cardVerbs[cardIndex];
+     const verbs = cardVerbs[cardIndex];
       const startIdx = cardIndex * 5;
       
-      const shuffledObjects = verbs.map((v, i) => ({
-        object: v.object,
-        emoji: v.emoji,
-        correctVerb: v.verb,
-        matchIdx: startIdx + i
-      })).sort(() => Math.random() - 0.5);
+      // Use Fisher-Yates shuffle for truly random object ordering
+      const shuffledObjects = shuffleArray(
+        verbs.map((v, i) => ({
+          object: v.object,
+          emoji: v.emoji,
+          correctVerb: v.verb,
+          matchIdx: startIdx + i
+        }))
+      );
 
       const verbsHTML = verbs.map((v, i) => {
         const matchIdx = startIdx + i;
